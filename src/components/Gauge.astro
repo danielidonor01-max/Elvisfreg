@@ -1,0 +1,137 @@
+---
+/**
+ * A pressure gauge you can drive. Drag the needle (or use the slider — it is
+ * the real control, so keyboard and screen readers get the same thing) and the
+ * as-found / as-left readings interpolate from the calibration record. A 180°
+ * dial, like the mark.
+ */
+const POINTS = [0, 25, 50, 75, 100];
+const AS_FOUND = [0.02, 25.11, 50.19, 75.24, 100.31];
+const AS_LEFT = [0.0, 25.0, 50.01, 75.02, 100.02];
+const ticks = Array.from({ length: 21 }, (_, i) => i * 5);
+// Dial geometry: centre (100,100), radius 84, sweep from 180° (left) to 0° (right).
+const pt = (v: number, r: number) => {
+  const a = Math.PI - (v / 100) * Math.PI;
+  return [100 + r * Math.cos(a), 100 - r * Math.sin(a)];
+};
+---
+
+<div class="gauge grid gap-8 lg:grid-cols-12 lg:gap-12 items-center" data-gauge data-found={AS_FOUND.join(',')} data-left={AS_LEFT.join(',')}>
+  <div class="lg:col-span-6">
+    <svg viewBox="0 0 200 120" class="w-full max-w-[460px] mx-auto select-none" aria-hidden="true" data-dial>
+      <path d="M16 100 A84 84 0 0 1 184 100" fill="none" stroke="var(--line)" stroke-width="1" />
+      <path d="M16 100 A84 84 0 0 1 184 100" fill="none" stroke="var(--flame)" stroke-width="3" stroke-linecap="butt" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" data-fill />
+      {ticks.map((v) => {
+        const major = v % 25 === 0;
+        const [x1, y1] = pt(v, major ? 70 : 76);
+        const [x2, y2] = pt(v, 84);
+        return <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={major ? 'var(--ink)' : 'var(--ink-muted)'} stroke-width={major ? 1.5 : 0.75} />;
+      })}
+      {POINTS.map((v) => { const [x, y] = pt(v, 58); return <text x={x} y={y + 3} text-anchor="middle" font-size="7" font-family="var(--font-mono)" fill="var(--ink-muted)">{v}</text>; })}
+      <g data-needle style="transform-origin:100px 100px; transform:rotate(-90deg)">
+        <line x1="100" y1="100" x2="100" y2="24" stroke="var(--ink)" stroke-width="1.75" stroke-linecap="round" />
+        <circle cx="100" cy="100" r="4" fill="var(--flame)" />
+      </g>
+      <text x="100" y="112" text-anchor="middle" font-size="6.5" font-family="var(--font-mono)" fill="var(--ink-muted)">bar</text>
+    </svg>
+    <label class="block mt-4 max-w-[460px] mx-auto">
+      <span class="sr-only">Applied pressure, bar</span>
+      <input type="range" min="0" max="100" step="1" value="0" class="slider" data-range aria-valuetext="0 bar" />
+    </label>
+  </div>
+
+  <div class="lg:col-span-6">
+    <p class="data text-ink-muted">Applied pressure</p>
+    <p class="font-mono font-medium text-[clamp(2.5rem,1.5rem+3vw,4rem)] leading-none tabular-nums mt-1"><span data-out="applied">0</span><span class="text-ink-muted text-[0.5em] ml-2">bar</span></p>
+    <dl class="mt-8 grid grid-cols-3 gap-6 m-0 border-t border-line pt-6">
+      <div>
+        <dt class="text-[0.9375rem] text-ink-muted">As found</dt>
+        <dd class="m-0 mt-1 data text-[1.25rem]" data-out="found">0.02</dd>
+      </div>
+      <div>
+        <dt class="text-[0.9375rem] text-ink-muted">As left</dt>
+        <dd class="m-0 mt-1 data text-[1.25rem]" data-out="left">0.00</dd>
+      </div>
+      <div>
+        <dt class="text-[0.9375rem] text-ink-muted">Error corrected</dt>
+        <dd class="m-0 mt-1 data text-[1.25rem] text-flame-text" data-out="error">0.02</dd>
+      </div>
+    </dl>
+    <p class="mt-6 text-[0.9375rem] text-ink-muted measure">Drag the needle or move the slider. Readings interpolate from a five-point calibration record; every instrument we calibrate leaves with one. Figures illustrative.</p>
+  </div>
+</div>
+
+<style>
+  .slider { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; background: transparent; cursor: pointer; }
+  .slider::-webkit-slider-runnable-track { height: 2px; background: var(--line); }
+  .slider::-moz-range-track { height: 2px; background: var(--line); }
+  .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -10px; border-radius: 50%; background: var(--flame); border: 2px solid var(--bg); }
+  .slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--flame); border: 2px solid var(--bg); }
+  .slider:focus-visible { outline: 2px solid var(--flame); outline-offset: 4px; }
+  [data-needle] { transition: transform 260ms var(--ease-mech); }
+  [data-fill] { transition: stroke-dashoffset 260ms var(--ease-mech); }
+  @media (prefers-reduced-motion: reduce) { [data-needle], [data-fill] { transition: none; } }
+</style>
+
+<script>
+  function lerp(points: number[], series: number[], v: number) {
+    const i = Math.min(points.length - 2, Math.max(0, Math.floor(v / 25)));
+    const t = (v - points[i]) / (points[i + 1] - points[i]);
+    return series[i] + (series[i + 1] - series[i]) * t;
+  }
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-gauge]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+      const points = [0, 25, 50, 75, 100];
+      const found = root.dataset.found!.split(',').map(Number);
+      const left = root.dataset.left!.split(',').map(Number);
+      const range = root.querySelector<HTMLInputElement>('[data-range]')!;
+      const needle = root.querySelector<SVGGElement>('[data-needle]')!;
+      const fill = root.querySelector<SVGPathElement>('[data-fill]')!;
+      const dial = root.querySelector<SVGSVGElement>('[data-dial]')!;
+      const out = (k: string) => root.querySelector<HTMLElement>(`[data-out="${k}"]`)!;
+
+      function render(v: number) {
+        v = Math.max(0, Math.min(100, v));
+        needle.style.transform = `rotate(${-90 + (v / 100) * 180}deg)`;
+        fill.style.strokeDashoffset = String(100 - v);
+        const f = lerp(points, found, v), l = lerp(points, left, v);
+        out('applied').textContent = String(Math.round(v));
+        out('found').textContent = f.toFixed(2);
+        out('left').textContent = l.toFixed(2);
+        out('error').textContent = Math.abs(f - l).toFixed(2);
+        range.setAttribute('aria-valuetext', `${Math.round(v)} bar`);
+      }
+
+      range.addEventListener('input', () => render(Number(range.value)));
+
+      // Pointer on the dial: angle from centre → value.
+      let dragging = false;
+      const fromEvent = (e: PointerEvent) => {
+        const r = dial.getBoundingClientRect();
+        const cx = r.left + r.width / 2, cy = r.top + r.height * (100 / 120);
+        const a = Math.atan2(cy - e.clientY, e.clientX - cx); // 0 right … π left
+        const v = (1 - Math.max(0, Math.min(Math.PI, a)) / Math.PI) * 100;
+        range.value = String(Math.round(v));
+        render(v);
+      };
+      dial.addEventListener('pointerdown', (e) => { dragging = true; dial.setPointerCapture(e.pointerId); fromEvent(e); });
+      dial.addEventListener('pointermove', (e) => { if (dragging) fromEvent(e); });
+      dial.addEventListener('pointerup', () => { dragging = false; });
+      dial.addEventListener('pointercancel', () => { dragging = false; });
+      dial.style.cursor = 'grab';
+      dial.style.touchAction = 'none';
+
+      // Settle on a representative reading when first seen.
+      const io = new IntersectionObserver((entries) => {
+        if (entries.some((en) => en.isIntersecting)) { range.value = '75'; render(75); io.disconnect(); }
+      }, { threshold: 0.4 });
+      io.observe(root);
+      render(0);
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

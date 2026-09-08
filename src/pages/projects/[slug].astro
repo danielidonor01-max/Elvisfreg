@@ -2,7 +2,9 @@
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import Placeholder from '../../components/Placeholder.astro';
+import Photo from '../../components/Photo.astro';
 import { PROJECTS, type Project } from '../../data/projects';
+import { PROJECT_LEAD } from '../../data/project-images';
 import { serviceBySlug } from '../../data/services';
 
 export function getStaticPaths() {
@@ -12,6 +14,7 @@ export function getStaticPaths() {
 const { project } = Astro.props as { project: Project };
 const service = serviceBySlug(project.service);
 const gallery = Math.max(0, project.photos - 1);
+const lead = PROJECT_LEAD[project.slug];
 ---
 
 <Base title={project.title} description={project.summary} path={`/projects/${project.slug}/`} ogType="article">
@@ -27,8 +30,10 @@ const gallery = Math.max(0, project.photos - 1);
       </p>
     </header>
 
-    <div class="wrap">
-      <Placeholder label={`Lead photograph: ${project.title}`} ratio="16/9" />
+    <div class="wrap" data-reveal>
+      {lead
+        ? <Photo src={lead.src} alt={lead.alt} ratio="16/9" temp={lead.temp} priority sizes="(min-width: 1280px) 1200px, 100vw" widths={[800, 1200, 1600, 2000]} />
+        : <Placeholder label={`Lead photograph: ${project.title}`} ratio="16/9" />}
     </div>
 
     <section class="wrap py-14 md:py-20 grid gap-10 md:grid-cols-3 md:gap-8">

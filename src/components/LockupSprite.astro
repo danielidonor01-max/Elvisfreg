@@ -1,9 +1,11 @@
 ---
 /**
- * The horizontal lockup defined once per page as an SVG <symbol>. Header and
- * footer reference it with <use>, so the 22 kB of wordmark paths ship once.
- * Custom properties (--ef-flame, --ef-ink) inherit into the <use> shadow tree,
- * so the theme still applies.
+ * Brand symbols defined once per page and referenced with <use>:
+ *   #ef-lockup    the full horizontal lockup (footer)
+ *   #ef-wordmark  the wordmark alone, cropped from the same file (header, where
+ *                 the mark is rendered separately so its petals can act as a
+ *                 progress instrument)
+ * Custom properties (--ef-flame, --ef-ink) inherit into the <use> shadow tree.
  */
 import raw from '../../assets/brand/logo/lockup-h-themed.svg?raw';
 
@@ -12,8 +14,10 @@ const inner = raw
   .replace(/<title>.*?<\/title>\s*/, '')
   .replace(/^[\s\S]*?<svg[^>]*>/, '')
   .replace(/<\/svg>\s*$/, '');
+const wordmark = inner.match(/<g class="ef-wordmark">[\s\S]*?<\/g>/)?.[0] ?? '';
 ---
 
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
   <symbol id="ef-lockup" viewBox="0 0 246 60" set:html={inner} />
+  <symbol id="ef-wordmark" viewBox="109 8 137 44" set:html={wordmark} />
 </svg>

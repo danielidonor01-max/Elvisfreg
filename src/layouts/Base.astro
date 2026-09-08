@@ -42,10 +42,12 @@ const { title, description, path, noindex, ogType, jsonLd } = Astro.props;
     <meta name="theme-color" content="#fffbf9" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b1b2b" media="(prefers-color-scheme: dark)" />
     <Seo title={title} description={description} path={path} noindex={noindex} ogType={ogType} jsonLd={jsonLd} />
+    <slot name="head" />
     <ClientRouter />
   </head>
   <body class="flex flex-col min-h-dvh">
     <LockupSprite />
+    <div class="drafting" aria-hidden="true"><div class="wrap"><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
     <a href="#main" class="skip">Skip to content</a>
     <Header />
     <main id="main" tabindex="-1" class="flex-1 outline-none">
@@ -54,7 +56,14 @@ const { title, description, path, noindex, ogType, jsonLd } = Astro.props;
     <Footer />
 
     <script>
-      // The one orchestrated moment: petals rise once per session on the home hero.
+      // The motion layer (GSAP, ScrollTrigger, Lenis) loads after the page's own
+      // content so it never competes with the hero image for bandwidth.
+      const startMotion = () => { import('../scripts/motion'); };
+      if (document.readyState === 'complete') startMotion();
+      else window.addEventListener('load', startMotion, { once: true });
+    </script>
+    <script>
+      // The arc seal: petals rise once per session on the home hero.
       function playArcs() {
         document.querySelectorAll<HTMLElement>('.arc[data-play]').forEach((el) => {
           let played = false;

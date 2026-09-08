@@ -26,6 +26,21 @@ assets/brand/logo/ logo SVGs (see README there); Arc/Lockup import from here
 public/            favicon, robots
 ```
 
+## Motion layer
+
+`src/scripts/motion.ts` — GSAP + ScrollTrigger + Lenis, loaded from `Base.astro`. Everything is
+additive: with JavaScript off or `prefers-reduced-motion` the page is complete and static.
+Hooks: `data-reveal`, `data-split` (headline words), `data-count`, `data-lifecycle` /
+`data-stage-block` (sticky arc driven by scrolling stages), `data-section` + `data-header-arc`
+(the header mark fills petal by petal as the home page's five sections are reached).
+`Gauge.astro` is a draggable pressure gauge reading from the calibration record.
+
+## Temporary imagery
+
+`src/assets/temp/` holds Pexels stand-ins so the hero and project layouts could be designed
+against real photographs — see `PLACEHOLDERS.md` there for credits. Every one renders with a
+"Temporary image" tag via `Photo.astro`'s `temp` prop. Replace with the field set before launch.
+
 ## Theme
 
 Light by default. `prefers-color-scheme: dark` applies dark; the toggle sets

@@ -20,9 +20,10 @@ interface Props {
   transitionName?: string;
   label?: string;
   class?: string;
+  [key: `data-${string}`]: string | undefined;
 }
 
-const { active, interactive = false, playOnLoad = false, transitionName, label, class: cls = '' } = Astro.props;
+const { active, interactive = false, playOnLoad = false, transitionName, label, class: cls = '', ...rest } = Astro.props;
 
 let svg = raw.replace(/<\?xml[^>]*>\s*/, '').replace(/<title>.*?<\/title>\s*/, '');
 svg = label
@@ -35,5 +36,6 @@ svg = label
   data-active={active}
   data-play={playOnLoad ? '' : undefined}
   transition:name={transitionName}
+  {...rest}
   set:html={svg}
 />

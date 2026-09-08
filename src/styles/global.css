@@ -232,4 +232,80 @@
   .prose > * + * { margin-top: 1rem; }
   .prose ul { padding-left: 1.25rem; list-style: disc; }
   .prose li + li { margin-top: 0.25rem; }
+
+  /* ---- Liveliness pass ------------------------------------------------------ */
+
+  /* Drafting grid: six faint column rules, like a CAD sheet. Fixed, non-interactive. */
+  .drafting { position: fixed; inset: 0; z-index: 5; pointer-events: none; display: none; }
+  @media (min-width: 768px) { .drafting { display: block; } }
+  .drafting .wrap { height: 100%; display: grid; grid-template-columns: repeat(6, 1fr); }
+  /* Titanium at low alpha reads as a faint rule on both the off-white and the navy bands. */
+  .drafting .wrap > span { border-left: 1px solid rgba(138, 149, 165, 0.28); }
+  .drafting .wrap > span:last-child { border-right: 1px solid rgba(138, 149, 165, 0.28); }
+
+  /* A section that stays navy in both themes: redefine the tokens locally. */
+  .band-dark {
+    --bg: #0b1b2b; --surface: #1e2c3a; --surface-2: #283a4d;
+    --ink: #fffbf9; --ink-muted: #8a95a5; --line: rgba(255, 251, 249, 0.12);
+    --flame-text: #f26522; --ok-text: #00a86b;
+    background: var(--bg); color: var(--ink);
+  }
+  .band { background: var(--surface-2); }
+
+  /* Reveal: hidden only once the motion layer has taken responsibility for showing it. */
+  html.has-motion [data-reveal] { opacity: 0; transform: translateY(18px); will-change: opacity, transform; }
+  html.has-lenis { scroll-behavior: auto; }
+
+  /* Split headline: each word rises out of a clipped line box. */
+  [data-split] .wm { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  [data-split] .w { display: inline-block; white-space: pre; will-change: transform; }
+
+  /* Hero: photograph under a navy scrim, headline low-left. */
+  .hero { position: relative; isolation: isolate; min-height: min(88svh, 900px); display: flex; align-items: flex-end; overflow: hidden; }
+  .hero .photo { position: absolute; inset: 0; z-index: -2; }
+  .hero .photo :global(img) { transform: scale(1.06); animation: hero-settle 9s var(--ease-mech) forwards; }
+  .hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(11,27,43,.55) 0%, rgba(11,27,43,.35) 40%, rgba(11,27,43,.88) 100%); }
+  @keyframes hero-settle { to { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .hero .photo :global(img) { animation: none; transform: none; } }
+
+  /* Header arc as scroll progress: petals rise as the page's sections are reached. */
+  .arc.is-progress .ef-petal { transform: scale(0.72); }
+  .arc.is-progress[data-progress="01"] .ef-seg-01,
+  .arc.is-progress[data-progress="02"] :is(.ef-seg-01, .ef-seg-02),
+  .arc.is-progress[data-progress="03"] :is(.ef-seg-01, .ef-seg-02, .ef-seg-03),
+  .arc.is-progress[data-progress="04"] :is(.ef-seg-01, .ef-seg-02, .ef-seg-03, .ef-seg-04),
+  .arc.is-progress[data-progress="05"] .ef-petal { transform: scale(1); }
+
+  /* Lifecycle: stacked stage blocks. Emphasis by colour and a flame rule, never by
+     opacity — dimmed text would fall below 4.5:1. */
+  [data-stage-block] { border-left: 2px solid transparent; padding-left: 1.25rem; margin-left: -1.25rem; transition: border-color 300ms var(--ease-mech); }
+  [data-stage-block] h3 { color: var(--ink-muted); transition: color 300ms var(--ease-mech); }
+  html.has-motion [data-stage-block].is-active { border-left-color: var(--flame); }
+  html.has-motion [data-stage-block].is-active h3, html:not(.has-motion) [data-stage-block] h3 { color: var(--ink); }
+  [data-stage-title] { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--ease-mech); }
+  [data-stage-title].is-active { opacity: 1; }
+  html:not(.has-motion) [data-stage-title] { position: static; opacity: 1; }
+
+  /* Marquee of client names: one slow loop, pauses on hover, static when motion is reduced. */
+  .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .marquee-track { display: flex; gap: 3rem; width: max-content; animation: marquee 48s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .marquee { -webkit-mask-image: none; mask-image: none; } .marquee-track { animation: none; flex-wrap: wrap; width: auto; gap: 0.75rem 2rem; } }
+
+  /* Buttons: the arrow slides on hover. */
+  .btn .arrow { transition: transform 200ms var(--ease-mech); }
+  .btn:hover .arrow { transform: translateX(3px); }
+
+  /* Links that draw their underline. */
+  .link-draw { text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-size: 0% 1px; background-position: 0 100%; background-repeat: no-repeat; transition: background-size 260ms var(--ease-mech); }
+  .link-draw:hover, .link-draw:focus-visible { background-size: 100% 1px; }
+
+  /* Page transition: a quick navy wipe under the arc morph. */
+  @media (prefers-reduced-motion: no-preference) {
+    ::view-transition-old(root) { animation: 220ms var(--ease-mech) both vt-fade-out; }
+    ::view-transition-new(root) { animation: 420ms var(--ease-mech) both vt-wipe-in; }
+  }
+  @keyframes vt-fade-out { to { opacity: 0; } }
+  @keyframes vt-wipe-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 }
