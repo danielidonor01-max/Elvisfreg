@@ -2,12 +2,13 @@
 import Arc from './Arc.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { NAV, SITE } from '../data/site';
-import { STAGES } from '../data/stages';
-import { serviceBySlug } from '../data/services';
+import { STAGES, stageById } from '../data/stages';
+import { SERVICES } from '../data/services';
 
 const current = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? current === '/' : current.startsWith(href));
-const mobileServices = STAGES.flatMap((st) => st.services).filter((v, i, a) => a.indexOf(v) === i).map((slug) => serviceBySlug(slug)!);
+// Services in lifecycle order, each once, with its primary stage as a tag.
+const services = [...SERVICES].sort((a, b) => a.stages[0].localeCompare(b.stages[0]));
 ---
 
 <header class="sticky top-0 z-40 bg-bg border-b border-line">
@@ -24,26 +25,23 @@ const mobileServices = STAGES.flatMap((st) => st.services).filter((v, i, a) => a
             <summary class:list={['nav-link list-none cursor-pointer', { 'is-active': isActive(item.href) }]} aria-haspopup="true">
               {item.label}
             </summary>
-            <div class="menu-panel absolute left-6 right-6 md:left-8 md:right-8 top-full mt-2 bg-surface border border-line rounded-md p-6 grid grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-5">
-              <a href="/services/" class="col-span-2 lg:col-span-5 font-medium link-quiet">All services</a>
-              {STAGES.map((stage) => (
-                <div>
-                  <p class="text-[0.8125rem] font-medium text-ink-muted mb-1.5"><span class="data" aria-hidden="true">{stage.id}</span><span class="sr-only">Stage {stage.id}</span> {stage.short}</p>
-                  <ul class="list-none m-0 p-0 flex flex-col gap-1">
-                    {stage.services.map((slug) => {
-                      const s = serviceBySlug(slug)!;
-                      return <li><a href={`/services/${s.slug}/`} class="link-quiet text-[0.9375rem]">{s.short}</a></li>;
-                    })}
-                  </ul>
-                </div>
+            <div class="menu-panel absolute left-6 right-6 md:left-8 md:right-8 top-full mt-2 bg-surface border border-line rounded-md p-6 grid gap-x-10 gap-y-3 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto]">
+              {services.map((s) => (
+                <a href={`/services/${s.slug}/`} class="flex items-baseline gap-3 py-1 link-quiet">
+                  <span class="data text-ink-muted w-6 shrink-0" aria-hidden="true">{s.stages[0]}</span>
+                  <span class="sr-only">Stage {s.stages[0]}, {stageById(s.stages[0]).short}. </span>
+                  <span>{s.title}</span>
+                </a>
               ))}
+              <a href="/services/" class="lg:col-start-3 lg:row-start-1 lg:row-span-4 self-start font-medium link-quiet lg:pl-8 lg:border-l lg:border-line">All services</a>
             </div>
           </details>
         ) : (
           <a href={item.href} class:list={['nav-link', { 'is-active': isActive(item.href) }]} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
         )
       )}
-      <a href="/contact/" class="btn btn-primary header-cta ml-3" data-header-cta>Request a quote</a>
+      <a href={`tel:${SITE.phoneE164}`} class="hidden lg:inline-flex items-center min-h-11 px-3 link-quiet num text-[0.9375rem] text-ink-muted hover:text-ink">{SITE.phoneDisplay}</a>
+      <a href="/contact/" class="btn btn-primary header-cta ml-2" data-header-cta>Request a quotation</a>
     </nav>
 
     <button
@@ -65,12 +63,12 @@ const mobileServices = STAGES.flatMap((st) => st.services).filter((v, i, a) => a
       <nav aria-label="Primary, mobile" class="wrap py-6 flex flex-col gap-2">
         <a href="/services/" class="py-2.5 font-medium link-quiet self-start">Services</a>
         <ul class="list-none m-0 p-0 pl-4 flex flex-col gap-1 border-l border-line mb-2">
-          {mobileServices.map((s) => <li><a href={`/services/${s.slug}/`} class="inline-block py-2 link-quiet text-[0.9375rem]">{s.short}</a></li>)}
+          {services.map((s) => <li><a href={`/services/${s.slug}/`} class="inline-block py-2 link-quiet text-[0.9375rem]">{s.short}</a></li>)}
         </ul>
         {NAV.filter((n) => n.label !== 'Services').map((item) => (
           <a href={item.href} class="py-2.5 font-medium link-quiet self-start">{item.label}</a>
         ))}
-        <a href="/contact/" class="btn btn-primary mt-3 self-start">Request a quote</a>
+        <a href="/contact/" class="btn btn-primary mt-3 self-start">Request a quotation</a>
         <div class="mt-6 pt-6 border-t border-line">
           <ThemeToggle />
         </div>

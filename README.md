@@ -30,9 +30,10 @@ public/            favicon, robots
 
 `src/scripts/motion.ts` — GSAP + ScrollTrigger + Lenis, loaded from `Base.astro`. Everything is
 additive: with JavaScript off or `prefers-reduced-motion` the page is complete and static.
-Hooks: `data-reveal`, `data-split` (headline words), `data-count`, `data-lifecycle` /
-`data-stage-block` (sticky arc driven by scrolling stages), `data-section` + `data-header-arc`
-(the header mark fills petal by petal as the home page's five sections are reached).
+Hooks: `data-reveal` / `data-reveal-group` (staggered), `data-split` (headline words), `data-count`
+(counters — do not reuse the attribute for anything else), `data-lifecycle` / `data-stage-block` /
+`data-ledger-stage` (the scrolling stages drive the sticky deliverables ledger, `Ledger.astro`),
+`data-header-cta` (header button hides while the hero button is on screen).
 `Gauge.astro` is a draggable pressure gauge reading from the calibration record.
 
 ## Temporary imagery
@@ -76,3 +77,6 @@ contact 100/100/100/100. Run locally with `node node_modules/lighthouse/cli/inde
 - [ ] Verify project copy in `src/data/projects.ts` with the client — it is drafted to a house style with placeholder sites.
 - [ ] Client logos: confirm each client's consent; see `src/assets/logos/LOGOS.md`. Four clients have no logo and show as text.
 - [ ] Resend domain verification (SPF, DKIM, DMARC) and Turnstile keys in Vercel.
+- [ ] Legal pages (`/privacy/`, `/terms/`, `/cookies/`, `/accessibility/`, `/legal/`) are drafts dated 8 September 2026 — have them reviewed and bump the date.
+- [ ] Engineers to confirm the standards named in `src/data/stages.ts` (IEC 60364, IEC 61439) and the deliverables list per stage.
+- [ ] Sector help/FAQ section (one per lifecycle stage) is planned, not built.

@@ -81,7 +81,7 @@ export const SERVICES: Service[] = [
       description:
         'Domestic, commercial and industrial electrical installation, LV distribution, earthing and testing across Nigeria. Warri and Lagos offices.',
     },
-    cta: 'Request a quote for electrical work',
+    cta: 'Build with certified electrical engineers',
   },
   {
     slug: 'automation-control',
@@ -129,7 +129,7 @@ export const SERVICES: Service[] = [
       description:
         'PLC programming, HMI development, VFD installation and SCADA integration for industrial plants in Nigeria. Selection through commissioning and documentation.',
     },
-    cta: 'Request a quote for automation',
+    cta: 'Automate your industrial processes',
   },
   {
     slug: 'control-panels',
@@ -164,7 +164,7 @@ export const SERVICES: Service[] = [
       description:
         'Design and fabrication of motor control, PLC, MCC, generator, pump, VFD and changeover panels for industrial and commercial sites in Nigeria.',
     },
-    cta: 'Request a quote for a control panel',
+    cta: 'Upgrade your power distribution panels',
   },
   {
     slug: 'power-energy',
@@ -194,7 +194,7 @@ export const SERVICES: Service[] = [
       description:
         'Solar PV, diesel generator, hybrid, battery storage and UPS systems designed and installed for commercial, industrial and residential sites in Nigeria.',
     },
-    cta: 'Request a quote for a power system',
+    cta: "Audit your plant's power architecture",
   },
   {
     slug: 'instrumentation-calibration',
@@ -250,7 +250,7 @@ export const SERVICES: Service[] = [
       description:
         'Calibration of pressure, temperature, electronic, survey, civil and weighing instruments with as-found and as-left records. Warri and Lagos.',
     },
-    cta: 'Request a quote for calibration',
+    cta: 'Book field instrument calibration',
   },
   {
     slug: 'hydrotest-pressure-testing',
@@ -277,7 +277,7 @@ export const SERVICES: Service[] = [
       description:
         'Hydrotest, pressure safety testing and integrity assurance for tanks, pipelines, flow lines and valves from 4 to 12 inches, across Nigeria.',
     },
-    cta: 'Request a quote for pressure testing',
+    cta: 'Book a pressure test',
   },
   {
     slug: 'maintenance',
@@ -307,7 +307,7 @@ export const SERVICES: Service[] = [
       description:
         'Preventive, corrective and predictive maintenance for electrical, PLC, HMI, VFD and generator systems. Root-cause fault finding across Nigeria.',
     },
-    cta: 'Request a maintenance visit',
+    cta: 'Enrol in a predictive maintenance contract',
   },
 ];
 

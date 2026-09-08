@@ -1,7 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import Arc from '../../components/Arc.astro';
 import CalibrationRecord from '../../components/CalibrationRecord.astro';
 import { SERVICES, serviceBySlug, type Service } from '../../data/services';
 import { stageById } from '../../data/stages';
@@ -35,7 +34,7 @@ const jsonLd = [{
   </div>
 
   <section class="wrap pt-10 pb-16 md:pt-14 md:pb-20 grid gap-10 lg:grid-cols-12 lg:gap-16 items-start">
-    <div class="lg:col-span-8">
+    <div class="lg:col-span-9">
       <p class="text-[0.9375rem] text-ink-muted">
         {service.stages.map((id, i) => {
           const st = stageById(id);
@@ -49,9 +48,6 @@ const jsonLd = [{
           <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
       </div>
-    </div>
-    <div class="lg:col-span-4 hidden lg:block">
-      <Arc transitionName="arc" class="max-w-[280px] ml-auto" />
     </div>
   </section>
 
@@ -68,6 +64,23 @@ const jsonLd = [{
           </div>
         ))}
       </div>
+    </div>
+  </section>
+
+  <section class="border-t border-line">
+    <div class="section wrap grid gap-10 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-4" data-reveal>
+        <h2 class="h2">What you receive</h2>
+        <p class="mt-4 text-ink-muted">{primaryStage.headline} Every engagement ends in documents you keep.</p>
+      </div>
+      <ol class="lg:col-span-8 list-none m-0 p-0 grid gap-3 sm:grid-cols-2" data-reveal-group>
+        {primaryStage.deliverables.map((d, i) => (
+          <li class="flex items-baseline gap-4 border border-line rounded-md bg-surface px-4 py-3">
+            <span class="data text-ink-muted shrink-0">EF-{primaryStage.id}-{String(i + 1).padStart(2, '0')}</span>
+            <span class="text-[0.9375rem]">{d}</span>
+          </li>
+        ))}
+      </ol>
     </div>
   </section>
 

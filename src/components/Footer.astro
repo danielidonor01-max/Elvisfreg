@@ -1,54 +1,88 @@
 ---
+/**
+ * The footer as a drawing's title block: ruled cells carrying exactly what a
+ * procurement officer scrolls down to check — registration, licences, offices,
+ * contact, revision — plus navigation and the legal pages.
+ */
 import Lockup from './Lockup.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import Drafting from './Drafting.astro';
-import { SITE, OFFICES, NAV } from '../data/site';
+import { SITE, OFFICES, NAV, LEGAL, CERTIFICATIONS } from '../data/site';
+
 const year = new Date().getFullYear();
-const hq = OFFICES.find((o) => o.isHq)!;
-const others = OFFICES.filter((o) => !o.isHq).map((o) => o.city === 'Ikeja' ? 'Lagos' : o.city);
+const rev = new Date().toISOString().slice(0, 10);
+const [hq, lagos, usa] = OFFICES;
 ---
 
 <footer class="relative border-t border-line mt-auto">
   <Drafting />
-  <div class="relative z-10 wrap py-14 md:py-20 grid gap-12 md:grid-cols-12">
-    <div class="md:col-span-4">
-      <a href="/" class="inline-block no-underline" aria-label={`${SITE.name}, home`}>
-        <Lockup class="w-[196px]" decorative />
-      </a>
-      <p class="text-[0.9375rem] text-ink-muted mt-5 max-w-[36ch]">{SITE.shortDescription}</p>
-      <p class="data text-ink-muted mt-5"><span class="whitespace-nowrap">RC {SITE.rc}</span><span class="mx-2" aria-hidden="true">/</span><span class="whitespace-nowrap">Incorporated {SITE.incorporatedLabel}</span></p>
-    </div>
-
-    <div class="md:col-span-4">
-      <h2 class="text-[0.9375rem] font-medium mb-2">{hq.name}</h2>
-      <address class="not-italic text-[0.9375rem] text-ink-muted leading-relaxed">
-        {hq.lines.map((l) => <span class="block">{l}</span>)}
-      </address>
-      <p class="mt-4 text-[0.9375rem]"><a href="/contact/#offices" class="link-quiet">{others.join(' and ')} offices</a></p>
-    </div>
-
-    <div class="md:col-span-4 grid grid-cols-2 gap-8">
-      <div>
-        <h2 class="text-[0.9375rem] font-medium mb-2">Contact</h2>
-        <ul class="list-none m-0 p-0 flex flex-col gap-1.5 text-[0.9375rem]">
-          <li><a href={`tel:${SITE.phoneE164}`} class="link-quiet num">{SITE.phoneDisplay}</a></li>
-          <li><a href={SITE.whatsapp} rel="noopener" target="_blank" class="link-quiet">WhatsApp</a></li>
-          <li><a href={`mailto:${SITE.email}`} class="link-quiet break-words">{SITE.email}</a></li>
-        </ul>
+  <div class="relative z-10 wrap py-14 md:py-20">
+    <div class="titleblock rounded-md overflow-hidden">
+      <!-- Row 1 -->
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <a href="/" class="inline-block no-underline" aria-label={`${SITE.name}, home`}><Lockup class="w-[176px]" decorative /></a>
+        <p class="tb-value mt-4 text-ink-muted">{SITE.tagline}</p>
       </div>
-      <nav aria-label="Footer">
-        <ul class="list-none m-0 p-0 flex flex-col gap-1.5 text-[0.9375rem]">
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <span class="tb-label">Registration</span>
+        <p class="tb-value">{SITE.legalName}</p>
+        <p class="tb-value data mt-1">RC {SITE.rc}</p>
+        <p class="tb-value text-ink-muted">Incorporated {SITE.incorporatedLabel}, CAMA</p>
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <span class="tb-label">Registrations and memberships</span>
+        {CERTIFICATIONS.slice(0, 3).map((c) => <p class="tb-value">{c.name} <span class="text-ink-muted">— {c.detail}</span></p>)}
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3 tb-end">
+        <span class="tb-label">Sheet</span>
+        <p class="tb-value data">Rev {rev}</p>
+        <p class="tb-value text-ink-muted">Issued for use</p>
+        <p class="tb-value text-ink-muted mt-1">{SITE.shortDescription}</p>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <span class="tb-label">{hq.name}</span>
+        <address class="tb-value not-italic">{hq.lines.map((l) => <span class="block">{l}</span>)}</address>
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <span class="tb-label">{lagos.name}</span>
+        <address class="tb-value not-italic">{lagos.lines.map((l) => <span class="block">{l}</span>)}</address>
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3">
+        <span class="tb-label">{usa.name}</span>
+        <address class="tb-value not-italic">{usa.lines.map((l) => <span class="block">{l}</span>)}</address>
+      </div>
+      <div class="col-span-12 md:col-span-6 lg:col-span-3 tb-end">
+        <span class="tb-label">Contact</span>
+        <p class="tb-value"><a href={`tel:${SITE.phoneE164}`} class="link-quiet num">{SITE.phoneDisplay}</a></p>
+        <p class="tb-value"><a href={SITE.whatsapp} target="_blank" rel="noopener" class="link-quiet">WhatsApp</a></p>
+        <p class="tb-value"><a href={`mailto:${SITE.email}`} class="link-quiet break-words">{SITE.email}</a></p>
+      </div>
+
+      <!-- Row 3 -->
+      <nav class="col-span-12 md:col-span-4 lg:col-span-3 tb-last" aria-label="Footer">
+        <span class="tb-label">Navigation</span>
+        <ul class="list-none m-0 p-0 tb-value">
           {NAV.map((n) => <li><a href={n.href} class="link-quiet">{n.label}</a></li>)}
-          <li><a href="/privacy/" class="link-quiet">Privacy</a></li>
         </ul>
       </nav>
-    </div>
-  </div>
-
-  <div class="relative z-10 border-t border-line">
-    <div class="wrap py-5 flex flex-wrap items-center justify-between gap-4 text-[0.9375rem] text-ink-muted">
-      <p>© {year} {SITE.name}</p>
-      <ThemeToggle />
+      <nav class="col-span-12 md:col-span-8 lg:col-span-6 tb-last" aria-label="Legal">
+        <span class="tb-label">Legal</span>
+        <ul class="list-none m-0 p-0 tb-value grid sm:grid-cols-2 gap-x-6">
+          {LEGAL.map((n) => <li><a href={n.href} class="link-quiet">{n.label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="col-span-12 lg:col-span-3 tb-end tb-last flex flex-col justify-between gap-4">
+        <p class="tb-value text-ink-muted">© {year} {SITE.name}</p>
+        <ThemeToggle />
+      </div>
     </div>
   </div>
 </footer>
+
+<style>
+  .tb-end { border-right: 0 !important; }
+  .tb-last { border-bottom: 0 !important; }
+  @media (max-width: 767px) { .titleblock > * { border-right: 0 !important; } .titleblock > .tb-last { border-bottom: 1px solid var(--line) !important; } .titleblock > .tb-last.tb-end { border-bottom: 0 !important; } }
+</style>

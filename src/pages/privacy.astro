@@ -1,17 +1,18 @@
 ---
-// Draft for legal review. Plain statement of what the enquiry form collects and why.
+// Draft for legal review.
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import { SITE } from '../data/site';
 ---
 
-<Base title="Privacy" description="How Elvisfreg Nigeria Limited handles the details you send through this website." path="/privacy/">
+<Base title="Privacy policy" description="How Elvisfreg Nigeria Limited handles the details you send through this website." path="/privacy/">
   <div class="wrap pt-8">
-    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Privacy' }]} />
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Privacy policy' }]} />
   </div>
   <section class="wrap pt-10 pb-20 md:pt-14 md:pb-28 prose">
-    <h1 class="h1">Privacy</h1>
-    <p class="text-[1.125rem] text-ink-muted">This page explains what we collect when you use this website and what we do with it. It is written to meet the Nigeria Data Protection Act 2023.</p>
+    <h1 class="h1">Privacy policy</h1>
+    <p class="text-[1.125rem] text-ink-muted">What we collect when you use this website and what we do with it. Written to meet the Nigeria Data Protection Act 2023.</p>
+    <p class="data text-ink-muted">Last reviewed 8 September 2026</p>
 
     <h2 class="h3">What we collect</h2>
     <p>Only what you type into the enquiry form: your name, email address and message, and, if you provide them, your company, phone number, sector, the service you need and the site location.</p>
@@ -20,13 +21,16 @@ import { SITE } from '../data/site';
     <p>To reply to your enquiry and, if you ask for one, to prepare a quotation. We don't use your details for anything else and we don't add you to a mailing list.</p>
 
     <h2 class="h3">Who processes it</h2>
-    <p>The form is delivered to our inbox by an email service (Resend). The website is hosted on Vercel. A bot check from Cloudflare (Turnstile) runs when you submit. Each of these handles only what is needed to deliver your message.</p>
+    <p>The form is delivered to our inbox by an email service (Resend). The website is hosted on Vercel. A bot check from Cloudflare (Turnstile) runs when you submit. Each handles only what is needed to deliver your message.</p>
 
     <h2 class="h3">How long we keep it</h2>
     <p>For as long as the enquiry is live and for our records of work quoted or carried out. Email us to have your details removed.</p>
 
+    <h2 class="h3">Your rights</h2>
+    <p>You can ask what we hold about you, ask for it to be corrected or deleted, and object to its use. Write to the address below and we will respond within 30 days.</p>
+
     <h2 class="h3">Cookies and analytics</h2>
-    <p>The site stores your theme preference in your browser if you change it. Visitor analytics are aggregated and cookieless.</p>
+    <p>See the <a href="/cookies/" class="link">cookie notice</a>. In short: no advertising or tracking cookies; your theme preference is stored in your browser; analytics are aggregated and cookieless.</p>
 
     <h2 class="h3">Contact</h2>
     <p>{SITE.name}, RC {SITE.rc}. <a href={`mailto:${SITE.email}`} class="link">{SITE.email}</a>.</p>

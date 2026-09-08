@@ -1,0 +1,41 @@
+---
+// Draft for legal review.
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { SITE } from '../data/site';
+---
+
+<Base title="Terms of use" description="The terms on which Elvisfreg Nigeria Limited makes this website available." path="/terms/">
+  <div class="wrap pt-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Terms of use' }]} />
+  </div>
+  <section class="wrap pt-10 pb-20 md:pt-14 md:pb-28 prose">
+    <h1 class="h1">Terms of use</h1>
+    <p class="text-[1.125rem] text-ink-muted">By using this website you accept these terms. They are short because the site is simple.</p>
+    <p class="data text-ink-muted">Last reviewed 8 September 2026</p>
+
+    <h2 class="h3">Who we are</h2>
+    <p>This website is operated by {SITE.legalName}, a company incorporated in Nigeria under the Companies and Allied Matters Act, RC {SITE.rc}. Full details are on the <a href="/legal/" class="link">company information</a> page.</p>
+
+    <h2 class="h3">What the site is for</h2>
+    <p>The site describes our services and lets you send us an enquiry. It is information, not an offer. Any quotation, scope, price or programme is agreed separately in writing and is governed by that agreement, not by this page.</p>
+
+    <h2 class="h3">Accuracy</h2>
+    <p>We keep the content accurate and current, but engineering standards, regulations and our own capabilities change. Confirm anything you intend to rely on with us directly before you rely on it.</p>
+
+    <h2 class="h3">Intellectual property</h2>
+    <p>The Elvisfreg name, the Precision Spectrum Arc mark and the content of this site belong to {SITE.legalName}. Client names and logos shown on the site belong to their respective owners and appear to describe our work with them, not to suggest endorsement of this site.</p>
+
+    <h2 class="h3">Links</h2>
+    <p>Links to other sites are provided for convenience. We are not responsible for their content or their handling of your information.</p>
+
+    <h2 class="h3">Liability</h2>
+    <p>To the extent permitted by law, we are not liable for loss arising from use of, or inability to use, this site or its content. Nothing here limits liability that cannot be limited by law.</p>
+
+    <h2 class="h3">Law</h2>
+    <p>These terms are governed by the laws of the Federal Republic of Nigeria.</p>
+
+    <h2 class="h3">Changes</h2>
+    <p>We may update these terms. The date above shows the current version.</p>
+  </section>
+</Base>

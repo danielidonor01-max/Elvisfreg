@@ -126,11 +126,17 @@ function init() {
     // --- Lifecycle: stacked stage blocks drive the sticky title --------------------
     const life = document.querySelector<HTMLElement>('[data-lifecycle]');
     if (life) {
-      const titles = Array.from(life.querySelectorAll<HTMLElement>('[data-stage-title]'));
       const blocks = Array.from(life.querySelectorAll<HTMLElement>('[data-stage-block]'));
+      const groups = Array.from(life.querySelectorAll<HTMLElement>('[data-ledger-stage]'));
+      const count = life.querySelector<HTMLElement>('[data-ledger-count]');
       const setStage = (id: string) => {
-        titles.forEach((t) => t.classList.toggle('is-active', t.dataset.stageTitle === id));
         blocks.forEach((b) => b.classList.toggle('is-active', b.dataset.stageBlock === id));
+        groups.forEach((g) => {
+          const gid = g.dataset.ledgerStage!;
+          g.classList.toggle('is-active', gid === id);
+          g.classList.toggle('is-done', gid < id);
+          if (gid === id && count) count.textContent = g.dataset.running || '';
+        });
       };
       blocks.forEach((block) => {
         ScrollTrigger.create({

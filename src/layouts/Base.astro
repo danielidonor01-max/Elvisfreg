@@ -12,6 +12,7 @@ import Footer from '../components/Footer.astro';
 
 import LockupSprite from '../components/LockupSprite.astro';
 import Preloader from '../components/Preloader.astro';
+import MobileBar from '../components/MobileBar.astro';
 
 interface Props {
   title: string;
@@ -21,8 +22,9 @@ interface Props {
   ogType?: 'website' | 'article';
   jsonLd?: Record<string, unknown>[];
   preloader?: boolean;
+  mobileBar?: boolean;
 }
-const { title, description, path, noindex, ogType, jsonLd, preloader = false } = Astro.props;
+const { title, description, path, noindex, ogType, jsonLd, preloader = false, mobileBar = true } = Astro.props;
 ---
 
 <!doctype html>
@@ -47,7 +49,7 @@ const { title, description, path, noindex, ogType, jsonLd, preloader = false } =
     <slot name="head" />
     <ClientRouter />
   </head>
-  <body class="flex flex-col min-h-dvh">
+  <body class:list={['flex flex-col min-h-dvh', { 'has-bar': mobileBar }]}>
     <LockupSprite />
     {preloader && <Preloader />}
     <a href="#main" class="skip">Skip to content</a>
@@ -56,6 +58,7 @@ const { title, description, path, noindex, ogType, jsonLd, preloader = false } =
       <slot />
     </main>
     <Footer />
+    {mobileBar && <MobileBar />}
 
     <script>
       // The motion layer (GSAP, ScrollTrigger, Lenis) loads after the page's own

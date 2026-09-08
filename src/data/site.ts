@@ -12,11 +12,13 @@ export const SITE = {
   phoneDisplay: '+234 706 998 6848',
   phoneE164: '+2347069986848',
   whatsapp: 'https://wa.me/2347069986848',
-  tagline: 'Electrical, automation and calibration engineering for plants that cannot stop.',
+  tagline: 'Engineered for zero downtime.',
+  heroSub:
+    'The precision behind Nigeria\'s heavy industry: high-integrity power, intelligent control and calibrated instrumentation for oil and gas, power and manufacturing sites — designed to IEC and IEEE practice, proven before energisation.',
   description:
-    'High-integrity electrical and automation engineering for Nigeria\'s oil, gas and industrial plants. Design, installation, PLC and HMI programming, instrument calibration and maintenance.',
+    'High-integrity electrical, automation and calibration engineering for Nigeria\'s oil and gas, power and manufacturing sites. Designed to IEC and IEEE practice, proven before energisation.',
   shortDescription:
-    'Electrical, automation and calibration engineering for oil and gas, power and manufacturing sites across Nigeria.',
+    'The precision behind Nigeria\'s heavy industry.',
   profilePdf: '/company-profile.pdf',
 } as const;
 
@@ -100,4 +102,12 @@ export const NAV = [
   { label: 'Projects', href: '/projects/' },
   { label: 'Company', href: '/company/' },
   { label: 'Contact', href: '/contact/' },
+] as const;
+
+export const LEGAL = [
+  { label: 'Privacy policy', href: '/privacy/' },
+  { label: 'Terms of use', href: '/terms/' },
+  { label: 'Cookie notice', href: '/cookies/' },
+  { label: 'Accessibility', href: '/accessibility/' },
+  { label: 'Company information', href: '/legal/' },
 ] as const;

@@ -1,0 +1,29 @@
+---
+/**
+ * The deliverables ledger. Sits in the sticky column beside the lifecycle
+ * stages. As each stage scrolls into view its documents rise into the pile;
+ * completed stages compress to thin edges beneath, so the pile grows — what
+ * the client receives, accumulating. Needs the motion layer and a wide
+ * viewport; otherwise it stays hidden and the stage blocks carry everything.
+ */
+import { STAGES, DELIVERABLE_COUNT } from '../data/stages';
+const running = STAGES.map((s, i) => STAGES.slice(0, i + 1).reduce((n, x) => n + x.deliverables.length, 0));
+---
+
+<div class="ledger" data-ledger aria-live="polite">
+  {STAGES.map((s, i) => (
+    <div class="ledger-group" data-ledger-stage={s.id} data-running={running[i]}>
+      <p class="ledger-stage text-[0.9375rem] text-ink-muted">Stage <span class="data">{s.id}</span> of 05</p>
+      <p class="ledger-title h3 mt-1">{s.name}</p>
+      <ol class="ledger-cards list-none m-0 p-0 mt-5">
+        {s.deliverables.map((d, j) => (
+          <li class="ledger-card" style={`--i:${j}`}>
+            <span class="data text-ink-muted">EF-{s.id}-{String(j + 1).padStart(2, '0')}</span>
+            <span class="ledger-doc">{d}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  ))}
+  <p class="ledger-count data text-ink-muted mt-4"><span data-ledger-count>{running[0]}</span> of {DELIVERABLE_COUNT} deliverables</p>
+</div>

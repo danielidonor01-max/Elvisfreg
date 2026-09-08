@@ -1,0 +1,38 @@
+---
+// Draft for legal review.
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import { SITE } from '../data/site';
+---
+
+<Base title="Cookie notice" description="What this website stores in your browser, and why." path="/cookies/">
+  <div class="wrap pt-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Cookie notice' }]} />
+  </div>
+  <section class="wrap pt-10 pb-20 md:pt-14 md:pb-28 prose">
+    <h1 class="h1">Cookie notice</h1>
+    <p class="text-[1.125rem] text-ink-muted">This site sets no advertising or tracking cookies, so there is no banner to click. Here is everything it stores in your browser.</p>
+    <p class="data text-ink-muted">Last reviewed 8 September 2026</p>
+
+    <h2 class="h3">Stored by this site</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-[0.9375rem] border-collapse">
+        <thead><tr class="text-left text-ink-muted"><th class="py-2 pr-4 font-medium border-b border-line">Name</th><th class="py-2 pr-4 font-medium border-b border-line">Type</th><th class="py-2 pr-4 font-medium border-b border-line">Purpose</th><th class="py-2 font-medium border-b border-line">Lifetime</th></tr></thead>
+        <tbody>
+          <tr><td class="py-2 pr-4 data border-b border-line">ef-theme</td><td class="py-2 pr-4 border-b border-line">Local storage</td><td class="py-2 pr-4 border-b border-line">Remembers the light or dark theme you chose</td><td class="py-2 border-b border-line">Until you clear it</td></tr>
+          <tr><td class="py-2 pr-4 data border-b border-line">ef-preloaded, ef-intro, ef-arc-played</td><td class="py-2 pr-4 border-b border-line">Session storage</td><td class="py-2 pr-4 border-b border-line">Play the opening animation once per visit rather than on every page</td><td class="py-2 border-b border-line">Until you close the tab</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="h3">Set by services we use</h2>
+    <p><strong>Vercel Web Analytics</strong> counts visits in aggregate without cookies or personal identifiers.</p>
+    <p><strong>Cloudflare Turnstile</strong> runs a bot check when you submit the enquiry form and may set a short-lived cookie on that page for that purpose only.</p>
+
+    <h2 class="h3">Your choices</h2>
+    <p>Clearing your browser's site data removes everything above. The site works without any of it.</p>
+
+    <h2 class="h3">Contact</h2>
+    <p>{SITE.name}, <a href={`mailto:${SITE.email}`} class="link">{SITE.email}</a>.</p>
+  </section>
+</Base>
