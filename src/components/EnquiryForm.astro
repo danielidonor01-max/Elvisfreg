@@ -1,0 +1,219 @@
+---
+/**
+ * The enquiry form. Posts as a plain HTML form to /api/enquiry (works with JS
+ * off); with JS, validates on blur, submits with fetch and swaps in the
+ * confirmation in place. `variant="short"` is the three-field home version.
+ */
+import { SECTORS, SITE } from '../data/site';
+import { STAGES } from '../data/stages';
+import { serviceBySlug } from '../data/services';
+
+interface Props { variant?: 'full' | 'short'; preselectService?: string; id?: string }
+const { variant = 'full', preselectService, id = 'enquiry' } = Astro.props;
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
+---
+
+<form
+  id={id}
+  class="grid gap-5"
+  method="post"
+  action="/api/enquiry/"
+  novalidate
+  data-enquiry-form
+  data-variant={variant}
+>
+  <div class="error-summary border border-fault rounded-xs p-4 text-[0.9375rem]" role="alert" hidden data-summary>
+    <p class="font-medium">Some fields need attention.</p>
+    <ul class="list-disc pl-5 mt-2" data-summary-list></ul>
+  </div>
+
+  <div class="field">
+    <label for={`${id}-name`}>Your name <span class="text-fault" aria-hidden="true">*</span></label>
+    <input id={`${id}-name`} name="name" type="text" class="control" required autocomplete="name" data-msg="Enter your name." />
+    <p class="error" id={`${id}-name-error`}></p>
+  </div>
+
+  {variant === 'full' && (
+    <div class="field">
+      <label for={`${id}-company`}>Company</label>
+      <input id={`${id}-company`} name="company" type="text" class="control" autocomplete="organization" />
+    </div>
+  )}
+
+  <div class:list={['grid gap-5', { 'md:grid-cols-2': variant === 'full' }]}>
+    <div class="field">
+      <label for={`${id}-email`}>Email <span class="text-fault" aria-hidden="true">*</span></label>
+      <input id={`${id}-email`} name="email" type="email" class="control" required autocomplete="email" inputmode="email" data-msg="Enter an email address we can reply to." />
+      <p class="error" id={`${id}-email-error`}></p>
+    </div>
+    {variant === 'full' && (
+      <div class="field">
+        <label for={`${id}-phone`}>Phone</label>
+        <input id={`${id}-phone`} name="phone" type="tel" class="control" autocomplete="tel" inputmode="tel" placeholder="0706 998 6848" />
+        <p class="hint">WhatsApp numbers are fine.</p>
+      </div>
+    )}
+  </div>
+
+  {variant === 'full' && (
+    <div class="grid gap-5 md:grid-cols-2">
+      <div class="field">
+        <label for={`${id}-sector`}>Sector <span class="text-fault" aria-hidden="true">*</span></label>
+        <select id={`${id}-sector`} name="sector" class="control" required data-msg="Choose the sector this work is in.">
+          <option value="">Choose one</option>
+          {SECTORS.map((s) => <option value={s}>{s}</option>)}
+        </select>
+        <p class="error" id={`${id}-sector-error`}></p>
+      </div>
+      <div class="field">
+        <label for={`${id}-service`}>Service needed <span class="text-fault" aria-hidden="true">*</span></label>
+        <select id={`${id}-service`} name="service" class="control" required data-msg="Choose the service you need.">
+          <option value="">Choose one</option>
+          {STAGES.map((st) => (
+            <optgroup label={`${st.id} ${st.name}`}>
+              {st.services.map((slug) => {
+                const s = serviceBySlug(slug)!;
+                return <option value={s.slug} selected={s.slug === preselectService}>{s.short}</option>;
+              })}
+            </optgroup>
+          ))}
+          <option value="other">Something else</option>
+        </select>
+        <p class="error" id={`${id}-service-error`}></p>
+      </div>
+    </div>
+  )}
+
+  {variant === 'full' && (
+    <div class="field">
+      <label for={`${id}-location`}>Site location</label>
+      <input id={`${id}-location`} name="location" type="text" class="control" placeholder="City or facility" />
+    </div>
+  )}
+
+  <div class="field">
+    <label for={`${id}-message`}>What do you need? <span class="text-fault" aria-hidden="true">*</span></label>
+    <textarea id={`${id}-message`} name="message" class="control" required minlength="10" placeholder="For example: calibration of twelve pressure gauges, 0–100 bar, at our Warri yard." data-msg="Tell us what you need, in a sentence or two."></textarea>
+    <p class="error" id={`${id}-message-error`}></p>
+  </div>
+
+  <div class="field">
+    <label class="flex items-start gap-3 font-normal cursor-pointer">
+      <input name="consent" type="checkbox" class="mt-1.5 w-4 h-4 shrink-0 accent-[var(--flame)]" required data-msg="Tick the box so we can reply to you." />
+      <span>{SITE.shortName} may contact me about this enquiry. <a href="/privacy/" class="link">How we handle your details</a>.</span>
+    </label>
+    <p class="error" id={`${id}-consent-error`}></p>
+  </div>
+
+  <!-- Honeypot: humans never see it; bots fill it. -->
+  <div class="hp" aria-hidden="true">
+    <label for={`${id}-website`}>Website</label>
+    <input id={`${id}-website`} name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey} data-size="invisible" data-response-field-name="turnstile"></div>}
+  <input type="hidden" name="variant" value={variant} />
+
+  <div class="flex flex-wrap items-center gap-4 pt-1">
+    <button type="submit" class="btn btn-primary" data-submit>Send enquiry</button>
+    <p class="text-[0.9375rem] text-ink-muted">Or call <a href={`tel:${SITE.phoneE164}`} class="data link">{SITE.phoneDisplay}</a></p>
+  </div>
+
+  <div class="status border border-line rounded-md bg-surface p-6" hidden data-status aria-live="polite"></div>
+</form>
+
+{turnstileKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+<style>
+  .hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+</style>
+
+<script>
+  function fieldWrap(el: Element) { return el.closest<HTMLElement>('.field'); }
+
+  function setError(input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, msg: string) {
+    const wrap = fieldWrap(input);
+    if (!wrap) return;
+    const err = wrap.querySelector<HTMLElement>('.error');
+    wrap.dataset.invalid = msg ? 'true' : 'false';
+    if (err) err.textContent = msg;
+    if (msg) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
+    if (err && msg) input.setAttribute('aria-describedby', err.id);
+  }
+
+  function validate(input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): string {
+    if (input.checkValidity()) { setError(input, ''); return ''; }
+    const msg = input.dataset.msg || 'Check this field.';
+    setError(input, msg);
+    return msg;
+  }
+
+  function init() {
+    document.querySelectorAll<HTMLFormElement>('[data-enquiry-form]').forEach((form) => {
+      if (form.dataset.bound) return;
+      form.dataset.bound = '1';
+
+      const controls = Array.from(form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input:not([type=hidden]), select, textarea'))
+        .filter((c) => c.name !== 'website');
+      const summary = form.querySelector<HTMLElement>('[data-summary]')!;
+      const summaryList = form.querySelector<HTMLElement>('[data-summary-list]')!;
+      const status = form.querySelector<HTMLElement>('[data-status]')!;
+      const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+
+      controls.forEach((c) => {
+        c.addEventListener('blur', () => { if (c.value !== '' || c.required) validate(c); });
+        c.addEventListener('input', () => { if (fieldWrap(c)?.dataset.invalid === 'true') validate(c); });
+      });
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errors: { id: string; msg: string }[] = [];
+        controls.forEach((c) => { const m = validate(c); if (m) errors.push({ id: c.id, msg: m }); });
+
+        if (errors.length) {
+          summaryList.innerHTML = errors.map((er) => `<li><a href="#${er.id}">${er.msg}</a></li>`).join('');
+          summary.hidden = false;
+          (form.querySelector('#' + errors[0].id) as HTMLElement | null)?.focus();
+          return;
+        }
+        summary.hidden = true;
+
+        submit.disabled = true;
+        const label = submit.textContent;
+        submit.textContent = 'Sending…';
+        status.hidden = true;
+
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: new FormData(form),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || !data.ok) throw new Error(data.error || 'Request failed');
+
+          const email = (form.querySelector<HTMLInputElement>('input[name=email]')?.value ?? '').trim();
+          Array.from(form.children).forEach((child) => { if (child !== status) (child as HTMLElement).hidden = true; });
+          status.innerHTML = `
+            <p class="font-medium text-ok-text flex items-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+              Enquiry sent
+            </p>
+            <p class="mt-2 text-ink-muted">We'll reply to ${email.replace(/</g, '&lt;')}.</p>`;
+          status.hidden = false;
+          status.focus?.();
+        } catch {
+          status.innerHTML = `
+            <p class="font-medium text-fault">Couldn't send</p>
+            <p class="mt-2 text-ink-muted">Check your connection and try again, or email <a class="link" href="mailto:elvisfregnlgltd@gmail.com">elvisfregnlgltd@gmail.com</a> directly. What you typed is still here.</p>`;
+          status.hidden = false;
+          submit.disabled = false;
+          submit.textContent = label;
+        }
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

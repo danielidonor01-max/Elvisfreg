@@ -1,0 +1,79 @@
+---
+interface Props { class?: string; showLabel?: boolean }
+const { class: cls = '', showLabel = true } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={['theme-toggle', cls]}
+  data-theme-toggle
+  aria-label="Switch to dark theme"
+  aria-pressed="false"
+>
+  <svg class="icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+  </svg>
+  <svg class="icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+  </svg>
+  {showLabel && <span class="label" data-theme-label>Dark theme</span>}
+</button>
+
+<style>
+  .theme-toggle {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    min-height: 44px; min-width: 44px; padding: 0 0.625rem;
+    border: 1px solid transparent; border-radius: var(--radius-xs);
+    background: transparent; color: var(--ink-muted); cursor: pointer;
+    font-size: 0.9375rem; font-weight: 500;
+  }
+  .theme-toggle:hover { color: var(--ink); border-color: var(--line); }
+  .icon-sun { display: none; }
+  :root[data-theme="dark"] .theme-toggle .icon-sun,
+  :root:not([data-theme="light"]) .theme-toggle[data-resolved="dark"] .icon-sun { display: block; }
+  :root[data-theme="dark"] .theme-toggle .icon-moon,
+  :root:not([data-theme="light"]) .theme-toggle[data-resolved="dark"] .icon-moon { display: none; }
+</style>
+
+<script>
+  const KEY = 'ef-theme';
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function resolved(): 'light' | 'dark' {
+    const t = document.documentElement.dataset.theme;
+    if (t === 'dark' || t === 'light') return t;
+    return mq.matches ? 'dark' : 'light';
+  }
+
+  function paint() {
+    const r = resolved();
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+      btn.dataset.resolved = r;
+      const next = r === 'dark' ? 'light' : 'dark';
+      btn.setAttribute('aria-label', `Switch to ${next} theme`);
+      btn.setAttribute('aria-pressed', String(r === 'dark'));
+      const label = btn.querySelector<HTMLElement>('[data-theme-label]');
+      if (label) label.textContent = r === 'dark' ? 'Light theme' : 'Dark theme';
+    });
+  }
+
+  function toggle() {
+    const next = resolved() === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem(KEY, next); } catch {}
+    paint();
+  }
+
+  function init() {
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', toggle);
+    });
+    paint();
+  }
+
+  mq.addEventListener('change', paint);
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

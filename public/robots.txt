@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /contact/sent/
+
+Sitemap: https://elvisfreg.com/sitemap-index.xml

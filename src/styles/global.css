@@ -1,0 +1,235 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Tokens — docs/DESIGN-PLAN.md §1. Brand values fixed by the guide; derived
+   values were computed for WCAG AA. Light is the bare :root; dark is applied
+   by OS preference unless the visitor has explicitly chosen light, and by an
+   explicit dark choice regardless of OS.
+   ------------------------------------------------------------------------ */
+:root {
+  --bg: #fffbf9;            /* Isolation White */
+  --surface: #ffffff;
+  --surface-2: #f4f0eb;     /* derived */
+  --ink: #0b1b2b;           /* Navy */
+  --ink-muted: #5a6675;     /* derived, 5.9:1 on white */
+  --line: rgba(11, 27, 43, 0.14);
+  --flame: #f26522;         /* Industrial Flame Orange */
+  --flame-text: #bf4a15;    /* derived, 5.0:1 on white */
+  --ok: #00a86b;
+  --ok-text: #0e7c55;       /* derived, 5.2:1 on white */
+  --warn: #ffb800;
+  --fault: #d92d20;         /* 4.8:1 on white */
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1b2b;
+    --surface: #1e2c3a;     /* Dark Mode Surfaces & Panels */
+    --surface-2: #283a4d;   /* derived */
+    --ink: #fffbf9;
+    --ink-muted: #8a95a5;   /* Titanium Grey, 5.7:1 on navy */
+    --line: rgba(255, 251, 249, 0.12);
+    --flame-text: #f26522;  /* 5.5:1 on navy */
+    --ok-text: #00a86b;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b1b2b;
+  --surface: #1e2c3a;
+  --surface-2: #283a4d;
+  --ink: #fffbf9;
+  --ink-muted: #8a95a5;
+  --line: rgba(255, 251, 249, 0.12);
+  --flame-text: #f26522;
+  --ok-text: #00a86b;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-line: var(--line);
+  --color-flame: var(--flame);
+  --color-flame-text: var(--flame-text);
+  --color-navy: #0b1b2b;
+  --color-ok: var(--ok);
+  --color-ok-text: var(--ok-text);
+  --color-warn: var(--warn);
+  --color-fault: var(--fault);
+
+  --font-sans: "Outfit Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --radius-xs: 2px;
+  --radius-md: 6px;
+
+  --ease-mech: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------------ */
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100dvh;
+    transition: background-color 150ms var(--ease-mech), color 150ms var(--ease-mech);
+  }
+  h1, h2, h3, h4 {
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
+  p { margin: 0; }
+  a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--flame);
+    outline-offset: 2px;
+  }
+  ::selection { background: var(--flame); color: #0b1b2b; }
+  code, kbd, samp, pre { font-family: var(--font-mono); }
+  button { font: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  /* Grid tracks size to an item's min-content by default; a wide SVG or a no-wrap
+     row would push the column past the viewport on small screens. */
+  .grid > * { min-width: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Components — kept deliberately few. Everything else is utilities.
+   ------------------------------------------------------------------------ */
+@layer components {
+  .wrap { width: 100%; max-width: 1200px; margin-inline: auto; padding-inline: 1.5rem; }
+  @media (min-width: 768px) { .wrap { padding-inline: 2rem; } }
+
+  .section { padding-block: 5rem; }
+  @media (min-width: 1024px) { .section { padding-block: 8rem; } }
+
+  .measure { max-width: 62ch; }
+
+  .display {
+    font-weight: 700;
+    font-size: clamp(2.75rem, 1.5rem + 5vw, 5rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+  .h1 { font-size: clamp(2.25rem, 1.4rem + 3vw, 3.5rem); }
+  .h2 { font-size: clamp(1.625rem, 1.2rem + 1.6vw, 2.25rem); }
+  .h3 { font-size: 1.25rem; line-height: 1.3; letter-spacing: 0; }
+
+  .data {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .link { color: var(--flame-text); text-decoration: underline; }
+  .link:hover { text-decoration-thickness: 2px; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 44px; padding: 0.625rem 1.125rem;
+    border: 1px solid var(--line); border-radius: var(--radius-xs);
+    background: var(--surface); color: var(--ink);
+    font-weight: 500; text-decoration: none; cursor: pointer;
+    transition: border-color 150ms var(--ease-mech), background-color 150ms var(--ease-mech), color 150ms var(--ease-mech);
+  }
+  .btn:hover { border-color: var(--ink); }
+  .btn:active { box-shadow: inset 0 0 0 1px var(--ink); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  /* Primary is flame fill with NAVY text: white on flame is 3.15:1 and fails AA. */
+  .btn-primary { background: var(--flame); color: #0b1b2b; border-color: var(--flame); }
+  .btn-primary:hover { border-color: #0b1b2b; }
+
+  .field { display: grid; gap: 0.375rem; }
+  .field > label { font-weight: 500; }
+  .field .hint { font-size: 0.9375rem; color: var(--ink-muted); }
+  .field .error { font-size: 0.9375rem; color: var(--fault); display: none; }
+  .field[data-invalid="true"] .error { display: block; }
+  .field[data-invalid="true"] .control { border-color: var(--fault); }
+  .control {
+    width: 100%; min-height: 44px; padding: 0.625rem 0.75rem;
+    border: 1px solid var(--line); border-radius: var(--radius-xs);
+    background: var(--surface); color: var(--ink);
+    font: inherit; line-height: 1.4;
+  }
+  .control:hover { border-color: var(--ink-muted); }
+  .control::placeholder { color: var(--ink-muted); opacity: 0.8; }
+  textarea.control { min-height: 8rem; resize: vertical; }
+  select.control { appearance: none; padding-right: 2.25rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a95a5' stroke-width='1.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; }
+
+  /* The Precision Spectrum Arc. Petals are individually addressable (.ef-seg-01…05).
+     Convergence point of the 87×55 mark is at (43, 43) — that is the transform origin. */
+  .arc { min-width: 0; }
+  .arc svg { width: 100%; height: auto; aspect-ratio: 87 / 55; }
+  .arc .ef-petal { transform-box: view-box; transform-origin: 43px 43px; transition: transform 200ms var(--ease-mech); }
+  .arc.is-playing .ef-petal { animation: petal-rise 420ms var(--ease-mech) both; }
+  .arc.is-playing .ef-seg-01 { animation-delay: 60ms; }
+  .arc.is-playing .ef-seg-02 { animation-delay: 120ms; }
+  .arc.is-playing .ef-seg-03 { animation-delay: 180ms; }
+  .arc.is-playing .ef-seg-04 { animation-delay: 240ms; }
+  .arc.is-playing .ef-seg-05 { animation-delay: 300ms; }
+  @keyframes petal-rise { from { transform: scale(0.4); opacity: 0.25; } to { transform: scale(1); opacity: 1; } }
+  /* Active state on the selector. Deliberately NOT a recolour — the brand guide forbids
+     recolouring individual petals. Scale only; the text tabs carry the underline. */
+  .arc[data-active="01"] .ef-seg-01, .arc[data-active="02"] .ef-seg-02, .arc[data-active="03"] .ef-seg-03,
+  .arc[data-active="04"] .ef-seg-04, .arc[data-active="05"] .ef-seg-05 { transform: scale(1.06); }
+  .arc.is-interactive .ef-petal { cursor: pointer; }
+  .arc.is-interactive .ef-petal:hover { transform: scale(1.03); }
+  .arc.is-interactive[data-active="01"] .ef-seg-01:hover, .arc.is-interactive[data-active="02"] .ef-seg-02:hover,
+  .arc.is-interactive[data-active="03"] .ef-seg-03:hover, .arc.is-interactive[data-active="04"] .ef-seg-04:hover,
+  .arc.is-interactive[data-active="05"] .ef-seg-05:hover { transform: scale(1.06); }
+  @media (prefers-reduced-motion: reduce) {
+    .arc.is-playing .ef-petal { animation: none; }
+  }
+
+  /* Tabs bound to the arc */
+  .tab { padding: 0.625rem 0; border-bottom: 2px solid transparent; color: var(--ink-muted); font-weight: 500; background: none; border-top: 0; border-left: 0; border-right: 0; cursor: pointer; white-space: nowrap; }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--flame); }
+
+  /* Accordion: animate grid rows, never height */
+  .disclosure > .disclosure-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 240ms var(--ease-mech); }
+  .disclosure[open] > .disclosure-body { grid-template-rows: 1fr; }
+  .disclosure-body > div { overflow: hidden; }
+
+  /* Placeholder for photography not yet supplied. Says what it will be, in mono. */
+  .placeholder {
+    position: relative; display: grid; place-items: center;
+    background: var(--surface-2); border: 1px solid var(--line);
+    color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.8125rem; line-height: 1.4;
+    text-align: center; padding: 1rem;
+  }
+  .placeholder::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(135deg, transparent 0 14px, var(--line) 14px 15px); opacity: 0.6; pointer-events: none; }
+  .placeholder > span { position: relative; background: var(--surface-2); padding: 0.25rem 0.5rem; }
+
+  .prose > * + * { margin-top: 1rem; }
+  .prose ul { padding-left: 1.25rem; list-style: disc; }
+  .prose li + li { margin-top: 0.25rem; }
+}

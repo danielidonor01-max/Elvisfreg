@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { PROJECTS } from '../../data/projects';
+
+const description = 'Completed field work by Elvisfreg Nigeria Limited: engine and generator overhauls, instrument tubing, motor installation, offshore flow line maintenance and solar installation.';
+---
+
+<Base title="Projects" description={description} path="/projects/">
+  <div class="wrap pt-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Projects' }]} />
+  </div>
+
+  <section class="wrap pt-10 pb-16 md:pt-14 md:pb-20">
+    <h1 class="h1">Projects</h1>
+    <p class="measure mt-6 text-[1.125rem] text-ink-muted">A record of completed field work. Each project is written the way a calibration is recorded: what was found, what was done, what was left.</p>
+  </section>
+
+  <section class="border-t border-line">
+    <div class="section wrap grid gap-12 md:grid-cols-2 lg:grid-cols-3 md:gap-8">
+      {PROJECTS.map((p) => <ProjectCard project={p} headingLevel="h2" />)}
+    </div>
+  </section>
+</Base>

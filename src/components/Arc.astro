@@ -1,0 +1,39 @@
+---
+/**
+ * The Precision Spectrum Arc. Geometry is read from the brand asset at build
+ * time so the mark is byte-exact; petals keep their .ef-seg-01…05 classes and
+ * are in DOM order left → right (lifecycle order).
+ *
+ *  active        – stage id to hold at the enlarged "selected" scale
+ *  interactive   – petals become pointer targets (the selector wires them up)
+ *  playOnLoad    – run the once-per-session load sequence
+ *  transitionName– Astro view-transition name, for the arc that persists between pages
+ *  label         – accessible name; omit for a decorative instance
+ */
+import raw from '../../assets/brand/logo/mark-themed.svg?raw';
+import type { StageId } from '../data/stages';
+
+interface Props {
+  active?: StageId;
+  interactive?: boolean;
+  playOnLoad?: boolean;
+  transitionName?: string;
+  label?: string;
+  class?: string;
+}
+
+const { active, interactive = false, playOnLoad = false, transitionName, label, class: cls = '' } = Astro.props;
+
+let svg = raw.replace(/<\?xml[^>]*>\s*/, '').replace(/<title>.*?<\/title>\s*/, '');
+svg = label
+  ? svg.replace(/aria-label="[^"]*"/, `aria-label="${label}"`)
+  : svg.replace(/\s*role="img"\s*aria-label="[^"]*"/, ' aria-hidden="true" focusable="false"');
+---
+
+<div
+  class:list={['arc', cls, { 'is-interactive': interactive }]}
+  data-active={active}
+  data-play={playOnLoad ? '' : undefined}
+  transition:name={transitionName}
+  set:html={svg}
+/>

@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ArcSelector from '../../components/ArcSelector.astro';
+import { SERVICES } from '../../data/services';
+
+const description = 'Electrical, automation and control, control panels, power systems, instrumentation and calibration, hydrotest and maintenance services for Nigerian industry.';
+---
+
+<Base title="Services" description={description} path="/services/">
+  <div class="wrap pt-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Services' }]} />
+  </div>
+
+  <section class="wrap pt-10 pb-16 md:pt-14 md:pb-24">
+    <h1 class="h1">Services</h1>
+    <p class="measure mt-6 text-[1.125rem] text-ink-muted">Seven service families, grouped by the stage of the asset lifecycle they serve. Most projects draw on more than one, from a single technical partner.</p>
+    <div class="mt-14">
+      <ArcSelector initial="03" transitionName="arc" />
+    </div>
+  </section>
+
+  <section class="border-t border-line">
+    <div class="section wrap">
+      <h2 class="h2">All services</h2>
+      <div class="mt-10 grid gap-x-8 gap-y-12 md:grid-cols-2">
+        {SERVICES.map((s) => (
+          <article>
+            <h3 class="h3"><a href={`/services/${s.slug}/`} class="no-underline hover:underline underline-offset-4">{s.title}</a></h3>
+            <p class="measure mt-3 text-ink-muted">{s.summary}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

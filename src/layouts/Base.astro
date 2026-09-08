@@ -1,0 +1,78 @@
+---
+import '@fontsource-variable/outfit';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Seo from '../components/Seo.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+import LockupSprite from '../components/LockupSprite.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+  jsonLd?: Record<string, unknown>[];
+}
+const { title, description, path, noindex, ogType, jsonLd } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-NG">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Theme, before paint: an explicit choice wins; otherwise the OS decides via CSS. -->
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('ef-theme');
+          if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#fffbf9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1b2b" media="(prefers-color-scheme: dark)" />
+    <Seo title={title} description={description} path={path} noindex={noindex} ogType={ogType} jsonLd={jsonLd} />
+    <ClientRouter />
+  </head>
+  <body class="flex flex-col min-h-dvh">
+    <LockupSprite />
+    <a href="#main" class="skip">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1" class="flex-1 outline-none">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // The one orchestrated moment: petals rise once per session on the home hero.
+      function playArcs() {
+        document.querySelectorAll<HTMLElement>('.arc[data-play]').forEach((el) => {
+          let played = false;
+          try { played = sessionStorage.getItem('ef-arc-played') === '1'; } catch {}
+          if (played) return;
+          el.classList.add('is-playing');
+          try { sessionStorage.setItem('ef-arc-played', '1'); } catch {}
+          window.setTimeout(() => el.classList.remove('is-playing'), 900);
+        });
+      }
+      document.addEventListener('astro:page-load', playArcs);
+      // Move focus to main after a client-side navigation so screen readers land on content.
+      document.addEventListener('astro:after-swap', () => {
+        const main = document.getElementById('main');
+        if (main) main.focus({ preventScroll: true });
+      });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .skip { position: absolute; left: 1rem; top: -100px; z-index: 100; padding: 0.625rem 1rem; background: var(--flame); color: #0b1b2b; border-radius: var(--radius-xs); font-weight: 500; text-decoration: none; }
+  .skip:focus { top: 1rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+</style>

@@ -1,0 +1,73 @@
+---
+/**
+ * Head metadata + site-wide Organization structured data. Page-specific
+ * schema (Service, ProfessionalService) is passed in via `jsonLd`.
+ */
+import { SITE, OFFICES } from '../data/site';
+
+interface Props {
+  title: string;              // page title without the brand suffix
+  description: string;
+  path: string;               // canonical path, with trailing slash
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+  jsonLd?: Record<string, unknown>[];
+}
+
+const { title, description, path, noindex = false, ogType = 'website', jsonLd = [] } = Astro.props;
+
+const origin = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const canonical = origin + path;
+const fullTitle = path === '/' ? `${SITE.name} — ${SITE.tagline}` : `${title} — ${SITE.name}`;
+// A build-time generated OG image is a follow-up (see DESIGN-PLAN §6.2). This static
+// path is referenced so nothing needs changing when the file lands in /public.
+const ogImage = origin + '/og-default.png';
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': origin + '/#organization',
+  name: SITE.name,
+  legalName: SITE.legalName,
+  url: origin + '/',
+  logo: origin + '/favicon.svg',
+  foundingDate: SITE.incorporated,
+  identifier: { '@type': 'PropertyValue', propertyID: 'CAC RC', value: SITE.rc },
+  email: SITE.email,
+  telephone: SITE.phoneE164,
+  description: SITE.description,
+  areaServed: { '@type': 'Country', name: 'Nigeria' },
+  location: OFFICES.map((o) => ({
+    '@type': 'Place',
+    name: `${SITE.shortName} ${o.name}`,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: o.lines[0],
+      addressLocality: o.city,
+      addressRegion: o.region,
+      addressCountry: o.country,
+    },
+  })),
+  contactPoint: [{ '@type': 'ContactPoint', contactType: 'sales', telephone: SITE.phoneE164, email: SITE.email, areaServed: 'NG', availableLanguage: 'en' }],
+};
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={noindex ? 'noindex,nofollow' : 'index,follow'} />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content="en_NG" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(organization)} />
+{jsonLd.map((obj) => <script is:inline type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', ...obj })} />)}

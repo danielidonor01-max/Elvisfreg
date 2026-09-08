@@ -1,0 +1,23 @@
+---
+/**
+ * Horizontal lockup, referencing the symbol rendered once by LockupSprite in
+ * the layout. Themed via --ef-flame / --ef-ink, which inherit into <use>.
+ */
+interface Props { class?: string; decorative?: boolean; label?: string }
+const { class: cls = '', decorative = false, label = 'Elvisfreg Nigeria Limited' } = Astro.props;
+---
+
+<svg
+  class:list={['lockup', cls]}
+  viewBox="0 0 246 60"
+  role={decorative ? undefined : 'img'}
+  aria-label={decorative ? undefined : label}
+  aria-hidden={decorative ? 'true' : undefined}
+  focusable="false"
+>
+  <use href="#ef-lockup" />
+</svg>
+
+<style>
+  .lockup { display: block; height: auto; --ef-flame: var(--flame); --ef-ink: var(--ink); }
+</style>

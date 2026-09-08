@@ -1,0 +1,105 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Arc from '../../components/Arc.astro';
+import { SERVICES, serviceBySlug, type Service } from '../../data/services';
+import { stageById } from '../../data/stages';
+import { SITE } from '../../data/site';
+
+export function getStaticPaths() {
+  return SERVICES.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+
+const { service } = Astro.props as { service: Service };
+const primaryStage = stageById(service.stages[0]);
+const related = service.related.map((slug) => serviceBySlug(slug)!).filter(Boolean);
+const origin = Astro.site?.toString().replace(/\/$/, '') ?? '';
+
+const jsonLd = [{
+  '@type': 'Service',
+  name: service.title,
+  description: service.seo.description,
+  serviceType: service.title,
+  provider: { '@id': origin + '/#organization' },
+  areaServed: { '@type': 'Country', name: 'Nigeria' },
+  url: origin + `/services/${service.slug}/`,
+}];
+---
+
+<Base title={service.seo.title} description={service.seo.description} path={`/services/${service.slug}/`} jsonLd={jsonLd}>
+  <div class="wrap pt-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: service.title }]} />
+  </div>
+
+  <section class="wrap pt-10 pb-16 md:pt-14 md:pb-20 grid gap-10 lg:grid-cols-12 lg:gap-16 items-start">
+    <div class="lg:col-span-8">
+      <p class="text-[0.9375rem] text-ink-muted">
+        {service.stages.map((id, i) => {
+          const st = stageById(id);
+          return <span>{i > 0 && <span class="mx-2" aria-hidden="true">/</span>}<span class="data" aria-hidden="true">{st.id}</span> <span class="sr-only">Stage {st.id}, </span>{st.name}</span>;
+        })}
+      </p>
+      <h1 class="h1 mt-3">{service.title}</h1>
+      <p class="measure mt-6 text-[1.125rem] text-ink-muted">{service.summary}</p>
+      <div class="mt-8">
+        <a href={`/contact/?service=${service.slug}`} class="btn btn-primary">{service.cta}</a>
+      </div>
+    </div>
+    <div class="lg:col-span-4">
+      <Arc active={primaryStage.id} transitionName="arc" class="max-w-[280px] lg:ml-auto" />
+    </div>
+  </section>
+
+  <section class="border-t border-line">
+    <div class="section wrap">
+      <div class="grid gap-12 md:grid-cols-2 lg:gap-x-16">
+        {service.sections.map((sec) => (
+          <div>
+            <h2 class="h3">{sec.heading}</h2>
+            {sec.intro && <p class="mt-2 text-ink-muted">{sec.intro}</p>}
+            <ul class="prose mt-4 pl-5 list-disc">
+              {sec.items.map((it) => <li>{it}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {service.sequence && (
+    <section class="border-t border-line">
+      <div class="section wrap">
+        <h2 class="h2">{service.sequence.heading}</h2>
+        <ol class="list-none m-0 p-0 mt-10 grid gap-8 md:grid-cols-3">
+          {service.sequence.steps.map((step, i) => (
+            <li class="border-t-2 border-flame pt-4">
+              <p class="data text-ink-muted">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="h3 mt-2">{step.name}</h3>
+              <p class="mt-2 text-ink-muted">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+        {service.sequence.note && <p class="measure mt-10 text-ink-muted">{service.sequence.note}</p>}
+      </div>
+    </section>
+  )}
+
+  <section class="border-t border-line">
+    <div class="section wrap grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-6">
+        <h2 class="h3">Related</h2>
+        <ul class="list-none m-0 p-0 mt-4 flex flex-col gap-2">
+          {related.map((r) => <li><a href={`/services/${r.slug}/`} class="link">{r.title}</a></li>)}
+        </ul>
+      </div>
+      <div class="md:col-span-6">
+        <h2 class="h3">Talk to an engineer</h2>
+        <p class="mt-4 text-ink-muted measure">Describe the site and what you need. We'll reply with questions or a quotation.</p>
+        <div class="mt-5 flex flex-wrap gap-4 items-center">
+          <a href={`/contact/?service=${service.slug}`} class="btn btn-primary">{service.cta}</a>
+          <a href={`tel:${SITE.phoneE164}`} class="data link">{SITE.phoneDisplay}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

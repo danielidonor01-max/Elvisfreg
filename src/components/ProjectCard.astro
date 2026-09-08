@@ -1,0 +1,14 @@
+---
+import Placeholder from './Placeholder.astro';
+import type { Project } from '../data/projects';
+
+interface Props { project: Project; headingLevel?: 'h2' | 'h3' }
+const { project, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+---
+
+<a href={`/projects/${project.slug}/`} class="group block no-underline text-ink">
+  <Placeholder label={project.title} ratio="3/2" />
+  <Heading class="h3 mt-4 group-hover:underline underline-offset-4">{project.title}</Heading>
+  <p class="data text-ink-muted mt-1">{project.location}</p>
+</a>

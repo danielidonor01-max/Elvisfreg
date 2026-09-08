@@ -1,0 +1,51 @@
+---
+import Lockup from './Lockup.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { SITE, OFFICES, NAV } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line mt-auto">
+  <div class="wrap py-14 md:py-20 grid gap-12 md:grid-cols-12">
+    <div class="md:col-span-4">
+      <a href="/" class="inline-block no-underline" aria-label={`${SITE.name}, home`}>
+        <Lockup class="w-[196px]" decorative />
+      </a>
+      <p class="measure text-ink-muted mt-5 text-[0.9375rem]">{SITE.description}</p>
+      <p class="data text-ink-muted mt-5">RC {SITE.rc}<span class="mx-2" aria-hidden="true">/</span>Incorporated {SITE.incorporatedLabel}</p>
+    </div>
+
+    <div class="md:col-span-6 grid gap-8 sm:grid-cols-3">
+      {OFFICES.map((o) => (
+        <div>
+          <h2 class="text-[0.9375rem] font-medium mb-2">{o.name}</h2>
+          <address class="not-italic text-[0.9375rem] text-ink-muted leading-relaxed">
+            {o.lines.map((l) => <span class="block">{l}</span>)}
+          </address>
+        </div>
+      ))}
+    </div>
+
+    <div class="md:col-span-2">
+      <h2 class="text-[0.9375rem] font-medium mb-2">Contact</h2>
+      <ul class="list-none m-0 p-0 flex flex-col gap-1.5 text-[0.9375rem]">
+        <li><a href={`tel:${SITE.phoneE164}`} class="data no-underline hover:underline">{SITE.phoneDisplay}</a></li>
+        <li><a href={SITE.whatsapp} rel="noopener" target="_blank" class="no-underline hover:underline">WhatsApp</a></li>
+        <li><a href={`mailto:${SITE.email}`} class="no-underline hover:underline break-all">{SITE.email}</a></li>
+      </ul>
+      <nav aria-label="Footer" class="mt-8">
+        <ul class="list-none m-0 p-0 flex flex-col gap-1.5 text-[0.9375rem]">
+          {NAV.map((n) => <li><a href={n.href} class="no-underline hover:underline">{n.label}</a></li>)}
+          <li><a href="/privacy/" class="no-underline hover:underline">Privacy</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <div class="border-t border-line">
+    <div class="wrap py-5 flex flex-wrap items-center justify-between gap-4 text-[0.9375rem] text-ink-muted">
+      <p>© {year} {SITE.name}</p>
+      <ThemeToggle />
+    </div>
+  </div>
+</footer>

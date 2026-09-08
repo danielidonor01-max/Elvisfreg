@@ -1,0 +1,116 @@
+---
+/**
+ * The arc as a working control. Five petals and five text tabs share one
+ * state; the panel for the selected stage lists its service pages.
+ * Works without JS: all panels render, the first is visible.
+ */
+import Arc from './Arc.astro';
+import { STAGES, type StageId } from '../data/stages';
+import { serviceBySlug } from '../data/services';
+
+interface Props { initial?: StageId; transitionName?: string }
+const { initial = '03', transitionName } = Astro.props;
+---
+
+<div class="arc-selector grid gap-10 lg:grid-cols-12 lg:gap-12 items-start" data-arc-selector data-active={initial}>
+  <div class="lg:col-span-6">
+    <Arc active={initial} interactive transitionName={transitionName} label="Service stages, one per petal" class="max-w-[420px] mx-auto lg:mx-0" />
+    <div role="tablist" aria-label="Lifecycle stages" class="mt-8 flex flex-wrap gap-x-5 border-b border-line text-[0.9375rem]">
+      {STAGES.map((s) => (
+        <button
+          type="button"
+          role="tab"
+          id={`tab-${s.id}`}
+          class="tab"
+          aria-selected={s.id === initial ? 'true' : 'false'}
+          aria-controls={`panel-${s.id}`}
+          tabindex={s.id === initial ? 0 : -1}
+          data-stage={s.id}
+        >{s.short}</button>
+      ))}
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 relative">
+    {STAGES.map((s) => (
+      <section
+        role="tabpanel"
+        id={`panel-${s.id}`}
+        aria-labelledby={`tab-${s.id}`}
+        class="panel border border-line rounded-md bg-surface p-6 md:p-8"
+        hidden={s.id !== initial}
+        data-stage={s.id}
+      >
+        <p class="data text-ink-muted"><span aria-hidden="true">{s.id}</span><span class="sr-only">Stage {s.id} of 5</span></p>
+        <h3 class="h3 mt-2">{s.name}</h3>
+        <p class="measure mt-3 text-ink-muted">{s.body}</p>
+        <ul class="list-none m-0 p-0 mt-6 flex flex-wrap gap-x-6 gap-y-2">
+          {s.services.map((slug) => {
+            const svc = serviceBySlug(slug)!;
+            return <li><a href={`/services/${svc.slug}/`} class="link">{svc.short}</a></li>;
+          })}
+        </ul>
+      </section>
+    ))}
+  </div>
+</div>
+
+<style>
+  .panel { transition: opacity 200ms var(--ease-mech); }
+  .panel[hidden] { display: none; }
+  .panel.is-leaving { opacity: 0; }
+</style>
+
+<script>
+  const ORDER = ['01', '02', '03', '04', '05'];
+
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-arc-selector]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+
+      const arc = root.querySelector<HTMLElement>('.arc');
+      const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+      const panels = Array.from(root.querySelectorAll<HTMLElement>('[role="tabpanel"]'));
+
+      function select(id: string, focus = false) {
+        if (root.dataset.active === id) return;
+        root.dataset.active = id;
+        if (arc) arc.dataset.active = id;
+        tabs.forEach((t) => {
+          const on = t.dataset.stage === id;
+          t.setAttribute('aria-selected', String(on));
+          t.tabIndex = on ? 0 : -1;
+          if (on && focus) t.focus();
+        });
+        panels.forEach((p) => {
+          if (p.dataset.stage === id) { p.hidden = false; requestAnimationFrame(() => p.classList.remove('is-leaving')); }
+          else if (!p.hidden) { p.hidden = true; }
+        });
+      }
+
+      tabs.forEach((t) => {
+        t.addEventListener('click', () => select(t.dataset.stage!));
+        t.addEventListener('keydown', (e) => {
+          const i = ORDER.indexOf(root.dataset.active!);
+          let next: number | null = null;
+          if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % ORDER.length;
+          if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + ORDER.length) % ORDER.length;
+          if (e.key === 'Home') next = 0;
+          if (e.key === 'End') next = ORDER.length - 1;
+          if (next !== null) { e.preventDefault(); select(ORDER[next], true); }
+        });
+      });
+
+      // Petals are pointer targets; keyboard users have the tabs.
+      arc?.querySelectorAll<SVGPathElement>('.ef-petal').forEach((petal) => {
+        const id = Array.from(petal.classList).find((c) => c.startsWith('ef-seg-'))?.slice(-2);
+        if (!id) return;
+        petal.addEventListener('click', () => select(id, true));
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

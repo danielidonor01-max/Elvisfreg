@@ -1,0 +1,16 @@
+---
+import { CERTIFICATIONS } from '../data/site';
+---
+
+<div class="border-y border-line">
+  <div class="wrap">
+    <dl class="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 py-8 m-0">
+      {CERTIFICATIONS.map((c) => (
+        <div class="flex flex-col gap-1">
+          <dt class="font-medium text-ink">{c.name}</dt>
+          <dd class="m-0 text-[0.9375rem] text-ink-muted">{c.detail}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+---
+/**
+ * Stands in for photography that has not been supplied yet. It says what the
+ * photo will be, in mono, so the page reads honestly while the set is pending.
+ * Replace with <Picture> from astro:assets when the images land.
+ */
+interface Props { label: string; ratio?: '16/9' | '4/3' | '3/2' | '1/1' | '21/9'; class?: string }
+const { label, ratio = '3/2', class: cls = '' } = Astro.props;
+---
+
+<div class:list={['placeholder', cls]} style={`aspect-ratio:${ratio}`} role="img" aria-label={`Photograph placeholder: ${label}`}>
+  <span>{label}</span>
+</div>

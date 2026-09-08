@@ -1,0 +1,43 @@
+---
+/**
+ * An as-found / as-left record, the brand's own quality method shown rather
+ * than described. Figures are illustrative and labelled as such.
+ */
+const rows = [
+  ['0 % FS', '0.02', '0.00', '0.02'],
+  ['25 % FS', '25.11', '25.00', '0.11'],
+  ['50 % FS', '50.19', '50.01', '0.18'],
+  ['75 % FS', '75.24', '75.02', '0.22'],
+  ['100 % FS', '100.31', '100.02', '0.29'],
+];
+---
+
+<figure class="m-0 border border-line rounded-md bg-surface p-5 md:p-6">
+  <figcaption class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+    <span class="font-medium">Calibration record</span>
+    <span class="data text-ink-muted">Pressure gauge, 0–100 bar</span>
+  </figcaption>
+  <div class="overflow-x-auto">
+    <table class="data w-full border-collapse">
+      <thead>
+        <tr class="text-ink-muted">
+          <th scope="col" class="text-left font-medium pb-2 border-b border-line">Point</th>
+          <th scope="col" class="text-right font-medium pb-2 border-b border-line">As found</th>
+          <th scope="col" class="text-right font-medium pb-2 border-b border-line">As left</th>
+          <th scope="col" class="text-right font-medium pb-2 border-b border-line">Error</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr>
+            <td class="py-1.5 border-b border-line">{r[0]}</td>
+            <td class="py-1.5 border-b border-line text-right">{r[1]}</td>
+            <td class="py-1.5 border-b border-line text-right">{r[2]}</td>
+            <td class="py-1.5 border-b border-line text-right">{r[3]}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="mt-4 text-[0.9375rem] text-ink-muted">Illustrative figures. Every calibration we issue carries a record in this form.</p>
+</figure>
