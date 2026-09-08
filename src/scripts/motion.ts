@@ -8,8 +8,6 @@
  *   [data-split]             headline split into words that rise in on load (once per session)
  *   [data-count="90"]        number counts up from 0 when scrolled to
  *   [data-lifecycle]         home lifecycle section: sticky arc + stacked stage blocks [data-stage-block]
- *   [data-section="01"]      page sections that drive the header arc's progress
- *   [data-header-arc]        the header mark
  */
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -68,11 +66,15 @@ function init() {
       let played = false;
       try { played = sessionStorage.getItem('ef-intro') === '1'; } catch {}
       // The module loads after `load`; on a slow connection the headline has been
-      // readable for a while, and re-animating it would read as a glitch.
-      if (performance.now() > 2500) played = true;
+      // readable for a while, and re-animating it would read as a glitch — unless the
+      // preloader is still covering the page, in which case nothing has been seen yet.
+      const preloading = document.documentElement.classList.contains('is-preloading');
+      if (performance.now() > 2500 && !preloading) played = true;
       const words = splitWords(intro);
       if (!played) {
-        gsap.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 0.9, ease: 'power3.out', stagger: 0.045, delay: 0.1 });
+        const run = () => gsap.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 0.9, ease: 'power3.out', stagger: 0.045, delay: 0.1 });
+        if (preloading) { gsap.set(words, { yPercent: 110 }); document.addEventListener('ef:preloaded', run, { once: true }); }
+        else run();
         try { sessionStorage.setItem('ef-intro', '1'); } catch {}
       }
     }
@@ -121,14 +123,12 @@ function init() {
       });
     });
 
-    // --- Lifecycle: stacked stage blocks drive the sticky arc ------------------
+    // --- Lifecycle: stacked stage blocks drive the sticky title --------------------
     const life = document.querySelector<HTMLElement>('[data-lifecycle]');
     if (life) {
-      const arc = life.querySelector<HTMLElement>('.arc');
       const titles = Array.from(life.querySelectorAll<HTMLElement>('[data-stage-title]'));
       const blocks = Array.from(life.querySelectorAll<HTMLElement>('[data-stage-block]'));
       const setStage = (id: string) => {
-        if (arc) arc.dataset.active = id;
         titles.forEach((t) => t.classList.toggle('is-active', t.dataset.stageTitle === id));
         blocks.forEach((b) => b.classList.toggle('is-active', b.dataset.stageBlock === id));
       };
@@ -140,22 +140,6 @@ function init() {
         });
       });
       setStage(blocks[0]?.dataset.stageBlock || '01');
-    }
-
-    // --- Header arc as page progress ----------------------------------------------
-    const headerArc = document.querySelector<HTMLElement>('[data-header-arc]');
-    const sections = gsap.utils.toArray<HTMLElement>('[data-section]');
-    if (headerArc && sections.length) {
-      headerArc.classList.add('is-progress');
-      headerArc.dataset.progress = '00';
-      sections.forEach((s, i) => {
-        const prev = i === 0 ? '00' : sections[i - 1].dataset.section!;
-        ScrollTrigger.create({
-          trigger: s, start: 'top 70%',
-          onEnter: () => { headerArc.dataset.progress = s.dataset.section; },
-          onLeaveBack: () => { headerArc.dataset.progress = prev; },
-        });
-      });
     }
   });
 

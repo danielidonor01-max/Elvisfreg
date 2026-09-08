@@ -1,7 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
-import { SITE, VALUES, CERTIFICATIONS, CLIENTS } from '../data/site';
+import ClientWall from '../components/ClientWall.astro';
+import { SITE, VALUES, CERTIFICATIONS } from '../data/site';
 
 const description = 'Elvisfreg Nigeria Limited is an indigenous engineering services firm incorporated in August 2025 (RC 8734614), 100% Nigerian-owned, serving oil and gas, power and manufacturing.';
 ---
@@ -83,9 +84,9 @@ const description = 'Elvisfreg Nigeria Limited is an indigenous engineering serv
   <section class="border-t border-line">
     <div class="section wrap">
       <h2 class="h2">Clients and partners</h2>
-      <ul class="list-none m-0 p-0 mt-8 flex flex-wrap gap-x-8 gap-y-3 text-ink-muted max-w-[80ch]">
-        {CLIENTS.map((c) => <li>{c}</li>)}
-      </ul>
+      <div class="mt-10">
+        <ClientWall variant="grid" />
+      </div>
       <p class="mt-10"><a href={SITE.profilePdf} class="btn">Download company profile (PDF)
         <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>
       </a></p>

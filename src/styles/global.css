@@ -217,18 +217,26 @@
   .arc.is-playing .ef-seg-04 { animation-delay: 240ms; }
   .arc.is-playing .ef-seg-05 { animation-delay: 300ms; }
   @keyframes petal-rise { from { transform: scale(0.4); opacity: 0.25; } to { transform: scale(1); opacity: 1; } }
-  /* Active state: scale only — the guide forbids recolouring individual petals. */
-  .arc[data-active="01"] .ef-seg-01, .arc[data-active="02"] .ef-seg-02, .arc[data-active="03"] .ef-seg-03,
-  .arc[data-active="04"] .ef-seg-04, .arc[data-active="05"] .ef-seg-05 { transform: scale(1.06); }
   @media (prefers-reduced-motion: reduce) { .arc.is-playing .ef-petal { animation: none; } }
 
-  /* Header arc as scroll progress: petals rise as the page's sections are reached. */
-  .arc.is-progress .ef-petal { transform: scale(0.72); }
-  .arc.is-progress[data-progress="01"] .ef-seg-01,
-  .arc.is-progress[data-progress="02"] :is(.ef-seg-01, .ef-seg-02),
-  .arc.is-progress[data-progress="03"] :is(.ef-seg-01, .ef-seg-02, .ef-seg-03),
-  .arc.is-progress[data-progress="04"] :is(.ef-seg-01, .ef-seg-02, .ef-seg-03, .ef-seg-04),
-  .arc.is-progress[data-progress="05"] .ef-petal { transform: scale(1); }
+  /* Preloader: the mark assembles on navy, the wordmark settles, the panel wipes up.
+     Shown only when html.is-preloading is set by the inline script (JS on, first visit
+     this session, motion allowed), so it can never trap a visitor. */
+  .preloader { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; background: #0b1b2b; color: #fffbf9; --ef-flame: #f26522; --ef-ink: #fffbf9; }
+  html.is-preloading .preloader { display: flex; animation: preloader-out 520ms var(--ease-mech) 1180ms both; }
+  html.is-preloading { overflow: hidden; }
+  .preloader-inner { display: grid; justify-items: center; gap: 1.25rem; width: min(220px, 48vw); }
+  .preloader .arc { width: 100%; }
+  .preloader .arc .ef-petal { animation: petal-rise 520ms var(--ease-mech) both; }
+  .preloader .arc .ef-seg-01 { animation-delay: 80ms; }
+  .preloader .arc .ef-seg-02 { animation-delay: 170ms; }
+  .preloader .arc .ef-seg-03 { animation-delay: 260ms; }
+  .preloader .arc .ef-seg-04 { animation-delay: 350ms; }
+  .preloader .arc .ef-seg-05 { animation-delay: 440ms; }
+  .preloader-wordmark { width: 72%; height: auto; animation: preloader-word 480ms var(--ease-mech) 620ms both; }
+  @keyframes preloader-word { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes preloader-out { to { clip-path: inset(0 0 100% 0); } }
+  .preloader { clip-path: inset(0 0 0 0); }
 
   /* Header: nav underline slides in; the CTA yields to the hero's own button. */
   .nav-link { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.75rem; font-weight: 500; text-decoration: none; color: var(--ink-muted); transition: color 150ms var(--ease-mech); }

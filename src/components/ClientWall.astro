@@ -1,0 +1,48 @@
+---
+/**
+ * Client marks as one quiet row: every logo rendered in the page's ink at a
+ * uniform height, so eleven different brand palettes read as one system and
+ * survive dark mode. Colour returns on hover. Names without a logo are set as
+ * text in the same register.
+ *
+ *   variant="marquee"  one slow loop (home)
+ *   variant="grid"     static wrap (company)
+ */
+import { Image } from 'astro:assets';
+import { CLIENT_MARKS } from '../data/client-logos';
+
+interface Props { variant?: 'marquee' | 'grid'; label?: string }
+const { variant = 'grid', label = 'Clients and partners' } = Astro.props;
+const items = variant === 'marquee' ? [...CLIENT_MARKS, ...CLIENT_MARKS] : CLIENT_MARKS;
+---
+
+{variant === 'marquee' ? (
+  <div class="marquee" aria-label={label}>
+    <ul class="marquee-track list-none m-0 p-0 items-center">
+      {items.map((c, i) => (
+        <li aria-hidden={i >= CLIENT_MARKS.length ? 'true' : undefined} class="client-mark shrink-0">
+          {c.logo ? <Image src={c.logo} alt={c.name} height={40} densities={[1, 2]} class:list={['client-logo', { 'client-logo-wide': c.wide }]} /> : <span class="client-text">{c.name}</span>}
+        </li>
+      ))}
+    </ul>
+  </div>
+) : (
+  <ul class="list-none m-0 p-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-10 items-center" aria-label={label} data-reveal-group>
+    {items.map((c) => (
+      <li class="client-mark flex items-center min-h-[3rem]">
+        {c.logo ? <Image src={c.logo} alt={c.name} height={40} densities={[1, 2]} class:list={['client-logo', { 'client-logo-wide': c.wide }]} /> : <span class="client-text">{c.name}</span>}
+      </li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .client-logo { height: 34px; width: auto; max-width: 150px; object-fit: contain; filter: grayscale(1) contrast(1.1); opacity: 0.72; transition: filter 240ms var(--ease-mech), opacity 240ms var(--ease-mech); }
+  .client-logo-wide { max-width: 190px; }
+  @media (min-width: 768px) { .client-logo { height: 40px; } }
+  :root[data-theme="dark"] .client-logo { filter: grayscale(1) invert(1) contrast(1.1); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .client-logo { filter: grayscale(1) invert(1) contrast(1.1); } }
+  .client-mark:hover .client-logo { filter: none; opacity: 1; }
+  .client-text { font-weight: 500; font-size: 1.125rem; color: var(--ink-muted); white-space: nowrap; }
+  .marquee-track .client-mark { padding-inline: 0.5rem; }
+</style>

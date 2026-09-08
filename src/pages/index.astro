@@ -7,7 +7,8 @@ import ProofStrip from '../components/ProofStrip.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Gauge from '../components/Gauge.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
-import { SITE, CLIENTS } from '../data/site';
+import ClientWall from '../components/ClientWall.astro';
+import { SITE } from '../data/site';
 import { STAGES } from '../data/stages';
 import { PROJECTS } from '../data/projects';
 import { serviceBySlug } from '../data/services';
@@ -15,13 +16,12 @@ import heroImage from '../assets/temp/hero-substation.jpg';
 import { getImage } from 'astro:assets';
 
 const featured = PROJECTS.filter((p) => p.featured).slice(0, 3);
-const marquee = [...CLIENTS, ...CLIENTS];
 const HERO_WIDTHS = [800, 1200, 1600, 2000];
 // Same options as the hero <Picture>'s AVIF source, so the preload is the request the browser reuses.
 const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format: 'avif' });
 ---
 
-<Base title="Home" description={SITE.description} path="/">
+<Base title="Home" description={SITE.description} path="/" preloader>
   <link slot="head" rel="preload" as="image" type="image/avif" imagesrcset={heroPreload.srcSet.attribute} imagesizes="100vw" fetchpriority="high" />
 
   <!-- Hero: photograph under a navy scrim, headline low-left, the arc as a seal. -->
@@ -61,7 +61,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
 
     <div class="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-16 items-start">
       <div class="lg:col-span-5 lg:sticky lg:top-28 self-start">
-        <Arc active="01" label="Lifecycle stages" class="max-w-[420px]" />
+        <Arc label="Lifecycle stages" class="max-w-[420px]" />
         <div class="stage-titles mt-8 min-h-[7rem]" aria-live="polite">
           {STAGES.map((s) => (
             <div data-stage-title={s.id}>
@@ -134,10 +134,8 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
         <h2 class="h2 mt-2">Clients and partners</h2>
       </div>
     </div>
-    <div class="marquee pb-20 lg:pb-32" aria-label="Clients and partners">
-      <ul class="marquee-track list-none m-0 p-0 text-[1.5rem] md:text-[2rem] font-medium leading-none">
-        {marquee.map((c, i) => <li aria-hidden={i >= CLIENTS.length ? 'true' : undefined} class="whitespace-nowrap text-ink-muted">{c}</li>)}
-      </ul>
+    <div class="pb-20 lg:pb-32">
+      <ClientWall variant="marquee" />
     </div>
   </section>
 

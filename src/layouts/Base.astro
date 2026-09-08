@@ -11,6 +11,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
 import LockupSprite from '../components/LockupSprite.astro';
+import Preloader from '../components/Preloader.astro';
 
 interface Props {
   title: string;
@@ -19,8 +20,9 @@ interface Props {
   noindex?: boolean;
   ogType?: 'website' | 'article';
   jsonLd?: Record<string, unknown>[];
+  preloader?: boolean;
 }
-const { title, description, path, noindex, ogType, jsonLd } = Astro.props;
+const { title, description, path, noindex, ogType, jsonLd, preloader = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -47,6 +49,7 @@ const { title, description, path, noindex, ogType, jsonLd } = Astro.props;
   </head>
   <body class="flex flex-col min-h-dvh">
     <LockupSprite />
+    {preloader && <Preloader />}
     <a href="#main" class="skip">Skip to content</a>
     <Header />
     <main id="main" tabindex="-1" class="flex-1 outline-none">
@@ -68,9 +71,11 @@ const { title, description, path, noindex, ogType, jsonLd } = Astro.props;
           let played = false;
           try { played = sessionStorage.getItem('ef-arc-played') === '1'; } catch {}
           if (played) return;
-          el.classList.add('is-playing');
           try { sessionStorage.setItem('ef-arc-played', '1'); } catch {}
-          window.setTimeout(() => el.classList.remove('is-playing'), 900);
+          // Wait for the preloader's exit if one is running.
+          const start = () => { el.classList.add('is-playing'); window.setTimeout(() => el.classList.remove('is-playing'), 900); };
+          if (document.documentElement.classList.contains('is-preloading')) document.addEventListener('ef:preloaded', start, { once: true });
+          else start();
         });
       }
       document.addEventListener('astro:page-load', playArcs);

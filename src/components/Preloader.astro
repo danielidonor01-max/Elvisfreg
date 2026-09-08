@@ -1,0 +1,45 @@
+---
+/**
+ * Home-page preloader. Pure CSS timeline (~1.7 s): petals rise in lifecycle order,
+ * the wordmark settles, the navy panel wipes upward. Runs once per session; the
+ * inline script decides before first paint whether to show it at all, so with
+ * JavaScript off, motion reduced, or on a return visit nothing is ever covered.
+ */
+import Arc from './Arc.astro';
+---
+
+<script is:inline>
+  (function () {
+    try {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce && sessionStorage.getItem('ef-preloaded') !== '1') {
+        document.documentElement.classList.add('is-preloading');
+        sessionStorage.setItem('ef-preloaded', '1');
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<div class="preloader" data-preloader aria-hidden="true">
+  <div class="preloader-inner">
+    <Arc class="arc" />
+    <svg class="preloader-wordmark" viewBox="0 0 137 44" aria-hidden="true" focusable="false"><use href="#ef-wordmark" width="137" height="44" /></svg>
+  </div>
+</div>
+
+<script>
+  // Remove the panel once its exit animation ends, and tell the motion layer.
+  function init() {
+    const el = document.querySelector<HTMLElement>('[data-preloader]');
+    if (!el) return;
+    const done = () => {
+      document.documentElement.classList.remove('is-preloading');
+      el.remove();
+      document.dispatchEvent(new CustomEvent('ef:preloaded'));
+    };
+    if (!document.documentElement.classList.contains('is-preloading')) { el.remove(); return; }
+    el.addEventListener('animationend', (e) => { if (e.target === el) done(); });
+    window.setTimeout(done, 2400); // safety net
+  }
+  init();
+</script>

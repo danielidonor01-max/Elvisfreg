@@ -73,6 +73,6 @@ contact 100/100/100/100. Run locally with `node node_modules/lighthouse/cli/inde
 - [ ] Drop the compressed company profile at `public/company-profile.pdf` (under 5 MB).
 - [ ] `public/og-default.png` is a static default; per-page OG titles are a later step.
 - [ ] Replace `Placeholder` blocks with `<Picture>` once photography arrives.
-- [ ] Verify project copy in `src/data/projects.ts` with the client.
+- [ ] Verify project copy in `src/data/projects.ts` with the client — it is drafted to a house style with placeholder sites.
+- [ ] Client logos: confirm each client's consent; see `src/assets/logos/LOGOS.md`. Four clients have no logo and show as text.
 - [ ] Resend domain verification (SPF, DKIM, DMARC) and Turnstile keys in Vercel.
-- [ ] Decide petal active-state treatment (currently scale, no recolour).
