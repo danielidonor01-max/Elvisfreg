@@ -15,6 +15,8 @@ export const SITE = {
   tagline: 'Electrical, automation and calibration engineering for plants that cannot stop.',
   description:
     'High-integrity electrical and automation engineering for Nigeria\'s oil, gas and industrial plants. Design, installation, PLC and HMI programming, instrument calibration and maintenance.',
+  shortDescription:
+    'Electrical, automation and calibration engineering for oil and gas, power and manufacturing sites across Nigeria.',
   profilePdf: '/company-profile.pdf',
 } as const;
 
@@ -55,7 +57,7 @@ export const CERTIFICATIONS = [
   { name: 'NIPEX', detail: 'Certificate of prequalification' },
   { name: 'NUPRC', detail: 'Licences and permits' },
   { name: 'National Institute of Welding', detail: 'Member' },
-  { name: '100% Nigerian-owned', detail: 'Ten million ordinary shares' },
+  { name: '100% Nigerian-owned', detail: 'Nigerian Content Plan in force' },
 ] as const;
 
 // Text list until written permission for logos exists.

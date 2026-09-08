@@ -50,13 +50,13 @@ const jsonLd = [{
     <aside class="lg:col-span-5 lg:pt-4">
       <h2 class="h3">Reach us directly</h2>
       <ul class="list-none m-0 p-0 mt-4 flex flex-col gap-2">
-        <li><a href={`tel:${SITE.phoneE164}`} class="data link">{SITE.phoneDisplay}</a></li>
+        <li><a href={`tel:${SITE.phoneE164}`} class="link num">{SITE.phoneDisplay}</a></li>
         <li><a href={SITE.whatsapp} target="_blank" rel="noopener" class="link">Message us on WhatsApp</a></li>
-        <li><a href={`mailto:${SITE.email}`} class="link break-all">{SITE.email}</a></li>
+        <li><a href={`mailto:${SITE.email}`} class="link break-words">{SITE.email}</a></li>
       </ul>
 
-      <h2 class="h3 mt-12">Offices</h2>
-      <dl class="mt-4 grid gap-6 m-0">
+      <h2 class="h3 mt-12" id="offices">Offices</h2>
+      <dl class="mt-4 grid gap-6 m-0" data-reveal-group>
         {OFFICES.map((o) => (
           <div>
             <dt class="font-medium">{o.name}</dt>
@@ -64,7 +64,6 @@ const jsonLd = [{
           </div>
         ))}
       </dl>
-      <p class="data text-ink-muted mt-10">RC {SITE.rc}</p>
     </aside>
   </section>
 </Base>

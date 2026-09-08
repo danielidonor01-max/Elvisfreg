@@ -10,12 +10,14 @@ const { class: cls = '', showLabel = true } = Astro.props;
   aria-label="Switch to dark theme"
   aria-pressed="false"
 >
-  <svg class="icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-  </svg>
-  <svg class="icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-  </svg>
+  <span class="icons" aria-hidden="true">
+    <svg class="icon icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+    </svg>
+    <svg class="icon icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </svg>
+  </span>
   {showLabel && <span class="label" data-theme-label>Dark theme</span>}
 </button>
 
@@ -26,13 +28,14 @@ const { class: cls = '', showLabel = true } = Astro.props;
     border: 1px solid transparent; border-radius: var(--radius-xs);
     background: transparent; color: var(--ink-muted); cursor: pointer;
     font-size: 0.9375rem; font-weight: 500;
+    transition: color 150ms var(--ease-mech), border-color 150ms var(--ease-mech);
   }
   .theme-toggle:hover { color: var(--ink); border-color: var(--line); }
-  .icon-sun { display: none; }
-  :root[data-theme="dark"] .theme-toggle .icon-sun,
-  :root:not([data-theme="light"]) .theme-toggle[data-resolved="dark"] .icon-sun { display: block; }
-  :root[data-theme="dark"] .theme-toggle .icon-moon,
-  :root:not([data-theme="light"]) .theme-toggle[data-resolved="dark"] .icon-moon { display: none; }
+  .icons { display: grid; width: 18px; height: 18px; }
+  .icon { grid-area: 1 / 1; transition: opacity 200ms var(--ease-mech), transform 320ms var(--ease-mech); }
+  .icon-sun { opacity: 0; transform: rotate(90deg) scale(0.7); }
+  .theme-toggle[data-resolved="dark"] .icon-sun { opacity: 1; transform: none; }
+  .theme-toggle[data-resolved="dark"] .icon-moon { opacity: 0; transform: rotate(-90deg) scale(0.7); }
 </style>
 
 <script>

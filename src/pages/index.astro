@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Arc from '../components/Arc.astro';
 import Photo from '../components/Photo.astro';
+import Drafting from '../components/Drafting.astro';
 import ProofStrip from '../components/ProofStrip.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Gauge from '../components/Gauge.astro';
@@ -22,11 +23,13 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
 
 <Base title="Home" description={SITE.description} path="/">
   <link slot="head" rel="preload" as="image" type="image/avif" imagesrcset={heroPreload.srcSet.attribute} imagesizes="100vw" fetchpriority="high" />
+
   <!-- Hero: photograph under a navy scrim, headline low-left, the arc as a seal. -->
   <section class="hero band-dark">
     <Photo src={heroImage} alt="Engineer at an electrical substation in Nigeria" priority temp sizes="100vw" widths={HERO_WIDTHS} />
+    <Drafting />
     <div class="wrap relative z-10 w-full pt-36 pb-12 md:pt-44 md:pb-16 grid gap-10 lg:grid-cols-12 items-end">
-      <div class="lg:col-span-9">
+      <div class="lg:col-span-9 hero-text">
         <p class="data text-ink-muted"><span class="whitespace-nowrap">Incorporated {SITE.incorporatedLabel}</span><span class="mx-3" aria-hidden="true">/</span><span class="whitespace-nowrap">RC {SITE.rc}</span></p>
         <h1 class="display mt-5 max-w-[15ch]" data-split>{SITE.tagline}</h1>
         <p class="mt-7 text-[1.125rem] md:text-[1.25rem] text-ink-muted leading-relaxed max-w-[52ch]">
@@ -36,14 +39,14 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
           <a href="/contact/" class="btn btn-primary">Request a quote
             <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
-          <a href={SITE.profilePdf} class="link-draw text-ink">Download company profile (PDF)</a>
+          <a href={SITE.profilePdf} class="link-quiet">Download company profile (PDF)</a>
         </div>
       </div>
       <div class="lg:col-span-3 hidden lg:flex justify-end">
         <Arc playOnLoad transitionName="arc" label="Elvisfreg Precision Spectrum Arc" class="w-[168px]" />
       </div>
     </div>
-    <p class="absolute right-6 md:right-8 bottom-6 data text-ink-muted hidden md:block" aria-hidden="true">Scroll</p>
+    <p class="scroll-cue absolute right-6 md:right-8 bottom-6 data text-ink-muted hidden md:inline-flex" aria-hidden="true">Scroll</p>
   </section>
 
   <ProofStrip />
@@ -53,16 +56,16 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
     <div data-reveal>
       <p class="data text-ink-muted">01</p>
       <h2 class="h2 mt-2 max-w-[24ch]">What we do, by stage of the asset lifecycle</h2>
-      <p class="measure mt-4 text-ink-muted">Each petal of the mark is a stage of the engineering lifecycle. Scroll through them.</p>
+      <p class="measure mt-4 text-ink-muted">Each petal of the mark is a stage of the engineering lifecycle.</p>
     </div>
 
     <div class="mt-12 grid gap-10 lg:grid-cols-12 lg:gap-16 items-start">
       <div class="lg:col-span-5 lg:sticky lg:top-28 self-start">
         <Arc active="01" label="Lifecycle stages" class="max-w-[420px]" />
-        <div class="relative mt-8 min-h-[7rem]" aria-live="polite">
+        <div class="stage-titles mt-8 min-h-[7rem]" aria-live="polite">
           {STAGES.map((s) => (
             <div data-stage-title={s.id}>
-              <p class="data text-ink-muted">Stage {s.id} of 05</p>
+              <p class="text-[0.9375rem] text-ink-muted">Stage <span class="data">{s.id}</span> of 05</p>
               <p class="h3 mt-1">{s.name}</p>
             </div>
           ))}
@@ -92,10 +95,10 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
           <p class="data text-ink-muted">02</p>
           <h2 class="h2 mt-2">Recent work</h2>
         </div>
-        <a href="/projects/" class="link-draw">All projects</a>
+        <a href="/projects/" class="link-quiet">All projects</a>
       </div>
-      <div class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8">
-        {featured.map((p) => <div data-reveal><ProjectCard project={p} /></div>)}
+      <div class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8" data-reveal-group>
+        {featured.map((p) => <ProjectCard project={p} />)}
       </div>
     </div>
   </section>
@@ -109,7 +112,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
           <h2 class="h2 mt-2 max-w-[20ch]">How we verify our own work</h2>
           <p class="measure mt-4 text-ink-muted">A calibration is only worth what its record can prove. We record the instrument as found, test at five points across the span, and record it as left. The difference is the evidence.</p>
         </div>
-        <dl class="lg:col-span-5 grid grid-cols-2 gap-x-6 gap-y-6 m-0 self-end">
+        <dl class="lg:col-span-5 grid grid-cols-2 gap-x-6 gap-y-6 m-0 self-end" data-reveal-group>
           <div><dt class="text-[0.9375rem] text-ink-muted">Nigerian-owned</dt><dd class="m-0 mt-1 font-mono text-[2rem] leading-none tabular-nums"><span data-count="100" data-suffix="%">100%</span></dd></div>
           <div><dt class="text-[0.9375rem] text-ink-muted">Nigerian workforce</dt><dd class="m-0 mt-1 font-mono text-[2rem] leading-none tabular-nums"><span data-count="90" data-suffix="%">90%</span></dd></div>
           <div><dt class="text-[0.9375rem] text-ink-muted">Points per calibration</dt><dd class="m-0 mt-1 font-mono text-[2rem] leading-none tabular-nums"><span data-count="5">5</span></dd></div>
@@ -119,7 +122,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
       <div class="mt-14 border-t border-line pt-14" data-reveal>
         <Gauge />
       </div>
-      <p class="mt-10" data-reveal><a href="/services/instrumentation-calibration/" class="link-draw">Instrumentation and calibration</a></p>
+      <p class="mt-10" data-reveal><a href="/services/instrumentation-calibration/" class="link-quiet">Instrumentation and calibration</a></p>
     </div>
   </section>
 
@@ -146,9 +149,9 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
         <h2 class="h2 mt-2">Send an enquiry</h2>
         <p class="measure mt-4 text-ink-muted">A sentence or two is enough to start. We'll come back with questions or a quotation.</p>
         <ul class="list-none m-0 p-0 mt-8 flex flex-col gap-2">
-          <li><a href={`tel:${SITE.phoneE164}`} class="data link">{SITE.phoneDisplay}</a></li>
+          <li><a href={`tel:${SITE.phoneE164}`} class="link num">{SITE.phoneDisplay}</a></li>
           <li><a href={SITE.whatsapp} target="_blank" rel="noopener" class="link">Message us on WhatsApp</a></li>
-          <li><a href={`mailto:${SITE.email}`} class="link break-all">{SITE.email}</a></li>
+          <li><a href={`mailto:${SITE.email}`} class="link break-words">{SITE.email}</a></li>
         </ul>
       </div>
       <div class="lg:col-span-7" data-reveal>

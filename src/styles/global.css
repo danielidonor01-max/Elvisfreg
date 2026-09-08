@@ -14,6 +14,7 @@
   --ink-muted: #5a6675;     /* derived, 5.9:1 on white */
   --line: rgba(11, 27, 43, 0.14);
   --flame: #f26522;         /* Industrial Flame Orange */
+  --flame-hover: #e35b1c;   /* derived hover shade; navy on it is 4.8:1 */
   --flame-text: #bf4a15;    /* derived, 5.0:1 on white */
   --ok: #00a86b;
   --ok-text: #0e7c55;       /* derived, 5.2:1 on white */
@@ -86,6 +87,7 @@
     text-rendering: optimizeLegibility;
     scroll-behavior: smooth;
   }
+  html.has-lenis { scroll-behavior: auto; }
   body {
     margin: 0;
     background: var(--bg);
@@ -103,9 +105,10 @@
   h1 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.08; }
   p { margin: 0; }
   a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible, summary:focus-visible {
     outline: 2px solid var(--flame);
     outline-offset: 2px;
+    border-radius: var(--radius-xs);
   }
   ::selection { background: var(--flame); color: #0b1b2b; }
   code, kbd, samp, pre { font-family: var(--font-mono); }
@@ -142,15 +145,26 @@
   .h2 { font-size: clamp(1.625rem, 1.2rem + 1.6vw, 2.25rem); }
   .h3 { font-size: 1.25rem; line-height: 1.3; letter-spacing: 0; }
 
+  /* Mono is for data: references, dates, readings, measurements. Not labels, not contact details. */
   .data {
     font-family: var(--font-mono);
     font-size: 0.875rem;
     line-height: 1.4;
     font-variant-numeric: tabular-nums;
   }
+  .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-  .link { color: var(--flame-text); text-decoration: underline; }
+  /* Two link treatments. In-copy links are flame and underlined; quiet links
+     (navigation, cards, footer) are ink and draw their underline on hover. */
+  .link { color: var(--flame-text); text-decoration: underline; transition: text-decoration-thickness 120ms var(--ease-mech); }
   .link:hover { text-decoration-thickness: 2px; }
+  .link-quiet {
+    color: inherit; text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px; background-position: 0 100%; background-repeat: no-repeat;
+    transition: background-size 260ms var(--ease-mech);
+  }
+  .link-quiet:hover, .link-quiet:focus-visible, .group:hover .link-quiet, .group:focus-visible .link-quiet { background-size: 100% 1px; }
 
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
@@ -158,15 +172,18 @@
     border: 1px solid var(--line); border-radius: var(--radius-xs);
     background: var(--surface); color: var(--ink);
     font-weight: 500; text-decoration: none; cursor: pointer;
-    transition: border-color 150ms var(--ease-mech), background-color 150ms var(--ease-mech), color 150ms var(--ease-mech);
+    transition: border-color 150ms var(--ease-mech), background-color 150ms var(--ease-mech), color 150ms var(--ease-mech), transform 120ms var(--ease-mech);
   }
   .btn:hover { border-color: var(--ink); }
-  .btn:active { box-shadow: inset 0 0 0 1px var(--ink); }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn:active { transform: scale(0.985); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
   /* Primary is flame fill with NAVY text: white on flame is 3.15:1 and fails AA. */
   .btn-primary { background: var(--flame); color: #0b1b2b; border-color: var(--flame); }
-  .btn-primary:hover { border-color: #0b1b2b; }
+  .btn-primary:hover { background: var(--flame-hover); border-color: var(--flame-hover); }
+  .btn .arrow { transition: transform 200ms var(--ease-mech); }
+  .btn:hover .arrow { transform: translateX(3px); }
 
+  /* Forms */
   .field { display: grid; gap: 0.375rem; }
   .field > label { font-weight: 500; }
   .field .hint { font-size: 0.9375rem; color: var(--ink-muted); }
@@ -178,17 +195,21 @@
     border: 1px solid var(--line); border-radius: var(--radius-xs);
     background: var(--surface); color: var(--ink);
     font: inherit; line-height: 1.4;
+    transition: border-color 150ms var(--ease-mech), box-shadow 150ms var(--ease-mech);
   }
   .control:hover { border-color: var(--ink-muted); }
+  .control:focus-visible { outline: none; border-color: var(--flame); box-shadow: 0 0 0 3px color-mix(in srgb, var(--flame) 28%, transparent); }
   .control::placeholder { color: var(--ink-muted); opacity: 0.8; }
   textarea.control { min-height: 8rem; resize: vertical; }
   select.control { appearance: none; padding-right: 2.25rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a95a5' stroke-width='1.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; }
+  .check-draw { stroke-dasharray: 26; stroke-dashoffset: 26; animation: draw-check 420ms var(--ease-mech) 120ms forwards; }
+  @keyframes draw-check { to { stroke-dashoffset: 0; } }
 
   /* The Precision Spectrum Arc. Petals are individually addressable (.ef-seg-01…05).
      Convergence point of the 87×55 mark is at (43, 43) — that is the transform origin. */
   .arc { min-width: 0; }
   .arc svg { width: 100%; height: auto; aspect-ratio: 87 / 55; }
-  .arc .ef-petal { transform-box: view-box; transform-origin: 43px 43px; transition: transform 200ms var(--ease-mech); }
+  .arc .ef-petal { transform-box: view-box; transform-origin: 43px 43px; transition: transform 240ms var(--ease-mech); }
   .arc.is-playing .ef-petal { animation: petal-rise 420ms var(--ease-mech) both; }
   .arc.is-playing .ef-seg-01 { animation-delay: 60ms; }
   .arc.is-playing .ef-seg-02 { animation-delay: 120ms; }
@@ -196,28 +217,86 @@
   .arc.is-playing .ef-seg-04 { animation-delay: 240ms; }
   .arc.is-playing .ef-seg-05 { animation-delay: 300ms; }
   @keyframes petal-rise { from { transform: scale(0.4); opacity: 0.25; } to { transform: scale(1); opacity: 1; } }
-  /* Active state on the selector. Deliberately NOT a recolour — the brand guide forbids
-     recolouring individual petals. Scale only; the text tabs carry the underline. */
+  /* Active state: scale only — the guide forbids recolouring individual petals. */
   .arc[data-active="01"] .ef-seg-01, .arc[data-active="02"] .ef-seg-02, .arc[data-active="03"] .ef-seg-03,
   .arc[data-active="04"] .ef-seg-04, .arc[data-active="05"] .ef-seg-05 { transform: scale(1.06); }
-  .arc.is-interactive .ef-petal { cursor: pointer; }
-  .arc.is-interactive .ef-petal:hover { transform: scale(1.03); }
-  .arc.is-interactive[data-active="01"] .ef-seg-01:hover, .arc.is-interactive[data-active="02"] .ef-seg-02:hover,
-  .arc.is-interactive[data-active="03"] .ef-seg-03:hover, .arc.is-interactive[data-active="04"] .ef-seg-04:hover,
-  .arc.is-interactive[data-active="05"] .ef-seg-05:hover { transform: scale(1.06); }
-  @media (prefers-reduced-motion: reduce) {
-    .arc.is-playing .ef-petal { animation: none; }
+  @media (prefers-reduced-motion: reduce) { .arc.is-playing .ef-petal { animation: none; } }
+
+  /* Header arc as scroll progress: petals rise as the page's sections are reached. */
+  .arc.is-progress .ef-petal { transform: scale(0.72); }
+  .arc.is-progress[data-progress="01"] .ef-seg-01,
+  .arc.is-progress[data-progress="02"] :is(.ef-seg-01, .ef-seg-02),
+  .arc.is-progress[data-progress="03"] :is(.ef-seg-01, .ef-seg-02, .ef-seg-03),
+  .arc.is-progress[data-progress="04"] :is(.ef-seg-01, .ef-seg-02, .ef-seg-03, .ef-seg-04),
+  .arc.is-progress[data-progress="05"] .ef-petal { transform: scale(1); }
+
+  /* Header: nav underline slides in; the CTA yields to the hero's own button. */
+  .nav-link { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.75rem; font-weight: 500; text-decoration: none; color: var(--ink-muted); transition: color 150ms var(--ease-mech); }
+  .nav-link::after { content: ""; position: absolute; left: 0.75rem; right: 0.75rem; bottom: 0; height: 2px; background: var(--flame); transform: scaleX(0); transform-origin: left; transition: transform 220ms var(--ease-mech); }
+  .nav-link:hover, .nav-link.is-active { color: var(--ink); }
+  .nav-link:hover::after, .nav-link.is-active::after { transform: scaleX(1); }
+  .header-cta { transition: opacity 240ms var(--ease-mech), transform 240ms var(--ease-mech); }
+  .header-cta.is-hidden { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+  .services-menu[open] > .menu-panel { animation: pop-in 180ms var(--ease-mech) both; }
+  @keyframes pop-in { from { opacity: 0; transform: translateY(-6px); } }
+  .mobile-menu { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 280ms var(--ease-mech), opacity 200ms var(--ease-mech); }
+  .mobile-menu > div { overflow: hidden; }
+  .mobile-menu.is-open { grid-template-rows: 1fr; opacity: 1; }
+
+  /* Drafting grid: six faint column rules, like a CAD sheet. Only on the hero and the
+     footer — everywhere else the page stays clear for reading. */
+  .drafting { position: absolute; inset: 0; pointer-events: none; display: none; z-index: 0; }
+  @media (min-width: 768px) { .drafting { display: block; } }
+  .drafting .wrap { height: 100%; display: grid; grid-template-columns: repeat(6, 1fr); }
+  .drafting .wrap > span { border-left: 1px solid rgba(138, 149, 165, 0.3); }
+  .drafting .wrap > span:last-child { border-right: 1px solid rgba(138, 149, 165, 0.3); }
+
+  /* A section that stays navy in both themes: redefine the tokens locally. */
+  .band-dark {
+    --bg: #0b1b2b; --surface: #1e2c3a; --surface-2: #283a4d;
+    --ink: #fffbf9; --ink-muted: #8a95a5; --line: rgba(255, 251, 249, 0.12);
+    --flame-text: #f26522; --ok-text: #00a86b;
+    background: var(--bg); color: var(--ink);
   }
+  .band { background: var(--surface-2); }
 
-  /* Tabs bound to the arc */
-  .tab { padding: 0.625rem 0; border-bottom: 2px solid transparent; color: var(--ink-muted); font-weight: 500; background: none; border-top: 0; border-left: 0; border-right: 0; cursor: pointer; white-space: nowrap; }
-  .tab:hover { color: var(--ink); }
-  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--flame); }
+  /* Reveals: hidden only once the motion layer has taken responsibility for showing them. */
+  html.has-motion [data-reveal], html.has-motion [data-reveal-group] > * { opacity: 0; transform: translateY(18px); will-change: opacity, transform; }
 
-  /* Accordion: animate grid rows, never height */
-  .disclosure > .disclosure-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 240ms var(--ease-mech); }
-  .disclosure[open] > .disclosure-body { grid-template-rows: 1fr; }
-  .disclosure-body > div { overflow: hidden; }
+  /* Split headline: each word rises out of a clipped line box. */
+  [data-split] .wm { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  [data-split] .w { display: inline-block; white-space: pre; will-change: transform; }
+
+  /* Hero: photograph under a navy scrim, headline low-left. */
+  .hero { position: relative; isolation: isolate; min-height: min(88svh, 900px); display: flex; align-items: flex-end; overflow: hidden; }
+  .hero .photo { position: absolute; inset: 0; z-index: -2; }
+  .hero .photo :global(img) { transform: scale(1.06); animation: hero-settle 9s var(--ease-mech) forwards; }
+  .hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(11,27,43,.55) 0%, rgba(11,27,43,.35) 40%, rgba(11,27,43,.88) 100%); }
+  .hero .hero-text { text-shadow: 0 1px 2px rgba(11, 27, 43, 0.55); }
+  @keyframes hero-settle { to { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .hero .photo :global(img) { animation: none; transform: none; } }
+  .scroll-cue { display: inline-flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .scroll-cue::after { content: ""; width: 1px; height: 32px; background: currentColor; transform-origin: top; animation: cue 1.9s var(--ease-mech) infinite; }
+  @keyframes cue { 0% { transform: scaleY(0); opacity: 0; } 35% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1) translateY(10px); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .scroll-cue::after { animation: none; } }
+
+  /* Lifecycle: stacked stage blocks. Emphasis by colour and a flame rule, never by
+     opacity. The sticky title stack exists only where the arc is sticky (lg) and motion is on. */
+  [data-stage-block] { border-left: 2px solid transparent; padding-left: 1.25rem; margin-left: -1.25rem; transition: border-color 300ms var(--ease-mech); }
+  [data-stage-block] h3 { color: var(--ink-muted); transition: color 300ms var(--ease-mech); }
+  html.has-motion [data-stage-block].is-active { border-left-color: var(--flame); }
+  html.has-motion [data-stage-block].is-active h3, html:not(.has-motion) [data-stage-block] h3 { color: var(--ink); }
+  .stage-titles { display: none; position: relative; }
+  @media (min-width: 1024px) { html.has-motion .stage-titles { display: block; } }
+  [data-stage-title] { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--ease-mech); }
+  [data-stage-title].is-active { opacity: 1; }
+
+  /* Marquee of client names: one slow loop, pauses on hover, static when motion is reduced. */
+  .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .marquee-track { display: flex; gap: 3rem; width: max-content; animation: marquee 48s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .marquee { -webkit-mask-image: none; mask-image: none; } .marquee-track { animation: none; flex-wrap: wrap; width: auto; gap: 0.75rem 2rem; } }
 
   /* Placeholder for photography not yet supplied. Says what it will be, in mono. */
   .placeholder {
@@ -232,74 +311,6 @@
   .prose > * + * { margin-top: 1rem; }
   .prose ul { padding-left: 1.25rem; list-style: disc; }
   .prose li + li { margin-top: 0.25rem; }
-
-  /* ---- Liveliness pass ------------------------------------------------------ */
-
-  /* Drafting grid: six faint column rules, like a CAD sheet. Fixed, non-interactive. */
-  .drafting { position: fixed; inset: 0; z-index: 5; pointer-events: none; display: none; }
-  @media (min-width: 768px) { .drafting { display: block; } }
-  .drafting .wrap { height: 100%; display: grid; grid-template-columns: repeat(6, 1fr); }
-  /* Titanium at low alpha reads as a faint rule on both the off-white and the navy bands. */
-  .drafting .wrap > span { border-left: 1px solid rgba(138, 149, 165, 0.28); }
-  .drafting .wrap > span:last-child { border-right: 1px solid rgba(138, 149, 165, 0.28); }
-
-  /* A section that stays navy in both themes: redefine the tokens locally. */
-  .band-dark {
-    --bg: #0b1b2b; --surface: #1e2c3a; --surface-2: #283a4d;
-    --ink: #fffbf9; --ink-muted: #8a95a5; --line: rgba(255, 251, 249, 0.12);
-    --flame-text: #f26522; --ok-text: #00a86b;
-    background: var(--bg); color: var(--ink);
-  }
-  .band { background: var(--surface-2); }
-
-  /* Reveal: hidden only once the motion layer has taken responsibility for showing it. */
-  html.has-motion [data-reveal] { opacity: 0; transform: translateY(18px); will-change: opacity, transform; }
-  html.has-lenis { scroll-behavior: auto; }
-
-  /* Split headline: each word rises out of a clipped line box. */
-  [data-split] .wm { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; margin-bottom: -0.08em; }
-  [data-split] .w { display: inline-block; white-space: pre; will-change: transform; }
-
-  /* Hero: photograph under a navy scrim, headline low-left. */
-  .hero { position: relative; isolation: isolate; min-height: min(88svh, 900px); display: flex; align-items: flex-end; overflow: hidden; }
-  .hero .photo { position: absolute; inset: 0; z-index: -2; }
-  .hero .photo :global(img) { transform: scale(1.06); animation: hero-settle 9s var(--ease-mech) forwards; }
-  .hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(11,27,43,.55) 0%, rgba(11,27,43,.35) 40%, rgba(11,27,43,.88) 100%); }
-  @keyframes hero-settle { to { transform: scale(1); } }
-  @media (prefers-reduced-motion: reduce) { .hero .photo :global(img) { animation: none; transform: none; } }
-
-  /* Header arc as scroll progress: petals rise as the page's sections are reached. */
-  .arc.is-progress .ef-petal { transform: scale(0.72); }
-  .arc.is-progress[data-progress="01"] .ef-seg-01,
-  .arc.is-progress[data-progress="02"] :is(.ef-seg-01, .ef-seg-02),
-  .arc.is-progress[data-progress="03"] :is(.ef-seg-01, .ef-seg-02, .ef-seg-03),
-  .arc.is-progress[data-progress="04"] :is(.ef-seg-01, .ef-seg-02, .ef-seg-03, .ef-seg-04),
-  .arc.is-progress[data-progress="05"] .ef-petal { transform: scale(1); }
-
-  /* Lifecycle: stacked stage blocks. Emphasis by colour and a flame rule, never by
-     opacity — dimmed text would fall below 4.5:1. */
-  [data-stage-block] { border-left: 2px solid transparent; padding-left: 1.25rem; margin-left: -1.25rem; transition: border-color 300ms var(--ease-mech); }
-  [data-stage-block] h3 { color: var(--ink-muted); transition: color 300ms var(--ease-mech); }
-  html.has-motion [data-stage-block].is-active { border-left-color: var(--flame); }
-  html.has-motion [data-stage-block].is-active h3, html:not(.has-motion) [data-stage-block] h3 { color: var(--ink); }
-  [data-stage-title] { position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--ease-mech); }
-  [data-stage-title].is-active { opacity: 1; }
-  html:not(.has-motion) [data-stage-title] { position: static; opacity: 1; }
-
-  /* Marquee of client names: one slow loop, pauses on hover, static when motion is reduced. */
-  .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
-  .marquee-track { display: flex; gap: 3rem; width: max-content; animation: marquee 48s linear infinite; }
-  .marquee:hover .marquee-track { animation-play-state: paused; }
-  @keyframes marquee { to { transform: translateX(-50%); } }
-  @media (prefers-reduced-motion: reduce) { .marquee { -webkit-mask-image: none; mask-image: none; } .marquee-track { animation: none; flex-wrap: wrap; width: auto; gap: 0.75rem 2rem; } }
-
-  /* Buttons: the arrow slides on hover. */
-  .btn .arrow { transition: transform 200ms var(--ease-mech); }
-  .btn:hover .arrow { transform: translateX(3px); }
-
-  /* Links that draw their underline. */
-  .link-draw { text-decoration: none; background-image: linear-gradient(currentColor, currentColor); background-size: 0% 1px; background-position: 0 100%; background-repeat: no-repeat; transition: background-size 260ms var(--ease-mech); }
-  .link-draw:hover, .link-draw:focus-visible { background-size: 100% 1px; }
 
   /* Page transition: a quick navy wipe under the arc morph. */
   @media (prefers-reduced-motion: no-preference) {

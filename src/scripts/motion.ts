@@ -86,6 +86,28 @@ function init() {
         scrollTrigger: { trigger: el, start: 'top 88%', once: true },
       });
     });
+    // Groups: children rise one after another.
+    gsap.utils.toArray<HTMLElement>('[data-reveal-group]').forEach((group) => {
+      const items = Array.from(group.children) as HTMLElement[];
+      if (!items.length) return;
+      if (group.getBoundingClientRect().top < window.innerHeight) { gsap.set(items, { opacity: 1, y: 0 }); return; }
+      gsap.to(items, {
+        opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', stagger: 0.07,
+        scrollTrigger: { trigger: group, start: 'top 86%', once: true },
+      });
+    });
+
+    // --- Header CTA yields to the hero's own button ------------------------------
+    const hero = document.querySelector<HTMLElement>('.hero');
+    const headerCta = document.querySelector<HTMLElement>('[data-header-cta]');
+    if (hero && headerCta) {
+      headerCta.classList.add('is-hidden');
+      ScrollTrigger.create({
+        trigger: hero, start: 'bottom 96px',
+        onEnter: () => headerCta.classList.remove('is-hidden'),
+        onLeaveBack: () => headerCta.classList.add('is-hidden'),
+      });
+    }
 
     // --- Counters ---------------------------------------------------------------
     gsap.utils.toArray<HTMLElement>('[data-count]').forEach((el) => {

@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
-import Arc from '../components/Arc.astro';
 import { SITE, VALUES, CERTIFICATIONS, CLIENTS } from '../data/site';
 
 const description = 'Elvisfreg Nigeria Limited is an indigenous engineering services firm incorporated in August 2025 (RC 8734614), 100% Nigerian-owned, serving oil and gas, power and manufacturing.';
@@ -13,14 +12,11 @@ const description = 'Elvisfreg Nigeria Limited is an indigenous engineering serv
   </div>
 
   <section class="wrap pt-10 pb-16 md:pt-14 md:pb-20 grid gap-10 lg:grid-cols-12 lg:gap-16 items-start">
-    <div class="lg:col-span-8 prose">
+    <div class="lg:col-span-8 prose" data-reveal>
       <h1 class="h1">Company</h1>
       <p class="text-[1.125rem] text-ink-muted">{SITE.name} is an indigenous engineering services and industrial technology firm, incorporated in {SITE.incorporatedLabel} under the Companies and Allied Matters Act, RC {SITE.rc}. The company is wholly Nigerian-owned.</p>
       <p>We engineer electrical, power, automation, instrumentation and control systems for oil and gas, heavy manufacturing, power generation and commercial infrastructure. Our work covers design, installation, commissioning, maintenance, troubleshooting and upgrading, across conventional electrical installations and modern industrial automation: programmable logic controllers, human-machine interfaces, variable frequency drives, sensors, motor control systems and generator control panels.</p>
       <p>Our objective is plain: electrical and automation systems that are safe, reliable, energy-efficient, maintainable and fit for purpose, delivered to the applicable standard and the client's specification.</p>
-    </div>
-    <div class="lg:col-span-4">
-      <Arc class="max-w-[260px] lg:ml-auto" />
     </div>
   </section>
 
@@ -41,7 +37,7 @@ const description = 'Elvisfreg Nigeria Limited is an indigenous engineering serv
     <div class="section wrap">
       <h2 class="h2">Values</h2>
       <p class="measure mt-4 text-ink-muted">Five principles, one for each letter of PRIME.</p>
-      <dl class="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-5 m-0">
+      <dl class="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-5 m-0" data-reveal-group>
         {VALUES.map((v) => (
           <div class="border-t border-line pt-4">
             <dt class="flex items-baseline gap-3">
@@ -90,7 +86,9 @@ const description = 'Elvisfreg Nigeria Limited is an indigenous engineering serv
       <ul class="list-none m-0 p-0 mt-8 flex flex-wrap gap-x-8 gap-y-3 text-ink-muted max-w-[80ch]">
         {CLIENTS.map((c) => <li>{c}</li>)}
       </ul>
-      <p class="mt-10"><a href={SITE.profilePdf} class="btn">Download company profile (PDF)</a></p>
+      <p class="mt-10"><a href={SITE.profilePdf} class="btn">Download company profile (PDF)
+        <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 10l6 6 6-6M4 20h16"/></svg>
+      </a></p>
     </div>
   </section>
 </Base>
