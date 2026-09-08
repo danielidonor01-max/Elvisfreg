@@ -1,6 +1,9 @@
 ---
 import '@fontsource-variable/outfit';
 import '@fontsource-variable/jetbrains-mono';
+// The display headline is the LCP element on every page and needs Outfit;
+// preloading the latin file lets it paint on the first pass.
+import outfitLatin from '@fontsource-variable/outfit/files/outfit-latin-wght-normal.woff2?url';
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import Seo from '../components/Seo.astro';
@@ -34,6 +37,7 @@ const { title, description, path, noindex, ogType, jsonLd } = Astro.props;
         } catch (e) {}
       })();
     </script>
+    <link rel="preload" href={outfitLatin} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#fffbf9" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0b1b2b" media="(prefers-color-scheme: dark)" />

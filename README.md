@@ -45,11 +45,18 @@ PUBLIC_TURNSTILE_SITE_KEY= # both blank = bot check skipped
 TURNSTILE_SECRET_KEY=
 ```
 
+## Quality gate
+
+`lighthouserc.json` asserts performance ≥ 90, accessibility 100, best practices ≥ 95, SEO 100
+on five representative pages; `.github/workflows/ci.yml` runs it on every push. Measured
+locally on the production build (mobile emulation, uncompressed server): home 97/100/100/100,
+contact 100/100/100/100. Run locally with `node node_modules/lighthouse/cli/index.js <url>`.
+
 ## Before launch
 
 - [ ] Set the domain in `astro.config.mjs` (`SITE`) and `public/robots.txt`.
 - [ ] Drop the compressed company profile at `public/company-profile.pdf` (under 5 MB).
-- [ ] Add `public/og-default.png` (1200×630) or wire build-time OG generation.
+- [ ] `public/og-default.png` is a static default; per-page OG titles are a later step.
 - [ ] Replace `Placeholder` blocks with `<Picture>` once photography arrives.
 - [ ] Verify project copy in `src/data/projects.ts` with the client.
 - [ ] Resend domain verification (SPF, DKIM, DMARC) and Turnstile keys in Vercel.
