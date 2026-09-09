@@ -29,13 +29,12 @@ const [hq, lagos, usa] = OFFICES;
         <p class="tb-value text-ink-muted">Incorporated {SITE.incorporatedLabel}, CAMA</p>
       </div>
       <div class="col-span-12 md:col-span-6 lg:col-span-3">
-        <span class="tb-label">Registrations and memberships</span>
+        <span class="tb-label">Credentials</span>
         {CERTIFICATIONS.slice(0, 3).map((c) => <p class="tb-value">{c.name} <span class="text-ink-muted">— {c.detail}</span></p>)}
       </div>
       <div class="col-span-12 md:col-span-6 lg:col-span-3 tb-end">
-        <span class="tb-label">Sheet</span>
+        <span class="tb-label">Last updated</span>
         <p class="tb-value data">Rev {rev}</p>
-        <p class="tb-value text-ink-muted">Issued for use</p>
         <p class="tb-value text-ink-muted mt-1">{SITE.shortDescription}</p>
       </div>
 
@@ -63,7 +62,7 @@ const [hq, lagos, usa] = OFFICES;
       <nav class="col-span-12 md:col-span-4 lg:col-span-3 tb-last" aria-label="Footer">
         <span class="tb-label">Navigation</span>
         <ul class="list-none m-0 p-0 tb-value">
-          {[...NAV, { label: 'Help', href: '/help/' }].map((n) => <li><a href={n.href} class="link-quiet">{n.label}</a></li>)}
+          {[...NAV, { label: 'Quality and HSE', href: '/quality/' }, { label: 'Help', href: '/help/' }].map((n) => <li><a href={n.href} class="link-quiet">{n.label}</a></li>)}
         </ul>
       </nav>
       <nav class="col-span-12 md:col-span-8 lg:col-span-6 tb-last" aria-label="Legal">

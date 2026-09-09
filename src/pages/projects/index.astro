@@ -5,6 +5,8 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import { PROJECTS } from '../../data/projects';
 
 const description = 'Completed field work by Elvisfreg Nigeria Limited: engine and generator overhauls, instrument tubing, motor installation, offshore flow line maintenance and solar installation.';
+// Sectors in the order they first appear, for the filter.
+const sectors = Array.from(new Set(PROJECTS.map((p) => p.sector)));
 ---
 
 <Base title="Projects" description={description} path="/projects/">
@@ -12,14 +14,54 @@ const description = 'Completed field work by Elvisfreg Nigeria Limited: engine a
     <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Projects' }]} />
   </div>
 
-  <section class="wrap pt-10 pb-16 md:pt-14 md:pb-20">
-    <h1 class="h1">Projects</h1>
-    <p class="measure mt-6 text-[1.125rem] text-ink-muted">A record of completed field work. Each project is written the way a calibration is recorded: what was found, what was done, what was left.</p>
+  <section class="wrap pt-10 pb-10 md:pt-14 md:pb-12 grid gap-8 lg:grid-cols-12 lg:gap-16 items-end">
+    <div class="lg:col-span-7">
+      <h1 class="h1">Projects</h1>
+      <p class="measure mt-6 text-[1.125rem] text-ink-muted">A record of completed field work. Each project is written the way a calibration is recorded: what was found, what was done, what was left.</p>
+    </div>
+    <div class="lg:col-span-5" data-project-filter>
+      <p class="text-[0.9375rem] text-ink-muted" id="filter-label">By sector</p>
+      <div class="mt-3 flex flex-wrap gap-2" role="group" aria-labelledby="filter-label">
+        <button type="button" class="chip" data-sector="" aria-pressed="true">All</button>
+        {sectors.map((s) => <button type="button" class="chip" data-sector={s} aria-pressed="false">{s}</button>)}
+      </div>
+    </div>
   </section>
 
   <section class="border-t border-line">
-    <div class="section wrap grid gap-12 md:grid-cols-2 lg:grid-cols-3 md:gap-8" data-reveal-group>
-      {PROJECTS.map((p) => <ProjectCard project={p} headingLevel="h2" />)}
+    <div class="section wrap">
+      <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3 md:gap-8" data-reveal-group data-project-grid>
+        {PROJECTS.map((p) => <div data-sector={p.sector}><ProjectCard project={p} headingLevel="h2" /></div>)}
+      </div>
+      <p class="mt-10 text-ink-muted" data-project-empty hidden>No projects in this sector yet. <a href="/contact/" class="link">Tell us about yours.</a></p>
     </div>
   </section>
 </Base>
+
+<script>
+  function init() {
+    const root = document.querySelector<HTMLElement>('[data-project-filter]');
+    const grid = document.querySelector<HTMLElement>('[data-project-grid]');
+    const empty = document.querySelector<HTMLElement>('[data-project-empty]');
+    if (!root || !grid || root.dataset.bound) return;
+    root.dataset.bound = '1';
+    const chips = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-sector]'));
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-sector]'));
+    const apply = (sector: string, push: boolean) => {
+      chips.forEach((c) => c.setAttribute('aria-pressed', String((c.dataset.sector || '') === sector)));
+      let shown = 0;
+      cards.forEach((card) => { const on = !sector || card.dataset.sector === sector; card.hidden = !on; if (on) shown++; });
+      if (empty) empty.hidden = shown > 0;
+      if (push) {
+        const url = new URL(location.href);
+        if (sector) url.searchParams.set('sector', sector); else url.searchParams.delete('sector');
+        history.replaceState(null, '', url);
+      }
+    };
+    chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.sector || '', true)));
+    const initial = new URLSearchParams(location.search).get('sector') || '';
+    if (chips.some((c) => (c.dataset.sector || '') === initial)) apply(initial, false);
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

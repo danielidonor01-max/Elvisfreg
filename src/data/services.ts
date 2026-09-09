@@ -205,7 +205,7 @@ export const SERVICES: Service[] = [
       'Conventional and renewable energy systems, designed and installed to work together: generators, solar photovoltaic, battery storage, inverters and UPS, with the changeover and monitoring that keeps supply continuous. Solar comes as single-phase systems for homes and small businesses and three-phase systems for commercial and industrial sites, sized to the load and the budget, with high-specification systems for those who want them.',
     sections: [
       {
-        heading: 'Solar, sized to the site and the budget',
+        heading: 'Solar systems',
         intro: 'Single-phase for homes and small businesses, three-phase for commercial and industrial sites, each designed from the load and the hours of autonomy you want.',
         items: [
           'Single-phase solar systems with hybrid inverters and battery storage',

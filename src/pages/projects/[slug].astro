@@ -3,19 +3,21 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import Photo from '../../components/Photo.astro';
+import Button from '../../components/Button.astro';
 import { PROJECTS, type Project } from '../../data/projects';
-import { PROJECT_LEAD } from '../../data/project-images';
+import { PROJECT_LEAD, PROJECT_GALLERY } from '../../data/project-images';
 import { serviceBySlug } from '../../data/services';
 
-import Button from '../../components/Button.astro';
 export function getStaticPaths() {
   return PROJECTS.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
 }
 
 const { project } = Astro.props as { project: Project };
 const service = serviceBySlug(project.service);
-const gallery = Math.max(0, project.photos - 1);
 const lead = PROJECT_LEAD[project.slug];
+const gallery = PROJECT_GALLERY[project.slug] ?? [];
+const index = PROJECTS.findIndex((p) => p.slug === project.slug);
+const next = PROJECTS[(index + 1) % PROJECTS.length];
 ---
 
 <Base title={project.title} description={project.summary} path={`/projects/${project.slug}/`} ogType="article">
@@ -27,7 +29,7 @@ const lead = PROJECT_LEAD[project.slug];
     <header class="wrap pt-10 pb-10 md:pt-14">
       <h1 class="h1 max-w-[22ch]">{project.title}</h1>
       <p class="text-[0.9375rem] text-ink-muted mt-4">
-        {project.location}<span class="mx-3" aria-hidden="true">/</span>{project.discipline}
+        {project.location}<span class="mx-3" aria-hidden="true">/</span>{project.discipline}<span class="mx-3" aria-hidden="true">/</span><a href={`/projects/?sector=${encodeURIComponent(project.sector)}`} class="link-quiet">{project.sector}</a>
       </p>
     </header>
 
@@ -52,28 +54,31 @@ const lead = PROJECT_LEAD[project.slug];
       </div>
     </section>
 
-    {gallery > 0 && (
+    {gallery.length > 0 && (
       <section class="wrap pb-14 md:pb-20">
         <h2 class="sr-only">Photographs</h2>
-        <div class="grid gap-6 sm:grid-cols-2">
-          {Array.from({ length: gallery }).map((_, i) => (
-            <Placeholder label={`${project.title}, photograph ${i + 2} of ${project.photos}`} ratio="3/2" />
-          ))}
+        <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-group>
+          {gallery.map((g) => <Photo src={g.src} alt={g.alt} ratio="3/2" temp={g.temp} parallax sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />)}
         </div>
       </section>
     )}
 
     <footer class="border-t border-line">
-      <div class="section wrap grid gap-10 md:grid-cols-12">
-        <div class="md:col-span-6">
+      <div class="section wrap grid gap-10 md:grid-cols-12 items-start">
+        <div class="md:col-span-4">
           <h2 class="h3">Service</h2>
           {service && <p class="mt-3"><a href={`/services/${service.slug}/`} class="link">{service.title}</a></p>}
         </div>
-        <div class="md:col-span-6">
+        <div class="md:col-span-4">
           <h2 class="h3">Similar work needed?</h2>
           <div class="mt-4">
             <Button href={`/contact/?service=${project.service}`} variant="primary">Discuss a similar project</Button>
           </div>
+        </div>
+        <div class="md:col-span-4">
+          <h2 class="h3">Next project</h2>
+          <p class="mt-3"><a href={`/projects/${next.slug}/`} class="link">{next.title}</a></p>
+          <p class="mt-1 text-[0.9375rem] text-ink-muted">{next.location}</p>
         </div>
       </div>
     </footer>

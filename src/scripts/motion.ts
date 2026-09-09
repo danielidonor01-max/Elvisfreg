@@ -7,7 +7,7 @@
  *   [data-reveal]            rise-and-fade in once when scrolled to (CSS hides it only when html.has-motion)
  *   [data-reveal-group]      children rise one after another
  *   [data-split]             the hero headline: words rise in on load (once per session)
- *   h1.h1, h2.h2             page and section titles: lines rise out of a mask as they arrive
+ *   h2.h2                    section titles: lines rise out of a mask as they arrive
  *   .hero                    photograph and text drift at different rates with the scroll
  *   .photo-parallax          a card photograph drifts inside its frame with the scroll
  *   [data-count="90"]        number counts up from 0 when scrolled to
@@ -74,7 +74,7 @@ function wire(root: ParentNode, all: boolean) {
   });
 
   // --- Titles: lines rise out of a mask ------------------------------------------
-  pick<HTMLElement>('h1.h1, h2.h2').forEach((h) => {
+  pick<HTMLElement>('h2.h2').forEach((h) => {
     if (h.hasAttribute('data-split') || h.offsetParent === null || onScreen(h)) return;
     splits.push(SplitText.create(h, {
       type: 'lines', mask: 'lines', autoSplit: true, linesClass: 'ln',

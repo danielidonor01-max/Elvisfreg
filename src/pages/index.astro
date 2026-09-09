@@ -9,7 +9,7 @@ import EnquiryForm from '../components/EnquiryForm.astro';
 import ClientWall from '../components/ClientWall.astro';
 import UpdatesCta from '../components/UpdatesCta.astro';
 import StageTabs from '../components/StageTabs.astro';
-import { SITE } from '../data/site';
+import { SITE, SECTORS } from '../data/site';
 import { PROJECTS } from '../data/projects';
 import heroImage from '../assets/temp/hero-substation.jpg';
 import { getImage } from 'astro:assets';
@@ -29,8 +29,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
     <Drafting />
     <div class="wrap relative z-10 w-full pt-36 pb-12 md:pt-44 md:pb-16">
       <div class="hero-text max-w-[60rem]">
-        <p class="data text-ink-muted"><span class="whitespace-nowrap">Incorporated {SITE.incorporatedLabel}</span><span class="mx-3" aria-hidden="true">/</span><span class="whitespace-nowrap">RC {SITE.rc}</span></p>
-        <h1 class="display mt-5 max-w-[12ch]" data-split>{SITE.tagline}</h1>
+        <h1 class="display max-w-[12ch]" data-split>{SITE.tagline}</h1>
         <p class="mt-7 text-[1.125rem] md:text-[1.25rem] text-ink-muted leading-relaxed max-w-[58ch]">{SITE.heroSub}</p>
       </div>
     </div>
@@ -61,8 +60,11 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
         </div>
         <a href="/projects/" class="link-quiet">All projects</a>
       </div>
+      <ul class="mt-6 flex flex-wrap gap-2 list-none m-0 p-0" aria-label="Work by sector" data-reveal>
+        {SECTORS.filter((x) => x !== 'Other').map((x) => <li><a href={`/projects/?sector=${encodeURIComponent(x)}`} class="chip">{x}</a></li>)}
+      </ul>
       <div class="mt-10 grid gap-10 md:grid-cols-3 md:gap-8" data-reveal-group>
-        {featured.map((p) => <ProjectCard project={p} />)}
+        {featured.map((p, i) => <div class:list={{ 'hidden md:block': i === 2 }}><ProjectCard project={p} /></div>)}
       </div>
     </div>
   </section>
@@ -71,17 +73,11 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
   <section class="border-t border-line" id="method" data-rail-section="03">
     <div class="section wrap">
       <div class="grid gap-10 lg:grid-cols-12 lg:gap-16" data-reveal>
-        <div class="lg:col-span-7">
+        <div class="lg:col-span-8">
           <p class="data text-ink-muted">03</p>
           <h2 class="h2 mt-2 max-w-[20ch]">Calibrated to the decimal.</h2>
           <p class="measure mt-4 text-ink-muted">A calibration is only worth what its record can prove. We record the instrument as found, test at five points across the span, and record it as left. The difference is the evidence — and nothing is energised until every parameter is verified.</p>
         </div>
-        <dl class="lg:col-span-5 grid grid-cols-2 gap-x-6 gap-y-6 m-0 self-end" data-reveal-group>
-          <div><dt class="text-[0.9375rem] text-ink-muted">Nigerian-owned</dt><dd class="m-0 mt-1 font-mono text-[2rem] leading-none tabular-nums"><span data-count="100" data-suffix="%">100%</span></dd></div>
-          <div><dt class="text-[0.9375rem] text-ink-muted">Nigerian workforce</dt><dd class="m-0 mt-1 font-mono text-[2rem] leading-none tabular-nums"><span data-count="90" data-suffix="%">90%</span></dd></div>
-          <div><dt class="text-[0.9375rem] text-ink-muted">Points per calibration</dt><dd class="m-0 mt-1 font-mono text-[2rem] leading-none tabular-nums"><span data-count="5">5</span></dd></div>
-          <div><dt class="text-[0.9375rem] text-ink-muted">Offices</dt><dd class="m-0 mt-1 font-mono text-[2rem] leading-none tabular-nums"><span data-count="3">3</span></dd></div>
-        </dl>
       </div>
       <div class="mt-14 border-t border-line pt-14" data-reveal>
         <Gauge />

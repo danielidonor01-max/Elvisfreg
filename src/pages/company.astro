@@ -1,11 +1,19 @@
 ---
+/**
+ * Company: who the firm is, the people, the places, how it works, and what
+ * backs it up. Leadership names, roles and portraits are still to come from
+ * Elvisfreg; the team block describes the workforce from the profile until then.
+ */
 import Base from '../layouts/Base.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import ClientWall from '../components/ClientWall.astro';
-import { SITE, VALUES, CERTIFICATIONS } from '../data/site';
-
+import Photo from '../components/Photo.astro';
 import Button from '../components/Button.astro';
-const description = 'Elvisfreg Nigeria Limited is an indigenous engineering services firm incorporated in August 2025 (RC 8734614), 100% Nigerian-owned, serving oil and gas, power and manufacturing.';
+import { SITE, VALUES, CERTIFICATIONS, OFFICES } from '../data/site';
+import teamImage from '../assets/temp/engineer-industrial.jpg';
+import workshopImage from '../assets/temp/technician-panel.jpg';
+
+const description = 'Elvisfreg Nigeria Limited is an indigenous engineering services firm, wholly Nigerian-owned, with offices in Warri, Lagos and Houston, serving oil and gas, power and manufacturing.';
 ---
 
 <Base title="Company" description={description} path="/company/">
@@ -13,33 +21,89 @@ const description = 'Elvisfreg Nigeria Limited is an indigenous engineering serv
     <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Company' }]} />
   </div>
 
-  <section class="wrap pt-10 pb-16 md:pt-14 md:pb-20 grid gap-10 lg:grid-cols-12 lg:gap-16 items-start">
-    <div class="lg:col-span-8 prose" data-reveal>
-      <h1 class="h1">Company</h1>
-      <p class="text-[1.125rem] text-ink-muted">{SITE.name} is an indigenous engineering services and industrial technology firm, incorporated in {SITE.incorporatedLabel} under the Companies and Allied Matters Act, RC {SITE.rc}. The company is wholly Nigerian-owned.</p>
-      <p>We engineer electrical, power, automation, instrumentation and control systems for oil and gas, heavy manufacturing, power generation and commercial infrastructure. Our work covers design, installation, commissioning, maintenance, troubleshooting and upgrading, across conventional electrical installations and modern industrial automation: programmable logic controllers, human-machine interfaces, variable frequency drives, sensors, motor control systems and generator control panels.</p>
-      <p>Our objective is plain: electrical and automation systems that are safe, reliable, energy-efficient, maintainable and fit for purpose, delivered to the applicable standard and the client's specification.</p>
+  <section class="wrap pt-10 pb-14 md:pt-14 md:pb-20 grid gap-10 lg:grid-cols-12 lg:gap-16 items-end">
+    <div class="lg:col-span-7" data-reveal>
+      <h1 class="h1">The precision behind Nigeria's heavy industry.</h1>
+      <p class="measure mt-6 text-[1.125rem] text-ink-muted">{SITE.name} is an indigenous engineering services and industrial technology firm, wholly Nigerian-owned, working from Warri, Lagos and Houston. We design, install, commission and maintain the electrical, power, automation and instrumentation systems that keep oil and gas, power and manufacturing sites running.</p>
+    </div>
+    <dl class="lg:col-span-5 grid grid-cols-2 gap-6 m-0" data-reveal-group>
+      <div><dt class="text-[0.9375rem] text-ink-muted">Registered</dt><dd class="m-0 mt-1 font-medium">RC <span class="data">{SITE.rc}</span></dd></div>
+      <div><dt class="text-[0.9375rem] text-ink-muted">Incorporated</dt><dd class="m-0 mt-1 font-medium">{SITE.incorporatedLabel}, CAMA</dd></div>
+      <div><dt class="text-[0.9375rem] text-ink-muted">Ownership</dt><dd class="m-0 mt-1 font-medium">100% Nigerian</dd></div>
+      <div><dt class="text-[0.9375rem] text-ink-muted">Offices</dt><dd class="m-0 mt-1 font-medium">Warri, Lagos, Houston</dd></div>
+    </dl>
+  </section>
+
+  <!-- People -->
+  <section class="border-t border-line" id="people">
+    <div class="section wrap grid gap-10 lg:grid-cols-12 lg:gap-16 items-center">
+      <div class="lg:col-span-6" data-reveal>
+        <Photo src={teamImage} alt="Engineer at work on industrial equipment" ratio="4/3" temp parallax sizes="(min-width: 1024px) 50vw, 100vw" />
+      </div>
+      <div class="lg:col-span-6" data-reveal>
+        <p class="text-[0.9375rem] text-ink-muted">People</p>
+        <h2 class="h2 mt-2">Engineers who test what they build.</h2>
+        <p class="measure mt-4 text-ink-muted">Our testing engineers, Nigerian and foreign-based, are qualified in every area the company works in, and the same people who install a system commission it and come back to maintain it. Roughly nine in ten of the workforce are Nigerian; foreign specialists are engaged where a job calls for them, and Nigerian staff understudy them so the know-how stays.</p>
+        <p class="measure mt-4 text-ink-muted">Training runs inside the company and out, and a student mentorship and industrial training programme gives engineering students hands-on time on real work.</p>
+      </div>
     </div>
   </section>
 
-  <section class="border-t border-line">
-    <div class="section wrap grid gap-12 md:grid-cols-2 lg:gap-16">
-      <div>
-        <h2 class="h2">Vision</h2>
-        <p class="measure mt-4 text-ink-muted">To be West Africa's most trusted benchmark in high-integrity electrical engineering and intelligent industrial automation, powering critical infrastructure with absolute reliability, safety and operational precision.</p>
-      </div>
-      <div>
-        <h2 class="h2">Mission</h2>
-        <p class="measure mt-4 text-ink-muted">To engineer, integrate and sustain robust electrical and automation architectures that eliminate downtime, maximise energy efficiency, safeguard operational personnel and elevate Nigeria's industrial self-reliance.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="border-t border-line">
+  <!-- Places -->
+  <section class="band border-t border-line" id="offices">
     <div class="section wrap">
-      <h2 class="h2">Values</h2>
-      <p class="measure mt-4 text-ink-muted">Five principles, one for each letter of PRIME.</p>
-      <dl class="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-5 m-0" data-reveal-group>
+      <div data-reveal>
+        <p class="text-[0.9375rem] text-ink-muted">Places</p>
+        <h2 class="h2 mt-2">Three offices, one crew.</h2>
+        <p class="measure mt-4 text-ink-muted">Work is run from Warri, with Lagos covering the south-west and Houston keeping us close to the operators and suppliers we work with. Site crews travel from wherever the job is nearest.</p>
+      </div>
+      <ul class="mt-10 grid gap-5 md:grid-cols-3 list-none m-0 p-0" data-reveal-group>
+        {OFFICES.map((o) => (
+          <li class="tier">
+            <p class="text-[0.9375rem] text-ink-muted">{o.isHq ? 'Head office' : 'Office'}</p>
+            <h3 class="h3 mt-1">{o.city}</h3>
+            <address class="not-italic mt-3 text-ink-muted">{o.lines.map((l) => <span class="block">{l}</span>)}</address>
+            <p class="mt-5 pt-4 border-t border-line text-[0.9375rem]">Monday to Friday, <span class="data">08:00</span> to <span class="data">17:00</span></p>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-6 text-[0.9375rem] text-ink-muted">Phone <a href={`tel:${SITE.phoneE164}`} class="link num">{SITE.phoneDisplay}</a>, <a href={SITE.whatsapp} target="_blank" rel="noopener" class="link">WhatsApp</a>, or <a href={`mailto:${SITE.email}`} class="link">{SITE.email}</a>.</p>
+    </div>
+  </section>
+
+  <!-- How we work -->
+  <section class="border-t border-line" id="how">
+    <div class="section wrap grid gap-10 lg:grid-cols-12 lg:gap-16 items-center">
+      <div class="lg:col-span-6 lg:order-2" data-reveal>
+        <Photo src={workshopImage} alt="Technician working on an electrical control panel" ratio="4/3" temp parallax sizes="(min-width: 1024px) 50vw, 100vw" />
+      </div>
+      <div class="lg:col-span-6 lg:order-1" data-reveal>
+        <p class="text-[0.9375rem] text-ink-muted">How we work</p>
+        <h2 class="h2 mt-2">Recorded as found, proven as left.</h2>
+        <p class="measure mt-4 text-ink-muted">Every job starts by recording what is there and ends with a record of what was verified, whether it is a calibration certificate, an installation test sheet or a commissioning record. On site, the work runs under a permit, after a hazard analysis, with the equipment proved dead before anyone touches it.</p>
+        <p class="mt-6"><Button href="/quality/">Quality and HSE</Button></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vision, mission, values -->
+  <section class="band border-t border-line">
+    <div class="section wrap">
+      <div class="grid gap-12 md:grid-cols-2 lg:gap-16" data-reveal-group>
+        <div>
+          <h2 class="h2">Vision</h2>
+          <p class="measure mt-4 text-ink-muted">To be West Africa's most trusted benchmark in high-integrity electrical engineering and intelligent industrial automation, powering critical infrastructure with absolute reliability, safety and operational precision.</p>
+        </div>
+        <div>
+          <h2 class="h2">Mission</h2>
+          <p class="measure mt-4 text-ink-muted">To engineer, integrate and sustain robust electrical and automation architectures that eliminate downtime, maximise energy efficiency, safeguard operational personnel and elevate Nigeria's industrial self-reliance.</p>
+        </div>
+      </div>
+      <div class="mt-16" data-reveal>
+        <h2 class="h3">Values</h2>
+        <p class="mt-2 text-ink-muted">Five principles, one for each letter of PRIME.</p>
+      </div>
+      <dl class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-5 m-0" data-reveal-group>
         {VALUES.map((v) => (
           <div class="border-t border-line pt-4">
             <dt class="flex items-baseline gap-3">
@@ -53,10 +117,11 @@ const description = 'Elvisfreg Nigeria Limited is an indigenous engineering serv
     </div>
   </section>
 
+  <!-- Proof -->
   <section class="border-t border-line">
     <div class="section wrap grid gap-12 lg:grid-cols-12 lg:gap-16">
-      <div class="lg:col-span-5">
-        <h2 class="h2">Certification and assurance</h2>
+      <div class="lg:col-span-5" data-reveal>
+        <h2 class="h2">Credentials</h2>
         <dl class="mt-8 grid gap-5 m-0">
           {CERTIFICATIONS.map((c) => (
             <div>
@@ -65,9 +130,8 @@ const description = 'Elvisfreg Nigeria Limited is an indigenous engineering serv
             </div>
           ))}
         </dl>
-        <p class="measure mt-8 text-ink-muted">Our testing engineers, Nigerian and foreign-based, are qualified in the company's areas of service. The purpose is to improve the reliability of the client's plant: less rework, more uptime.</p>
       </div>
-      <div class="lg:col-span-7 prose">
+      <div class="lg:col-span-7 prose" data-reveal>
         <h2 class="h2">Nigerian content</h2>
         <p class="text-ink-muted">The company runs a Nigerian Content Plan in all its activities.</p>
         <ul>
@@ -82,13 +146,15 @@ const description = 'Elvisfreg Nigeria Limited is an indigenous engineering serv
     </div>
   </section>
 
-  <section class="border-t border-line">
+  <section class="band border-t border-line">
     <div class="section wrap">
-      <h2 class="h2">Clients and partners</h2>
-      <div class="mt-10">
+      <div data-reveal>
+        <h2 class="h2">Clients and partners</h2>
+      </div>
+      <div class="mt-10" data-reveal>
         <ClientWall variant="grid" />
       </div>
-      <p class="mt-10"><Button href={SITE.profilePdf} variant="primary" icon="download">Download company profile (PDF)</Button></p>
+      <p class="mt-10" data-reveal><Button href={SITE.profilePdf} variant="primary" icon="download">Download company profile (PDF)</Button></p>
     </div>
   </section>
 </Base>

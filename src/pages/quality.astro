@@ -1,0 +1,140 @@
+---
+/**
+ * Quality and HSE. The quality method is taken from the company profile
+ * (as-found and as-left records, multi-point SOPs, uncertainty, proficiency
+ * testing, inter-laboratory comparison). The site-practice list under HSE is a
+ * DRAFT of standard practice written to the profile's safety value — Elvisfreg's
+ * HSE lead must confirm or replace each line before launch.
+ */
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Button from '../components/Button.astro';
+import CalibrationRecord from '../components/CalibrationRecord.astro';
+import { CERTIFICATIONS, SITE } from '../data/site';
+
+const description = 'How Elvisfreg Nigeria Limited controls quality and works safely: as-found and as-left records, multi-point procedures, measurement uncertainty, proficiency testing, and site practice built around an accident-free workplace.';
+
+const QUALITY = [
+  { name: 'As-found record', body: 'The state of an instrument or system is recorded before anything is adjusted, so the client can judge what it has been reporting since the last visit and whether earlier work was compromised.' },
+  { name: 'Procedure compliance', body: 'Every measurement follows a written step-by-step procedure, such as multi-point testing at 0, 25, 50, 75 and 100 percent of span, so two engineers on two days produce the same result.' },
+  { name: 'As-left record', body: 'Final verified readings are documented after any adjustment, maintenance or repair. The as-found and as-left readings together are the evidence of the work.' },
+  { name: 'Measurement uncertainty', body: 'Expanded uncertainty is calculated for each result from the reference standard, environmental drift and instrument resolution, and stated on the certificate.' },
+  { name: 'Proficiency testing', body: 'The company takes part in structured proficiency testing to validate its equipment, verify its procedures and benchmark its accuracy against leading laboratories.' },
+  { name: 'Inter-laboratory comparison', body: 'Routine comparisons with international calibration facilities check that our results align with theirs, and show where a procedure needs attention before a client does.' },
+];
+
+const STANDARDS = [
+  { name: 'IEC and ISO', body: 'Low-voltage installations to IEC 60364, assemblies to IEC 61439, and measurement practice in line with ISO/IEC guidance.' },
+  { name: 'IEEE', body: 'Power system design and testing practice, applied where the client specification calls for it.' },
+  { name: 'Nigerian regulation', body: 'NUPRC permits and DPR guidelines for oil and gas work, NERC requirements for power, and the client\'s own site rules on every job.' },
+];
+
+const HSE = [
+  'A job hazard analysis and a toolbox talk before every task, recorded and signed.',
+  'Work on client sites under the site\'s permit-to-work system; no permit, no work.',
+  'Isolation, lock-out and proving dead before work on any equipment that can be energised.',
+  'Personal protective equipment specified for the task, supplied by the company, worn without exception.',
+  'Incidents and near-misses reported the same day, investigated, and closed with an action.',
+  'Waste oil, batteries and electrical scrap handed to licensed handlers, with the record kept.',
+];
+---
+
+<Base title="Quality and HSE" description={description} path="/quality/">
+  <div class="wrap pt-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Quality and HSE' }]} />
+  </div>
+
+  <section class="wrap pt-10 pb-14 md:pt-14 md:pb-20 grid gap-8 lg:grid-cols-12 lg:gap-16 items-end">
+    <div class="lg:col-span-8">
+      <h1 class="h1">Quality is recorded. Safety is planned.</h1>
+      <p class="measure mt-6 text-[1.125rem] text-ink-muted">Nothing we do is finished until it is written down, and nothing starts until the risks have been. This page sets out how we control the quality of our work and how we keep people safe while doing it.</p>
+    </div>
+  </section>
+
+  <section class="border-t border-line" id="quality">
+    <div class="section wrap">
+      <div class="grid gap-8 lg:grid-cols-12 lg:gap-16" data-reveal>
+        <div class="lg:col-span-7">
+          <p class="text-[0.9375rem] text-ink-muted">Quality control and assurance</p>
+          <h2 class="h2 mt-2">Six controls, applied to every measurement.</h2>
+          <p class="measure mt-4 text-ink-muted">These are the controls the company holds itself to during every measurement and calibration phase. They are why a certificate from us can be relied on by the next engineer, and the next auditor.</p>
+        </div>
+      </div>
+      <ol class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3 list-none m-0 p-0" data-reveal-group>
+        {QUALITY.map((q, i) => (
+          <li class="border-t border-line pt-5">
+            <p class="data text-ink-muted">{String(i + 1).padStart(2, '0')}</p>
+            <h3 class="h3 mt-2">{q.name}</h3>
+            <p class="mt-3 text-ink-muted">{q.body}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="mt-14 grid gap-10 lg:grid-cols-12 lg:gap-16 items-start">
+        <div class="lg:col-span-5" data-reveal>
+          <h3 class="h3">What the record looks like</h3>
+          <p class="mt-3 text-ink-muted">Every calibration leaves with a record in this form: the as-found and as-left readings at each point, and the error between them. The same discipline runs through installation test certificates and commissioning records.</p>
+        </div>
+        <div class="lg:col-span-7" data-reveal><CalibrationRecord /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band border-t border-line" id="standards">
+    <div class="section wrap grid gap-10 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-4" data-reveal>
+        <h2 class="h2">Standards we work to</h2>
+        <p class="mt-4 text-ink-muted">Named in the design compliance statement for each job, alongside the client's own specification.</p>
+      </div>
+      <dl class="lg:col-span-8 grid gap-8 md:grid-cols-3 m-0" data-reveal-group>
+        {STANDARDS.map((s) => (
+          <div class="border-t border-line pt-4">
+            <dt class="font-medium">{s.name}</dt>
+            <dd class="m-0 mt-2 text-[0.9375rem] text-ink-muted">{s.body}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="border-t border-line" id="hse">
+    <div class="section wrap grid gap-10 lg:grid-cols-12 lg:gap-16 items-start">
+      <div class="lg:col-span-5" data-reveal>
+        <p class="text-[0.9375rem] text-ink-muted">Health, safety and environment</p>
+        <h2 class="h2 mt-2">An accident-free workplace, by design.</h2>
+        <p class="measure mt-4 text-ink-muted">The company's commitment is to the health and safety of its people and everyone around its work, going beyond the legal requirement to provide an accident-free workplace. On site that commitment is a set of habits, not a poster.</p>
+      </div>
+      <ul class="lg:col-span-7 list-none m-0 p-0 grid gap-3" data-reveal-group>
+        {HSE.map((h) => (
+          <li class="doc-card">
+            <svg class="doc-glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+            <span class="text-[0.9375rem]">{h}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="band border-t border-line">
+    <div class="section wrap grid gap-10 md:grid-cols-12 items-start">
+      <div class="md:col-span-6" data-reveal>
+        <h2 class="h2">Credentials</h2>
+        <dl class="mt-6 grid gap-4 m-0">
+          {CERTIFICATIONS.map((c) => (
+            <div class="flex flex-wrap items-baseline gap-x-3">
+              <dt class="font-medium">{c.name}</dt>
+              <dd class="m-0 text-[0.9375rem] text-ink-muted">{c.detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <div class="md:col-span-6" data-reveal>
+        <h2 class="h2">Need our HSE and quality documents for a tender?</h2>
+        <p class="mt-4 text-ink-muted measure">Ask and we will send the policy set, the certificates and a sample record.</p>
+        <div class="mt-6 flex flex-wrap gap-x-6 gap-y-4 items-center">
+          <Button href="/contact/" variant="primary">Request the documents</Button>
+          <a href={`mailto:${SITE.email}`} class="link break-words">{SITE.email}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

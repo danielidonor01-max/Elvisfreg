@@ -27,7 +27,7 @@ const byStage = STAGES.map((stage) => ({ stage, services: SERVICES.filter((s) =>
       <ul class="list-none m-0 p-0 mt-3 flex flex-wrap gap-2">
         {byStage.map(({ stage }) => (
           <li>
-            <a href={`#${stage.slug}`} class="tab">
+            <a href={`#${stage.slug}`} class="chip">
               <span class="data" aria-hidden="true">{stage.id}</span>
               <span class="sr-only">Stage {stage.id}, </span>
               <span>{stage.short}</span>
@@ -48,7 +48,7 @@ const byStage = STAGES.map((stage) => ({ stage, services: SERVICES.filter((s) =>
             <p class="mt-4 text-ink-muted measure">{stage.body}</p>
           </div>
           <div class="lg:col-span-5 lg:justify-self-end">
-            <Button href={`/contact/?service=${stage.services[0]}`} variant="primary">{stage.cta}</Button>
+            <Button href={`/contact/?service=${stage.services[0]}`}>{stage.cta}</Button>
           </div>
         </div>
 

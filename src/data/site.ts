@@ -14,7 +14,7 @@ export const SITE = {
   whatsapp: 'https://wa.me/2347069986848',
   tagline: 'Engineered for zero downtime.',
   heroSub:
-    'The precision behind Nigeria\'s heavy industry: high-integrity power, intelligent control and calibrated instrumentation for oil and gas, power and manufacturing sites — designed to IEC and IEEE practice, proven before energisation.',
+    'High-integrity power, intelligent control and calibrated instrumentation for Nigeria\'s oil and gas, power and manufacturing sites.',
   description:
     'High-integrity electrical, automation and calibration engineering for Nigeria\'s oil and gas, power and manufacturing sites. Designed to IEC and IEEE practice, proven before energisation.',
   shortDescription:

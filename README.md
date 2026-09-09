@@ -80,5 +80,7 @@ contact 100/100/100/100. Run locally with `node node_modules/lighthouse/cli/inde
 - [ ] Resend domain verification (SPF, DKIM, DMARC) and Turnstile keys in Vercel.
 - [ ] Updates sign-up (`/api/updates/`) forwards each address to the mailbox for now; choose a list provider (or keep the mailbox) and say so in the privacy policy.
 - [ ] Legal pages (`/privacy/`, `/terms/`, `/cookies/`, `/accessibility/`, `/legal/`) are drafts dated 8 September 2026 — have them reviewed and bump the date.
+- [ ] `/quality/`: the HSE site-practice list is drafted from standard practice; the HSE lead must confirm or replace each line. The contact page says replies come "usually within one working day" — confirm or remove.
+- [ ] Company page: leadership names, roles and portraits are still needed; the People block describes the workforce until then.
 - [ ] Engineers to confirm the standards named in `src/data/stages.ts` (IEC 60364, IEC 61439), the deliverables per stage, the `story` paragraphs in `src/data/services.ts`, the illustrative readings in `src/components/figures/` (test voltages, hold periods, action levels), and the solar sizing assumptions and tier descriptions in `SolarSection.astro` / `SolarSizer.astro` (five peak sun hours, 25 % system loss, 80 % depth of discharge).
 - [ ] Help page answers (`src/data/faq.ts`, one group per lifecycle stage plus general) are drafts — engineers to confirm each answer.
