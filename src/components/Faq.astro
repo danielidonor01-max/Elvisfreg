@@ -1,0 +1,29 @@
+---
+/**
+ * A list of questions as native disclosures. No script: <details> gives the
+ * open/close, the `name` attribute makes each group exclusive where the
+ * browser supports it, and the height animates where `interpolate-size` does.
+ */
+import type { FaqItem } from '../data/faq';
+
+interface Props {
+  items: FaqItem[];
+  group: string;
+}
+
+const { items, group } = Astro.props;
+---
+
+<div class="faq-list" data-reveal-group>
+  {items.map((it) => (
+    <details class="faq" name={`faq-${group}`}>
+      <summary class="faq-q">
+        <span>{it.q}</span>
+        <span class="faq-icon" aria-hidden="true">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 1v10M1 6h10" /></svg>
+        </span>
+      </summary>
+      <div class="faq-a"><p>{it.a}</p></div>
+    </details>
+  ))}
+</div>

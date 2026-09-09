@@ -79,4 +79,4 @@ contact 100/100/100/100. Run locally with `node node_modules/lighthouse/cli/inde
 - [ ] Resend domain verification (SPF, DKIM, DMARC) and Turnstile keys in Vercel.
 - [ ] Legal pages (`/privacy/`, `/terms/`, `/cookies/`, `/accessibility/`, `/legal/`) are drafts dated 8 September 2026 — have them reviewed and bump the date.
 - [ ] Engineers to confirm the standards named in `src/data/stages.ts` (IEC 60364, IEC 61439) and the deliverables list per stage.
-- [ ] Sector help/FAQ section (one per lifecycle stage) is planned, not built.
+- [ ] Help page answers (`src/data/faq.ts`, one group per lifecycle stage plus general) are drafts — engineers to confirm each answer.

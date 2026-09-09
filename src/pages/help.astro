@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Faq from '../components/Faq.astro';
+import { FAQ_GROUPS } from '../data/faq';
+import { SITE } from '../data/site';
+
+const description = 'Questions about design, installation, automation, calibration and maintenance work with Elvisfreg Nigeria Limited, answered stage by stage.';
+
+const jsonLd = [{
+  '@type': 'FAQPage',
+  mainEntity: FAQ_GROUPS.flatMap((g) => g.items).map((it) => ({
+    '@type': 'Question',
+    name: it.q,
+    acceptedAnswer: { '@type': 'Answer', text: it.a },
+  })),
+}];
+---
+
+<Base title="Help" description={description} path="/help/" jsonLd={jsonLd}>
+  <div class="wrap pt-8">
+    <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Help' }]} />
+  </div>
+
+  <section class="wrap pt-10 pb-14 md:pt-14 md:pb-20">
+    <h1 class="h1">Help</h1>
+    <p class="measure mt-6 text-[1.125rem] text-ink-muted">The questions we are asked about each stage of the work, answered by the engineers who do it. If yours is not here, call or write and we will answer it directly.</p>
+  </section>
+
+  <section class="border-t border-line">
+    <div class="section wrap grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
+      <nav class="lg:col-span-4 lg:sticky lg:top-28" aria-label="Question groups">
+        <p class="text-[0.9375rem] text-ink-muted">Contents</p>
+        <ol class="list-none m-0 p-0 mt-3 border-b border-line">
+          {FAQ_GROUPS.map((g) => (
+            <li>
+              <a href={`#${g.slug}`} class="link-quiet flex items-baseline gap-4 py-2.5 border-t border-line">
+                <span class="data text-ink-muted w-[2ch] shrink-0" aria-hidden="true">{g.stage ?? '—'}</span>
+                <span>{g.name}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <div class="lg:col-span-8 flex flex-col gap-16 md:gap-20">
+        {FAQ_GROUPS.map((g) => (
+          <section id={g.slug} class="scroll-mt-28" aria-labelledby={`${g.slug}-title`}>
+            <p class="text-[0.9375rem] text-ink-muted">
+              {g.stage && <><span class="data" aria-hidden="true">{g.stage}</span><span class="sr-only">Stage {g.stage}, </span><span class="ml-3">{g.name}</span></>}
+              {!g.stage && g.name}
+            </p>
+            <h2 id={`${g.slug}-title`} class="h2 mt-2">{g.headline}</h2>
+            <div class="mt-8">
+              <Faq items={g.items} group={g.slug} />
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-line">
+    <div class="section wrap grid gap-10 md:grid-cols-12 items-start">
+      <div class="md:col-span-6" data-reveal>
+        <h2 class="h2">Still have a question?</h2>
+        <p class="mt-4 text-ink-muted measure">Ask it directly. An engineer answers, not a call centre.</p>
+      </div>
+      <div class="md:col-span-6 flex flex-wrap gap-x-6 gap-y-4 items-center md:pt-2" data-reveal>
+        <a href="/contact/" class="btn btn-primary">Request a quotation
+          <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href={`tel:${SITE.phoneE164}`} class="link num">{SITE.phoneDisplay}</a>
+        <a href={SITE.whatsapp} target="_blank" rel="noopener" class="link">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</Base>

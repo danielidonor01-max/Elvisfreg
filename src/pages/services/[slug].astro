@@ -2,6 +2,8 @@
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import CalibrationRecord from '../../components/CalibrationRecord.astro';
+import Faq from '../../components/Faq.astro';
+import { faqForStage } from '../../data/faq';
 import { SERVICES, serviceBySlug, type Service } from '../../data/services';
 import { stageById } from '../../data/stages';
 import { SITE } from '../../data/site';
@@ -16,6 +18,7 @@ const related = service.related.map((slug) => serviceBySlug(slug)!).filter(Boole
 const origin = Astro.site?.toString().replace(/\/$/, '') ?? '';
 const threeUp = service.sections.length === 3;
 const showRecord = service.slug === 'instrumentation-calibration';
+const questions = faqForStage(primaryStage.id);
 
 const jsonLd = [{
   '@type': 'Service',
@@ -102,6 +105,21 @@ const jsonLd = [{
         <div class:list={['mt-12 grid gap-10', { 'lg:grid-cols-12 lg:gap-16 items-start': showRecord }]}>
           {service.sequence.note && <p class:list={['measure text-ink-muted', { 'lg:col-span-6': showRecord }]} data-reveal>{service.sequence.note}</p>}
           {showRecord && <div class="lg:col-span-6" data-reveal><CalibrationRecord /></div>}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {questions.length > 0 && (
+    <section class="border-t border-line">
+      <div class="section wrap grid gap-10 lg:grid-cols-12 lg:gap-16">
+        <div class="lg:col-span-4" data-reveal>
+          <h2 class="h2">Common questions</h2>
+          <p class="mt-4 text-ink-muted">Asked about stage <span class="data">{primaryStage.id}</span>, {primaryStage.name.toLowerCase()}.</p>
+          <p class="mt-4"><a href={`/help/#${primaryStage.slug}`} class="link">All questions</a></p>
+        </div>
+        <div class="lg:col-span-8">
+          <Faq items={questions} group={service.slug} />
         </div>
       </div>
     </section>
