@@ -67,6 +67,10 @@ const BY_STAGE: Record<StageId, FaqItem[]> = {
       a: 'All three. Domestic work runs from new building wiring to solar and inverter systems; commercial covers distribution boards, emergency lighting, UPS and power factor correction; industrial covers LV distribution, motor control centres and switchboards.',
     },
     {
+      q: 'Do you install solar for homes as well as industrial sites?',
+      a: 'Yes. Single-phase solar and battery systems for homes and small businesses, three-phase systems for commercial and industrial sites, each sized to the load, the hours of autonomy you want and the budget. Where a client wants a premium system, with whole-property backup, monitoring and remote diagnostics, we design and install that too.',
+    },
+    {
       q: 'Who commissions the generator and the changeover?',
       a: 'We do. Automatic transfer systems are set up and tested under load with the generator running, and the commissioning record is handed over with the as-built drawings.',
     },

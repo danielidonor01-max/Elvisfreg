@@ -202,13 +202,24 @@ export const SERVICES: Service[] = [
     short: 'Power and energy',
     stages: ['01', '02'],
     summary:
-      'Conventional and renewable energy systems, designed and installed to work together: generators, solar photovoltaic, battery storage, inverters and UPS, with the changeover and monitoring that keeps supply continuous.',
+      'Conventional and renewable energy systems, designed and installed to work together: generators, solar photovoltaic, battery storage, inverters and UPS, with the changeover and monitoring that keeps supply continuous. Solar comes as single-phase systems for homes and small businesses and three-phase systems for commercial and industrial sites, sized to the load and the budget, with high-specification systems for those who want them.',
     sections: [
+      {
+        heading: 'Solar, sized to the site and the budget',
+        intro: 'Single-phase for homes and small businesses, three-phase for commercial and industrial sites, each designed from the load and the hours of autonomy you want.',
+        items: [
+          'Single-phase solar systems with hybrid inverters and battery storage',
+          'Three-phase solar systems for commercial and industrial loads',
+          'Grid-tied, off-grid and hybrid arrangements with generator backup',
+          'Lithium and lead-acid battery banks sized to the autonomy required',
+          'Systems specified to a budget, with the path to expand designed in',
+          'High-specification systems for premium homes and facilities: whole-property backup, monitoring and remote diagnostics',
+        ],
+      },
       {
         heading: 'Systems',
         items: [
           'Diesel generator systems and automatic transfer systems',
-          'Solar photovoltaic systems',
           'Hybrid energy systems and generator/solar hybrids',
           'Battery energy storage systems',
           'UPS and inverter systems',
@@ -229,7 +240,7 @@ export const SERVICES: Service[] = [
     story: {
       heading: 'Continuity is designed, not assumed',
       paragraphs: [
-        'We begin with a load and autonomy study: what has to stay on, for how long, and what can wait. Grid, generator, solar and battery are then sized together rather than bolted on one at a time, with the changeover logic and the protection between them drawn on one single-line diagram.',
+        'We begin with a load and autonomy study: what has to stay on, for how long, and what can wait. Grid, generator, solar and battery are then sized together rather than bolted on one at a time, with the changeover logic and the protection between them drawn on one single-line diagram. For solar that means a single-phase or three-phase system matched to the site, specified to the budget in hand or, where a client wants it, to the highest specification available.',
         'Transfer systems are commissioned under real load, with the delays and interlocks set and recorded. Monitoring shows you where the energy goes, and the same engineers who installed the system maintain it, so the record of what was set and why stays with the plant.',
       ],
     },

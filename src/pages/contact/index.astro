@@ -4,7 +4,7 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import EnquiryForm from '../../components/EnquiryForm.astro';
 import { SITE, OFFICES } from '../../data/site';
 
-const description = 'Request a quotation from Elvisfreg Nigeria Limited. Offices in Warri, Lagos and Houston. Phone, WhatsApp and email.';
+const description = 'Request a quote from Elvisfreg Nigeria Limited. Offices in Warri, Lagos and Houston. Phone, WhatsApp and email.';
 const hq = OFFICES.find((o) => o.isHq)!;
 const origin = Astro.site?.toString().replace(/\/$/, '') ?? '';
 
@@ -33,14 +33,14 @@ const jsonLd = [{
 }];
 ---
 
-<Base title="Request a quotation" description={description} path="/contact/" jsonLd={jsonLd} mobileBar={false}>
+<Base title="Request a quote" description={description} path="/contact/" jsonLd={jsonLd} mobileBar={false}>
   <div class="wrap pt-8">
     <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Contact' }]} />
   </div>
 
   <section class="wrap pt-10 pb-16 md:pt-14 md:pb-24 grid gap-14 lg:grid-cols-12 lg:gap-16 items-start">
     <div class="lg:col-span-7">
-      <h1 class="h1">Request a quotation</h1>
+      <h1 class="h1">Request a quote</h1>
       <p class="measure mt-6 text-[1.125rem] text-ink-muted">Tell us about the site and what you need. We'll reply by email with questions or a quotation.</p>
       <div class="mt-10">
         <EnquiryForm variant="full" id="enquiry" />
