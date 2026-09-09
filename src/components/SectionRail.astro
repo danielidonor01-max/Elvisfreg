@@ -1,48 +1,71 @@
 ---
 /**
- * A rail of dots down the left edge, one per numbered section of the home
- * page, with the current section's number above. The active dot stretches
- * into a flame pill. Shows only where there is room beside the page.
+ * A rail of dots down the left edge, one per section of the page, with the
+ * current section's number above; the active dot stretches into a flame pill.
+ * Sections are read from the page: those marked data-rail-section (the home
+ * page numbers its own), otherwise every top-level section with a heading.
+ * Pages with fewer than three sections get no rail. Shows only where there is
+ * room beside the page.
  */
-interface Item { id: string; n: string; label: string }
-const { items } = Astro.props as { items: Item[] };
 ---
 
-<nav class="rail" aria-label="Sections on this page" data-rail>
-  <p class="rail-n data" data-rail-n aria-hidden="true">{items[0]?.n}</p>
-  <ol class="list-none m-0 p-0 flex flex-col">
-    {items.map((it) => (
-      <li><a href={`#${it.id}`} class="rail-dot" data-rail-link={it.id} aria-label={`${it.n}, ${it.label}`}></a></li>
-    ))}
-  </ol>
+<nav class="rail" aria-label="Sections on this page" data-rail hidden>
+  <p class="rail-n data" data-rail-n aria-hidden="true"></p>
+  <ol class="list-none m-0 p-0 flex flex-col" data-rail-list></ol>
 </nav>
 
 <script>
-  function init() {
-    const found = document.querySelector<HTMLElement>('[data-rail]');
-    if (!found || found.dataset.bound) return;
-    const rail = found;
-    rail.dataset.bound = '1';
-    const links = Array.from(rail.querySelectorAll<HTMLAnchorElement>('[data-rail-link]'));
-    const sections = links.map((l) => document.getElementById(l.dataset.railLink!)).filter((s): s is HTMLElement => !!s);
-    const num = rail.querySelector<HTMLElement>('[data-rail-n]')!;
-    let ticking = false;
+  let ctrl: AbortController | null = null;
 
+  function init() {
+    ctrl?.abort();
+    ctrl = new AbortController();
+    const { signal } = ctrl;
+    const rail = document.querySelector<HTMLElement>('[data-rail]');
+    const main = document.getElementById('main');
+    if (!rail || !main) return;
+    const list = rail.querySelector<HTMLElement>('[data-rail-list]')!;
+    const num = rail.querySelector<HTMLElement>('[data-rail-n]')!;
+
+    let sections = Array.from(main.querySelectorAll<HTMLElement>('[data-rail-section]'));
+    const explicit = sections.length > 0;
+    if (!explicit) sections = Array.from(main.querySelectorAll<HTMLElement>(':scope > section')).filter((s) => s.querySelector('h1, h2'));
+    if (sections.length < 3) { rail.hidden = true; return; }
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const items = sections.map((s, i) => {
+      if (!s.id) s.id = `section-${i + 1}`;
+      const n = explicit ? s.dataset.railSection || pad(i + 1) : pad(i + 1);
+      const label = (s.querySelector('h1, h2')?.textContent || `Section ${n}`).trim().replace(/\s+/g, ' ');
+      return { s, n, label };
+    });
+    list.replaceChildren(...items.map(({ s, n, label }) => {
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${s.id}`; a.className = 'rail-dot'; a.setAttribute('aria-label', `${n}, ${label}`);
+      li.appendChild(a);
+      return li;
+    }));
+    const links = Array.from(list.querySelectorAll<HTMLAnchorElement>('a'));
+    rail.hidden = false;
+    const railEl = rail;
+
+    let ticking = false;
     function update() {
       ticking = false;
       const mid = window.innerHeight * 0.5;
       let active = -1;
-      sections.forEach((s, i) => { if (s.getBoundingClientRect().top <= mid) active = i; });
-      rail.classList.toggle('is-on', active >= 0);
+      items.forEach((it, i) => { if (it.s.getBoundingClientRect().top <= mid) active = i; });
+      railEl.classList.toggle('is-on', active >= 0);
       links.forEach((l, i) => {
         l.classList.toggle('is-active', i === active);
         if (i === active) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current');
       });
-      if (active >= 0) num.textContent = sections[active].dataset.railSection || '';
+      if (active >= 0) num.textContent = items[active].n;
     }
     const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true, signal });
+    window.addEventListener('resize', onScroll, { signal });
     update();
   }
   document.addEventListener('astro:page-load', init);

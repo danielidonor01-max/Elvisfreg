@@ -1,12 +1,12 @@
 ---
 /**
- * Theme switch. A real switch (role="switch", on = dark) with the sun and moon
- * at either end of the track and the knob sliding over the current one. The
- * choice persists in localStorage('ef-theme'); Base.astro applies it before
- * paint, and the OS preference is used until a choice is made.
+ * Theme switch. A real switch (role="switch", on = dark) with "Light" and
+ * "Dark" either side of the track, the current one inked. The choice persists
+ * in localStorage('ef-theme'); Base.astro applies it before paint and again
+ * after each client-side navigation; the OS preference is used until then.
  */
-interface Props { class?: string; showLabel?: boolean }
-const { class: cls = '', showLabel = false } = Astro.props;
+interface Props { class?: string; labels?: boolean }
+const { class: cls = '', labels = false } = Astro.props;
 ---
 
 <button
@@ -17,28 +17,31 @@ const { class: cls = '', showLabel = false } = Astro.props;
   aria-checked="false"
   aria-label="Dark theme"
 >
+  {labels && <span class="tl tl-light" aria-hidden="true">Light</span>}
   <span class="track" aria-hidden="true">
-    <svg class="glyph glyph-sun" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-    </svg>
-    <svg class="glyph glyph-moon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-    </svg>
+    {!labels && (
+      <>
+        <svg class="glyph glyph-sun" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>
+        <svg class="glyph glyph-moon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></svg>
+      </>
+    )}
     <span class="knob"></span>
   </span>
-  {showLabel && <span class="label" data-theme-label>Dark theme</span>}
+  {labels && <span class="tl tl-dark" aria-hidden="true">Dark</span>}
 </button>
 
 <style>
   .theme-switch {
     display: inline-flex; align-items: center; gap: 0.625rem;
     min-height: 44px; padding: 0 0.25rem; border: 0; background: transparent;
-    color: var(--ink-muted); cursor: pointer; font: inherit; font-size: 0.9375rem; font-weight: 500;
+    color: var(--ink-muted); cursor: pointer; font: inherit; font-size: 0.875rem; font-weight: 500;
     border-radius: 999px;
   }
+  .tl { transition: color 150ms var(--ease-mech); }
+  .theme-switch[aria-checked="false"] .tl-light, .theme-switch[aria-checked="true"] .tl-dark { color: var(--ink); font-weight: 600; }
   .track {
     position: relative; display: block; width: 46px; height: 26px; border-radius: 999px;
-    background: var(--surface-2); border: 1px solid var(--line);
+    background: var(--line); border: 1px solid transparent;
     transition: background-color 200ms var(--ease-mech), border-color 200ms var(--ease-mech);
   }
   .theme-switch:hover .track { border-color: var(--ink-muted); }
@@ -47,9 +50,10 @@ const { class: cls = '', showLabel = false } = Astro.props;
   .glyph-moon { right: 6px; }
   .knob {
     position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%;
-    background: var(--ink); transition: transform 240ms var(--ease-mech), background-color 200ms var(--ease-mech);
+    background: var(--bg); box-shadow: 0 1px 2px rgba(11, 27, 43, 0.25);
+    transition: transform 240ms var(--ease-mech), background-color 200ms var(--ease-mech);
   }
-  .theme-switch[aria-checked="true"] .track { background: var(--ink); border-color: var(--ink); }
+  .theme-switch[aria-checked="true"] .track { background: var(--ink); }
   .theme-switch[aria-checked="true"] .glyph { color: var(--bg); }
   .theme-switch[aria-checked="true"] .knob { transform: translateX(20px); background: var(--bg); }
   @media (prefers-reduced-motion: reduce) { .knob, .track { transition: none; } }
@@ -67,11 +71,7 @@ const { class: cls = '', showLabel = false } = Astro.props;
 
   function paint() {
     const dark = resolved() === 'dark';
-    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
-      btn.setAttribute('aria-checked', String(dark));
-      const label = btn.querySelector<HTMLElement>('[data-theme-label]');
-      if (label) label.textContent = dark ? 'Dark theme on' : 'Dark theme';
-    });
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => btn.setAttribute('aria-checked', String(dark)));
   }
 
   function toggle() {

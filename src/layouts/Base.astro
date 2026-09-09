@@ -9,6 +9,7 @@ import { ClientRouter } from 'astro:transitions';
 import Seo from '../components/Seo.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SectionRail from '../components/SectionRail.astro';
 
 import LockupSprite from '../components/LockupSprite.astro';
 import Preloader from '../components/Preloader.astro';
@@ -64,6 +65,7 @@ const { title, description, path, noindex, ogType, jsonLd, preloader = false, mo
     <main id="main" tabindex="-1" class="flex-1 outline-none">
       <slot />
     </main>
+    <SectionRail />
     <Footer />
     {mobileBar && <MobileBar />}
 

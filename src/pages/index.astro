@@ -8,7 +8,6 @@ import Gauge from '../components/Gauge.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
 import ClientWall from '../components/ClientWall.astro';
 import UpdatesCta from '../components/UpdatesCta.astro';
-import SectionRail from '../components/SectionRail.astro';
 import StageTabs from '../components/StageTabs.astro';
 import { SITE } from '../data/site';
 import { PROJECTS } from '../data/projects';
@@ -125,13 +124,4 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
 
   <!-- 06 Insights and updates -->
   <UpdatesCta />
-
-  <SectionRail items={[
-    { id: 'lifecycle', n: '01', label: 'Full-spectrum engineering' },
-    { id: 'work', n: '02', label: 'Recent work' },
-    { id: 'method', n: '03', label: 'Calibrated to the decimal' },
-    { id: 'clients', n: '04', label: 'Clients and partners' },
-    { id: 'enquiry', n: '05', label: 'Send an enquiry' },
-    { id: 'updates', n: '06', label: 'Insights from the field' },
-  ]} />
 </Base>
