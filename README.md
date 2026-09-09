@@ -31,8 +31,7 @@ public/            favicon, robots
 `src/scripts/motion.ts` — GSAP + ScrollTrigger + Lenis, loaded from `Base.astro`. Everything is
 additive: with JavaScript off or `prefers-reduced-motion` the page is complete and static.
 Hooks: `data-reveal` / `data-reveal-group` (staggered), `data-split` (headline words), `data-count`
-(counters — do not reuse the attribute for anything else),
-`data-header-cta` (header button hides while the hero button is on screen). The lifecycle
+(counters — do not reuse the attribute for anything else). The lifecycle
 tabs (`StageTabs.astro`) and the services mega menu are self-contained and need no motion layer.
 `Gauge.astro` is a draggable pressure gauge reading from the calibration record.
 
@@ -77,6 +76,7 @@ contact 100/100/100/100. Run locally with `node node_modules/lighthouse/cli/inde
 - [ ] Verify project copy in `src/data/projects.ts` with the client — it is drafted to a house style with placeholder sites.
 - [ ] Client logos: confirm each client's consent; see `src/assets/logos/LOGOS.md`. Four clients have no logo and show as text.
 - [ ] Resend domain verification (SPF, DKIM, DMARC) and Turnstile keys in Vercel.
+- [ ] Updates sign-up (`/api/updates/`) forwards each address to the mailbox for now; choose a list provider (or keep the mailbox) and say so in the privacy policy.
 - [ ] Legal pages (`/privacy/`, `/terms/`, `/cookies/`, `/accessibility/`, `/legal/`) are drafts dated 8 September 2026 — have them reviewed and bump the date.
 - [ ] Engineers to confirm the standards named in `src/data/stages.ts` (IEC 60364, IEC 61439) and the deliverables list per stage.
 - [ ] Help page answers (`src/data/faq.ts`, one group per lifecycle stage plus general) are drafts — engineers to confirm each answer.

@@ -5,7 +5,6 @@
  * contact, revision — plus navigation and the legal pages.
  */
 import Lockup from './Lockup.astro';
-import ThemeToggle from './ThemeToggle.astro';
 import Drafting from './Drafting.astro';
 import { SITE, OFFICES, NAV, LEGAL, CERTIFICATIONS } from '../data/site';
 
@@ -73,9 +72,8 @@ const [hq, lagos, usa] = OFFICES;
           {LEGAL.map((n) => <li><a href={n.href} class="link-quiet">{n.label}</a></li>)}
         </ul>
       </nav>
-      <div class="col-span-12 lg:col-span-3 tb-end tb-last flex flex-col justify-between gap-4">
+      <div class="col-span-12 lg:col-span-3 tb-end tb-last">
         <p class="tb-value text-ink-muted">© {year} {SITE.name}</p>
-        <ThemeToggle />
       </div>
     </div>
   </div>

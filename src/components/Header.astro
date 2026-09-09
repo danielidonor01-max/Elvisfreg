@@ -63,8 +63,8 @@ const services = [...SERVICES].sort((a, b) => a.stages[0].localeCompare(b.stages
           <a href={item.href} class:list={['nav-link', { 'is-active': isActive(item.href) }]} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
         )
       )}
-      <a href={`tel:${SITE.phoneE164}`} class="hidden lg:inline-flex items-center min-h-11 px-3 link-quiet num text-[0.9375rem] text-ink-muted hover:text-ink">{SITE.phoneDisplay}</a>
-      <a href="/contact/" class="btn btn-primary header-cta ml-2" data-header-cta>Request a quotation</a>
+      <ThemeToggle class="ml-1 lg:ml-3" />
+      <a href="/contact/" class="btn btn-primary ml-1 lg:ml-2 px-3.5 lg:px-[1.125rem]">Request a quotation</a>
     </nav>
 
     <button
@@ -93,7 +93,7 @@ const services = [...SERVICES].sort((a, b) => a.stages[0].localeCompare(b.stages
         ))}
         <a href="/contact/" class="btn btn-primary mt-3 self-start">Request a quotation</a>
         <div class="mt-6 pt-6 border-t border-line">
-          <ThemeToggle />
+          <ThemeToggle showLabel />
         </div>
       </nav>
     </div>

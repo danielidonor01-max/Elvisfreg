@@ -1,0 +1,89 @@
+---
+/**
+ * The closing call on the home page: a flame card asking for an email address
+ * for insights and company news, and an inked card beside it for the company
+ * profile. The contour lines are generated here, not drawn by hand.
+ */
+import { SITE } from '../data/site';
+
+// Sixteen contour lines drifting across a 600 × 420 field, sampled every 20 px.
+const W = 600;
+const lines = Array.from({ length: 16 }, (_, i) => {
+  const base = 30 + i * 24;
+  const pts: string[] = [];
+  for (let x = 0; x <= W; x += 20) {
+    const y = base + 34 * Math.sin(x / 96 + i * 0.35) + 16 * Math.sin(x / 43 + i * 0.21);
+    pts.push(`${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`);
+  }
+  return pts.join(' ');
+});
+---
+
+<section class="wrap pt-6 pb-20 md:pb-28" aria-labelledby="updates-title" id="updates">
+  <div class="grid gap-5 lg:grid-cols-12 lg:gap-6" data-reveal-group>
+    <div class="cta-card cta-flame lg:col-span-8">
+      <svg class="cta-contours" viewBox={`0 0 ${W} 420`} preserveAspectRatio="xMaxYMax slice" aria-hidden="true" focusable="false">
+        {lines.map((d) => <path d={d} />)}
+      </svg>
+      <div class="relative">
+        <p class="data">06</p>
+        <h2 id="updates-title" class="cta-title mt-3">Insights from the field.</h2>
+        <p class="cta-body">Notes from our engineers on power, control and calibration, and news of the company. Occasional, and easy to leave.</p>
+        <form class="cta-form" method="post" action="/api/updates/" novalidate data-updates-form>
+          <label for="updates-email" class="sr-only">Email address</label>
+          <input id="updates-email" name="email" type="email" class="control cta-input" required autocomplete="email" inputmode="email" placeholder="you@company.com" />
+          <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <button type="submit" class="btn btn-ink">Get updates
+            <span class="btn-box" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8" /></svg>
+            </span>
+          </button>
+          <p class="cta-note" data-updates-status aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <a href={SITE.profilePdf} class="cta-card cta-ink lg:col-span-4">
+      <span class="btn-box" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8" /></svg>
+      </span>
+      <span class="cta-title-sm">The company profile, as a PDF.</span>
+      <span class="cta-sub">Services, credentials and clients in one document.</span>
+    </a>
+  </div>
+</section>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLFormElement>('[data-updates-form]').forEach((form) => {
+      if (form.dataset.bound) return;
+      form.dataset.bound = '1';
+      const status = form.querySelector<HTMLElement>('[data-updates-status]')!;
+      const email = form.querySelector<HTMLInputElement>('input[type="email"]')!;
+      const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      const failed = 'That did not send. Try again, or email us.';
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!email.checkValidity()) { status.textContent = 'Enter an email address.'; email.focus(); return; }
+        button.disabled = true;
+        status.textContent = 'Sending…';
+        try {
+          const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { accept: 'application/json' } });
+          const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+          if (res.ok && data.ok) {
+            status.textContent = "You're on the list. We'll write when there is something worth reading.";
+            form.reset();
+          } else {
+            status.textContent = data.error || failed;
+          }
+        } catch {
+          status.textContent = failed;
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

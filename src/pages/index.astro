@@ -7,6 +7,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import Gauge from '../components/Gauge.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
 import ClientWall from '../components/ClientWall.astro';
+import UpdatesCta from '../components/UpdatesCta.astro';
 import StageTabs from '../components/StageTabs.astro';
 import { SITE } from '../data/site';
 import { PROJECTS } from '../data/projects';
@@ -31,12 +32,6 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
         <p class="data text-ink-muted"><span class="whitespace-nowrap">Incorporated {SITE.incorporatedLabel}</span><span class="mx-3" aria-hidden="true">/</span><span class="whitespace-nowrap">RC {SITE.rc}</span></p>
         <h1 class="display mt-5 max-w-[12ch]" data-split>{SITE.tagline}</h1>
         <p class="mt-7 text-[1.125rem] md:text-[1.25rem] text-ink-muted leading-relaxed max-w-[58ch]">{SITE.heroSub}</p>
-        <div class="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
-          <a href="/contact/" class="btn btn-primary">Request a quotation
-            <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-          <a href={SITE.profilePdf} class="link-quiet">Download company profile (PDF)</a>
-        </div>
       </div>
     </div>
     <p class="scroll-cue absolute right-6 md:right-8 bottom-6 data text-ink-muted hidden md:inline-flex" aria-hidden="true">Scroll</p>
@@ -126,4 +121,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
       </div>
     </div>
   </section>
+
+  <!-- 06 Insights and updates -->
+  <UpdatesCta />
 </Base>

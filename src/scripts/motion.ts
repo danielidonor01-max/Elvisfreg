@@ -98,18 +98,6 @@ function init() {
       });
     });
 
-    // --- Header CTA yields to the hero's own button ------------------------------
-    const hero = document.querySelector<HTMLElement>('.hero');
-    const headerCta = document.querySelector<HTMLElement>('[data-header-cta]');
-    if (hero && headerCta) {
-      headerCta.classList.add('is-hidden');
-      ScrollTrigger.create({
-        trigger: hero, start: 'bottom 96px',
-        onEnter: () => headerCta.classList.remove('is-hidden'),
-        onLeaveBack: () => headerCta.classList.add('is-hidden'),
-      });
-    }
-
     // --- Counters ---------------------------------------------------------------
     gsap.utils.toArray<HTMLElement>('[data-count]').forEach((el) => {
       const to = parseFloat(el.dataset.count || '0');
