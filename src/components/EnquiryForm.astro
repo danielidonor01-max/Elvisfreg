@@ -8,6 +8,7 @@ import { SECTORS, SITE } from '../data/site';
 import { STAGES } from '../data/stages';
 import { serviceBySlug } from '../data/services';
 
+import Button from './Button.astro';
 interface Props { variant?: 'full' | 'short'; preselectService?: string; id?: string }
 const { variant = 'full', preselectService, id = 'enquiry' } = Astro.props;
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
@@ -115,7 +116,7 @@ const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undef
   <input type="hidden" name="variant" value={variant} />
 
   <div class="flex flex-wrap items-center gap-4 pt-1">
-    <button type="submit" class="btn btn-primary" data-submit>Send enquiry</button>
+    <Button type="submit" variant="primary" data-submit><span data-submit-label>Send enquiry</span></Button>
     {variant === 'short' && <p class="text-[0.9375rem] text-ink-muted">Or call <a href={`tel:${SITE.phoneE164}`} class="link num">{SITE.phoneDisplay}</a></p>}
   </div>
 
@@ -179,8 +180,9 @@ const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undef
         summary.hidden = true;
 
         submit.disabled = true;
-        const label = submit.textContent;
-        submit.textContent = 'Sending…';
+        const labelEl = submit.querySelector<HTMLElement>('[data-submit-label]') || submit;
+        const label = labelEl.textContent;
+        labelEl.textContent = 'Sending…';
         status.hidden = true;
 
         try {
@@ -208,7 +210,7 @@ const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undef
             <p class="mt-2 text-ink-muted">Check your connection and try again, or email <a class="link" href="mailto:elvisfregnlgltd@gmail.com">elvisfregnlgltd@gmail.com</a> directly. What you typed is still here.</p>`;
           status.hidden = false;
           submit.disabled = false;
-          submit.textContent = label;
+          labelEl.textContent = label;
         }
       });
     });

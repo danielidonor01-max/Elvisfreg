@@ -6,6 +6,7 @@
  */
 import { SITE } from '../data/site';
 
+import Button from './Button.astro';
 // Sixteen contour lines drifting across a 600 × 420 field, sampled every 20 px.
 const W = 600;
 const lines = Array.from({ length: 16 }, (_, i) => {
@@ -19,7 +20,7 @@ const lines = Array.from({ length: 16 }, (_, i) => {
 });
 ---
 
-<section class="wrap pt-6 pb-20 md:pb-28" aria-labelledby="updates-title" id="updates">
+<section class="wrap pt-6 pb-20 md:pb-28" aria-labelledby="updates-title" id="updates" data-rail-section="06">
   <div class="grid gap-5 lg:grid-cols-12 lg:gap-6" data-reveal-group>
     <div class="cta-card cta-flame lg:col-span-8">
       <svg class="cta-contours" viewBox={`0 0 ${W} 420`} preserveAspectRatio="xMaxYMax slice" aria-hidden="true" focusable="false">
@@ -33,11 +34,7 @@ const lines = Array.from({ length: 16 }, (_, i) => {
           <label for="updates-email" class="sr-only">Email address</label>
           <input id="updates-email" name="email" type="email" class="control cta-input" required autocomplete="email" inputmode="email" placeholder="you@company.com" />
           <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-          <button type="submit" class="btn btn-ink">Get updates
-            <span class="btn-box" aria-hidden="true">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8" /></svg>
-            </span>
-          </button>
+          <Button type="submit" variant="ink">Get updates</Button>
           <p class="cta-note" data-updates-status aria-live="polite"></p>
         </form>
       </div>

@@ -1,0 +1,40 @@
+---
+/**
+ * The site's button: label on the left, the action's glyph in a small box on
+ * the right. On hover the box inverts and the glyph nudges the way it points.
+ *   variant  primary (flame) · ink (navy) · ghost (surface, default)
+ *   icon     arrow (up-right, default) · download · none
+ * Renders <a> when href is given, otherwise <button>.
+ */
+interface Props {
+  href?: string;
+  type?: 'button' | 'submit';
+  variant?: 'primary' | 'ink' | 'ghost';
+  icon?: 'arrow' | 'download' | 'none';
+  class?: string;
+  target?: string;
+  rel?: string;
+  [key: `data-${string}`]: string | undefined;
+}
+
+const { href, type = 'button', variant = 'ghost', icon = 'arrow', class: cls = '', ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : type}
+  class:list={['btn', { 'btn-primary': variant === 'primary', 'btn-ink': variant === 'ink', 'btn-plain': icon === 'none' }, cls]}
+  {...rest}
+>
+  <slot />
+  {icon !== 'none' && (
+    <span class="btn-box" aria-hidden="true">
+      {icon === 'arrow' ? (
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8" /></svg>
+      ) : (
+        <svg data-down width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M6 10l6 6 6-6M4 20h16" /></svg>
+      )}
+    </span>
+  )}
+</Tag>

@@ -7,6 +7,7 @@
  */
 import { STAGES } from '../data/stages';
 import { serviceBySlug } from '../data/services';
+import Button from './Button.astro';
 ---
 
 <div class="stage-tabs" data-stage-tabs>
@@ -39,9 +40,7 @@ import { serviceBySlug } from '../data/services';
             {s.services.map((slug) => { const svc = serviceBySlug(slug)!; return <li><a href={`/services/${svc.slug}/`} class="link">{svc.title}</a></li>; })}
           </ul>
           <p class="mt-8">
-            <a href={`/contact/?service=${s.services[0]}`} class="btn btn-primary">{s.cta}
-              <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </a>
+            <Button href={`/contact/?service=${s.services[0]}`} variant="primary">{s.cta}</Button>
           </p>
         </div>
         <div class="lg:col-span-5">
@@ -49,7 +48,7 @@ import { serviceBySlug } from '../data/services';
           <ol class="doc-cards list-none m-0 p-0 mt-4">
             {s.deliverables.map((d, j) => (
               <li class="doc-card" style={`--i:${j}`}>
-                <span class="data text-ink-muted">EF-{s.id}-{String(j + 1).padStart(2, '0')}</span>
+                <svg class="doc-glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></svg>
                 <span class="text-[0.9375rem]">{d}</span>
               </li>
             ))}

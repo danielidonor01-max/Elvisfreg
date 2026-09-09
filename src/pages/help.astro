@@ -5,6 +5,7 @@ import Faq from '../components/Faq.astro';
 import { FAQ_GROUPS } from '../data/faq';
 import { SITE } from '../data/site';
 
+import Button from '../components/Button.astro';
 const description = 'Questions about design, installation, automation, calibration and maintenance work with Elvisfreg Nigeria Limited, answered stage by stage.';
 
 const jsonLd = [{
@@ -67,9 +68,7 @@ const jsonLd = [{
         <p class="mt-4 text-ink-muted measure">Ask it directly. An engineer answers, not a call centre.</p>
       </div>
       <div class="md:col-span-6 flex flex-wrap gap-x-6 gap-y-4 items-center md:pt-2" data-reveal>
-        <a href="/contact/" class="btn btn-primary">Request a quotation
-          <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
+        <Button href="/contact/" variant="primary">Request a quotation</Button>
         <a href={`tel:${SITE.phoneE164}`} class="link num">{SITE.phoneDisplay}</a>
         <a href={SITE.whatsapp} target="_blank" rel="noopener" class="link">WhatsApp</a>
       </div>

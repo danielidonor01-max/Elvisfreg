@@ -8,6 +8,7 @@ import Gauge from '../components/Gauge.astro';
 import EnquiryForm from '../components/EnquiryForm.astro';
 import ClientWall from '../components/ClientWall.astro';
 import UpdatesCta from '../components/UpdatesCta.astro';
+import SectionRail from '../components/SectionRail.astro';
 import StageTabs from '../components/StageTabs.astro';
 import { SITE } from '../data/site';
 import { PROJECTS } from '../data/projects';
@@ -40,7 +41,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
   <ProofStrip />
 
   <!-- 01 Lifecycle: five stages as tabs over one panel. -->
-  <section class="section wrap" id="lifecycle">
+  <section class="section wrap" id="lifecycle" data-rail-section="01">
     <div data-reveal>
       <p class="data text-ink-muted">01</p>
       <h2 class="h2 mt-2 max-w-[22ch]">Full-spectrum engineering. Single-source accountability.</h2>
@@ -52,7 +53,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
   </section>
 
   <!-- 02 Recent work: rendered (and its images fetched) only as it nears the viewport. -->
-  <section class="band border-t border-line cv-auto">
+  <section class="band border-t border-line cv-auto" id="work" data-rail-section="02">
     <div class="section wrap">
       <div class="flex flex-wrap items-end justify-between gap-4" data-reveal>
         <div>
@@ -68,7 +69,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
   </section>
 
   <!-- 03 Method: an instrument you can drive -->
-  <section class="band-dark">
+  <section class="band-dark" id="method" data-rail-section="03">
     <div class="section wrap">
       <div class="grid gap-10 lg:grid-cols-12 lg:gap-16" data-reveal>
         <div class="lg:col-span-7">
@@ -91,7 +92,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
   </section>
 
   <!-- 04 Clients -->
-  <section class="border-t border-line">
+  <section class="border-t border-line" id="clients" data-rail-section="04">
     <div class="section wrap">
       <div data-reveal>
         <p class="data text-ink-muted">04</p>
@@ -104,7 +105,7 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
   </section>
 
   <!-- 05 Enquiry -->
-  <section class="band border-t border-line">
+  <section class="band border-t border-line" id="enquiry" data-rail-section="05">
     <div class="section wrap grid gap-12 lg:grid-cols-12 lg:gap-16">
       <div class="lg:col-span-5" data-reveal>
         <p class="data text-ink-muted">05</p>
@@ -124,4 +125,13 @@ const heroPreload = await getImage({ src: heroImage, widths: HERO_WIDTHS, format
 
   <!-- 06 Insights and updates -->
   <UpdatesCta />
+
+  <SectionRail items={[
+    { id: 'lifecycle', n: '01', label: 'Full-spectrum engineering' },
+    { id: 'work', n: '02', label: 'Recent work' },
+    { id: 'method', n: '03', label: 'Calibrated to the decimal' },
+    { id: 'clients', n: '04', label: 'Clients and partners' },
+    { id: 'enquiry', n: '05', label: 'Send an enquiry' },
+    { id: 'updates', n: '06', label: 'Insights from the field' },
+  ]} />
 </Base>

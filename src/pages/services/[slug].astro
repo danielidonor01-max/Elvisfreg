@@ -8,6 +8,7 @@ import { SERVICES, serviceBySlug, type Service } from '../../data/services';
 import { stageById } from '../../data/stages';
 import { SITE } from '../../data/site';
 
+import Button from '../../components/Button.astro';
 export function getStaticPaths() {
   return SERVICES.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
 }
@@ -47,9 +48,7 @@ const jsonLd = [{
       <h1 class="h1 mt-3">{service.title}</h1>
       <p class="measure mt-6 text-[1.125rem] text-ink-muted">{service.summary}</p>
       <div class="mt-8">
-        <a href={`/contact/?service=${service.slug}`} class="btn btn-primary">{service.cta}
-          <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
+        <Button href={`/contact/?service=${service.slug}`} variant="primary">{service.cta}</Button>
       </div>
     </div>
   </section>
@@ -78,8 +77,8 @@ const jsonLd = [{
       </div>
       <ol class="lg:col-span-8 list-none m-0 p-0 grid gap-3 sm:grid-cols-2" data-reveal-group>
         {primaryStage.deliverables.map((d, i) => (
-          <li class="flex items-baseline gap-4 border border-line rounded-md bg-surface px-4 py-3">
-            <span class="data text-ink-muted shrink-0">EF-{primaryStage.id}-{String(i + 1).padStart(2, '0')}</span>
+          <li class="doc-card">
+            <svg class="doc-glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></svg>
             <span class="text-[0.9375rem]">{d}</span>
           </li>
         ))}
@@ -137,7 +136,7 @@ const jsonLd = [{
         <h2 class="h3">Talk to an engineer</h2>
         <p class="mt-4 text-ink-muted measure">Describe the site and what you need. We'll reply with questions or a quotation.</p>
         <div class="mt-5 flex flex-wrap gap-x-6 gap-y-4 items-center">
-          <a href={`/contact/?service=${service.slug}`} class="btn btn-primary">{service.cta}</a>
+          <Button href={`/contact/?service=${service.slug}`} variant="primary">{service.cta}</Button>
           <a href={`tel:${SITE.phoneE164}`} class="link num">{SITE.phoneDisplay}</a>
         </div>
       </div>

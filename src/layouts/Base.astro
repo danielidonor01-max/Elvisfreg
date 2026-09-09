@@ -39,6 +39,13 @@ const { title, description, path, noindex, ogType, jsonLd, preloader = false, mo
           var t = localStorage.getItem('ef-theme');
           if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
         } catch (e) {}
+        // The router swaps <html>'s attributes on navigation; put the choice back.
+        document.addEventListener('astro:after-swap', function () {
+          try {
+            var t = localStorage.getItem('ef-theme');
+            if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
+          } catch (e) {}
+        });
       })();
     </script>
     <link rel="preload" href={outfitLatin} as="font" type="font/woff2" crossorigin />

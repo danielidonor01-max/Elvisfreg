@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
 ---
 
 <Base title="Page not found" description="The page you asked for isn't here." path="/404/" noindex>
@@ -9,9 +10,9 @@ import Base from '../layouts/Base.astro';
       <h1 class="h1 mt-3">That page isn't here</h1>
       <p class="measure mt-6 text-ink-muted text-[1.125rem]">The address may be wrong, or the page has moved. The services and projects indexes cover everything on the site.</p>
       <div class="mt-8 flex flex-wrap gap-4">
-        <a href="/" class="btn btn-primary">Home</a>
-        <a href="/services/" class="btn">Services</a>
-        <a href="/projects/" class="btn">Projects</a>
+        <Button href="/" variant="primary">Home</Button>
+        <Button href="/services/">Services</Button>
+        <Button href="/projects/">Projects</Button>
       </div>
     </div>
   </section>

@@ -1,0 +1,50 @@
+---
+/**
+ * A rail of dots down the left edge, one per numbered section of the home
+ * page, with the current section's number above. The active dot stretches
+ * into a flame pill. Shows only where there is room beside the page.
+ */
+interface Item { id: string; n: string; label: string }
+const { items } = Astro.props as { items: Item[] };
+---
+
+<nav class="rail" aria-label="Sections on this page" data-rail>
+  <p class="rail-n data" data-rail-n aria-hidden="true">{items[0]?.n}</p>
+  <ol class="list-none m-0 p-0 flex flex-col">
+    {items.map((it) => (
+      <li><a href={`#${it.id}`} class="rail-dot" data-rail-link={it.id} aria-label={`${it.n}, ${it.label}`}></a></li>
+    ))}
+  </ol>
+</nav>
+
+<script>
+  function init() {
+    const found = document.querySelector<HTMLElement>('[data-rail]');
+    if (!found || found.dataset.bound) return;
+    const rail = found;
+    rail.dataset.bound = '1';
+    const links = Array.from(rail.querySelectorAll<HTMLAnchorElement>('[data-rail-link]'));
+    const sections = links.map((l) => document.getElementById(l.dataset.railLink!)).filter((s): s is HTMLElement => !!s);
+    const num = rail.querySelector<HTMLElement>('[data-rail-n]')!;
+    let ticking = false;
+
+    function update() {
+      ticking = false;
+      const mid = window.innerHeight * 0.5;
+      let active = -1;
+      sections.forEach((s, i) => { if (s.getBoundingClientRect().top <= mid) active = i; });
+      rail.classList.toggle('is-on', active >= 0);
+      links.forEach((l, i) => {
+        l.classList.toggle('is-active', i === active);
+        if (i === active) l.setAttribute('aria-current', 'true'); else l.removeAttribute('aria-current');
+      });
+      if (active >= 0) num.textContent = sections[active].dataset.railSection || '';
+    }
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

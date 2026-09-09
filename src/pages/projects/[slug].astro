@@ -7,6 +7,7 @@ import { PROJECTS, type Project } from '../../data/projects';
 import { PROJECT_LEAD } from '../../data/project-images';
 import { serviceBySlug } from '../../data/services';
 
+import Button from '../../components/Button.astro';
 export function getStaticPaths() {
   return PROJECTS.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
 }
@@ -71,7 +72,7 @@ const lead = PROJECT_LEAD[project.slug];
         <div class="md:col-span-6">
           <h2 class="h3">Similar work needed?</h2>
           <div class="mt-4">
-            <a href={`/contact/?service=${project.service}`} class="btn btn-primary">Discuss a similar project</a>
+            <Button href={`/contact/?service=${project.service}`} variant="primary">Discuss a similar project</Button>
           </div>
         </div>
       </div>

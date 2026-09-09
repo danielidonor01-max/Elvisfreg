@@ -3,6 +3,7 @@
 // confirms in place and never navigates here.
 import Base from '../../layouts/Base.astro';
 import { SITE } from '../../data/site';
+import Button from '../../components/Button.astro';
 ---
 
 <Base title="Enquiry sent" description="Your enquiry has been sent to Elvisfreg Nigeria Limited." path="/contact/sent/" noindex>
@@ -13,6 +14,6 @@ import { SITE } from '../../data/site';
     </p>
     <h1 class="h1 mt-4">We'll reply by email</h1>
     <p class="measure mt-6 text-ink-muted text-[1.125rem]">If it's urgent, call <a href={`tel:${SITE.phoneE164}`} class="link num">{SITE.phoneDisplay}</a> or <a href={SITE.whatsapp} target="_blank" rel="noopener" class="link">message us on WhatsApp</a>.</p>
-    <p class="mt-10"><a href="/" class="btn">Back to the home page</a></p>
+    <p class="mt-10"><Button href="/">Back to the home page</Button></p>
   </section>
 </Base>
