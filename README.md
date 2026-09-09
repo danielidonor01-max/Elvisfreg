@@ -31,9 +31,9 @@ public/            favicon, robots
 `src/scripts/motion.ts` — GSAP + ScrollTrigger + Lenis, loaded from `Base.astro`. Everything is
 additive: with JavaScript off or `prefers-reduced-motion` the page is complete and static.
 Hooks: `data-reveal` / `data-reveal-group` (staggered), `data-split` (headline words), `data-count`
-(counters — do not reuse the attribute for anything else), `data-lifecycle` / `data-stage-block` /
-`data-ledger-stage` (the scrolling stages drive the sticky deliverables ledger, `Ledger.astro`),
-`data-header-cta` (header button hides while the hero button is on screen).
+(counters — do not reuse the attribute for anything else),
+`data-header-cta` (header button hides while the hero button is on screen). The lifecycle
+tabs (`StageTabs.astro`) and the services mega menu are self-contained and need no motion layer.
 `Gauge.astro` is a draggable pressure gauge reading from the calibration record.
 
 ## Temporary imagery

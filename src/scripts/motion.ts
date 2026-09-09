@@ -7,7 +7,6 @@
  *   [data-reveal]            rise-and-fade in once when scrolled to (CSS hides it only when html.has-motion)
  *   [data-split]             headline split into words that rise in on load (once per session)
  *   [data-count="90"]        number counts up from 0 when scrolled to
- *   [data-lifecycle]         home lifecycle section: sticky arc + stacked stage blocks [data-stage-block]
  */
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -122,31 +121,6 @@ function init() {
         onUpdate: () => { el.textContent = Math.round(state.v) + suffix; },
       });
     });
-
-    // --- Lifecycle: stacked stage blocks drive the sticky title --------------------
-    const life = document.querySelector<HTMLElement>('[data-lifecycle]');
-    if (life) {
-      const blocks = Array.from(life.querySelectorAll<HTMLElement>('[data-stage-block]'));
-      const groups = Array.from(life.querySelectorAll<HTMLElement>('[data-ledger-stage]'));
-      const count = life.querySelector<HTMLElement>('[data-ledger-count]');
-      const setStage = (id: string) => {
-        blocks.forEach((b) => b.classList.toggle('is-active', b.dataset.stageBlock === id));
-        groups.forEach((g) => {
-          const gid = g.dataset.ledgerStage!;
-          g.classList.toggle('is-active', gid === id);
-          g.classList.toggle('is-done', gid < id);
-          if (gid === id && count) count.textContent = g.dataset.running || '';
-        });
-      };
-      blocks.forEach((block) => {
-        ScrollTrigger.create({
-          trigger: block, start: 'top 55%', end: 'bottom 55%',
-          onEnter: () => setStage(block.dataset.stageBlock!),
-          onEnterBack: () => setStage(block.dataset.stageBlock!),
-        });
-      });
-      setStage(blocks[0]?.dataset.stageBlock || '01');
-    }
   });
 
   ScrollTrigger.refresh();

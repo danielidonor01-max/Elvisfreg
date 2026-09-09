@@ -4,7 +4,7 @@
 // headline     campaign line from the brand's segment copy
 // body         the method, in engineering terms — standards named here must be
 //              confirmed by Elvisfreg's engineers before launch
-// deliverables what the client receives; drives the ledger on the home page
+// deliverables what the client receives; listed in the lifecycle tabs and on service pages
 // cta          campaign call-to-action line
 
 export type StageId = '01' | '02' | '03' | '04' | '05';
