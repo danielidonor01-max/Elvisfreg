@@ -7,8 +7,10 @@
  *                 progress instrument)
  * Custom properties (--ef-flame, --ef-ink) inherit into the <use> shadow tree.
  */
-import raw from '../../assets/brand/logo/lockup-h-themed.svg?raw';
+import rawSource from '../../assets/brand/logo/lockup-h-themed.svg?raw';
+import { slimSvg } from '../lib/svg';
 
+const raw = slimSvg(rawSource);
 const inner = raw
   .replace(/<\?xml[^>]*>\s*/, '')
   .replace(/<title>.*?<\/title>\s*/, '')

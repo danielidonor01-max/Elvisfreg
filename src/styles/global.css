@@ -269,6 +269,9 @@
     background: var(--bg); color: var(--ink);
   }
   .band { background: var(--surface-2); }
+  /* Below-the-fold sections with photographs: skip their rendering, and their image fetches,
+     until they approach the viewport, so the hero paints first. */
+  .cv-auto { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 
   /* Reveals: hidden only once the motion layer has taken responsibility for showing them. */
   html.has-motion [data-reveal], html.has-motion [data-reveal-group] > * { opacity: 0; transform: translateY(18px); will-change: opacity, transform; }

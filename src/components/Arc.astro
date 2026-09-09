@@ -10,8 +10,11 @@
  *  transitionName– Astro view-transition name, for the arc that persists between pages
  *  label         – accessible name; omit for a decorative instance
  */
-import raw from '../../assets/brand/logo/mark-themed.svg?raw';
+import rawSource from '../../assets/brand/logo/mark-themed.svg?raw';
+import { slimSvg } from '../lib/svg';
 import type { StageId } from '../data/stages';
+
+const raw = slimSvg(rawSource);
 
 interface Props {
   active?: StageId;
@@ -26,9 +29,10 @@ interface Props {
 const { active, interactive = false, playOnLoad = false, transitionName, label, class: cls = '', ...rest } = Astro.props;
 
 let svg = raw.replace(/<\?xml[^>]*>\s*/, '').replace(/<title>.*?<\/title>\s*/, '');
+// Attribute order is not guaranteed after optimisation, so each is handled on its own.
 svg = label
   ? svg.replace(/aria-label="[^"]*"/, `aria-label="${label}"`)
-  : svg.replace(/\s*role="img"\s*aria-label="[^"]*"/, ' aria-hidden="true" focusable="false"');
+  : svg.replace(/\s*aria-label="[^"]*"/, '').replace(/\s*role="img"/, ' aria-hidden="true" focusable="false"');
 ---
 
 <div
