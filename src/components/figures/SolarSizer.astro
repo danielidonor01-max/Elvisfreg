@@ -1,0 +1,136 @@
+---
+/**
+ * Solar: a first estimate of a system from three numbers, the energy used in a
+ * day, the hours the battery must carry the load, and the peak load. The
+ * arithmetic assumes five peak sun hours, a quarter lost in the system, and a
+ * lithium bank cycled to 80 percent. It is a starting point for a conversation,
+ * never the design; the survey and the load list set that.
+ */
+---
+
+<figure class="fig m-0" data-sizer>
+  <div class="fig-head"><span class="fig-title">Size a system from three numbers</span></div>
+  <div class="grid gap-6 lg:grid-cols-12 lg:gap-8 items-start">
+    <div class="lg:col-span-5 flex flex-col gap-3">
+      <label class="block">
+        <span class="flex justify-between gap-4 text-[0.9375rem] text-ink-muted"><span>Energy used in a day</span><span class="data" data-out="daily">12 kWh</span></span>
+        <input type="range" min="3" max="60" step="1" value="12" class="slider" data-in="daily" aria-valuetext="12 kilowatt-hours a day" />
+      </label>
+      <label class="block">
+        <span class="flex justify-between gap-4 text-[0.9375rem] text-ink-muted"><span>Hours the battery carries the load</span><span class="data" data-out="hours">8 h</span></span>
+        <input type="range" min="2" max="24" step="1" value="8" class="slider" data-in="hours" aria-valuetext="8 hours" />
+      </label>
+      <label class="block">
+        <span class="flex justify-between gap-4 text-[0.9375rem] text-ink-muted"><span>Highest load at any moment</span><span class="data" data-out="peak">4 kW</span></span>
+        <input type="range" min="1" max="30" step="0.5" value="4" class="slider" data-in="peak" aria-valuetext="4 kilowatts" />
+      </label>
+      <div role="group" aria-label="Supply" class="mt-1">
+        <p class="text-[0.9375rem] text-ink-muted mb-2">Supply</p>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="chip" data-phase="1" aria-pressed="true">Single-phase</button>
+          <button type="button" class="chip" data-phase="3" aria-pressed="false">Three-phase</button>
+        </div>
+        <p class="text-[0.9375rem] text-ink-muted mt-3 min-h-[2.8em]" data-phase-hint aria-live="polite"></p>
+      </div>
+    </div>
+
+    <div class="lg:col-span-7">
+      <svg viewBox="0 0 360 200" class="w-full select-none" aria-hidden="true">
+        <!-- array -->
+        <g data-array>
+          {Array.from({ length: 12 }, (_, i) => <rect x={16 + (i % 6) * 20} y={22 + Math.floor(i / 6) * 22} width="17" height="18" rx="1" class="pv" />)}
+        </g>
+        <text x="74" y="78" font-size="6.5" text-anchor="middle">ARRAY</text>
+        <text x="74" y="88" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600" data-lbl="pv">4.0 kWp</text>
+        <!-- inverter -->
+        <rect x="152" y="66" width="72" height="48" rx="2" class="node" />
+        <text x="188" y="84" font-size="6.5" text-anchor="middle" fill="var(--ink)" font-weight="600">HYBRID INVERTER</text>
+        <text x="188" y="96" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600" data-lbl="inv">5 kW · 1-φ</text>
+        <text x="188" y="106" font-size="6" text-anchor="middle" data-lbl="inv2">single-phase</text>
+        <!-- battery -->
+        <rect x="152" y="150" width="72" height="34" rx="2" class="node" />
+        <rect x="158" y="176" width="0" height="4" rx="1" fill="var(--flame)" data-bat-fill />
+        <text x="188" y="146" font-size="6.5" text-anchor="middle">BATTERY</text>
+        <text x="188" y="171" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600" data-lbl="bat">8 kWh</text>
+        <!-- loads -->
+        <rect x="272" y="66" width="72" height="48" rx="2" class="node" />
+        <text x="308" y="84" font-size="6.5" text-anchor="middle" fill="var(--ink)" font-weight="600">LOADS</text>
+        <text x="308" y="96" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600" data-lbl="load">4 kW peak</text>
+        <text x="308" y="106" font-size="6" text-anchor="middle" data-lbl="load2">12 kWh a day</text>
+        <!-- grid and generator -->
+        <rect x="272" y="14" width="72" height="26" rx="2" class="node" />
+        <text x="308" y="30" font-size="6.5" text-anchor="middle" fill="var(--ink)" font-weight="600">GRID</text>
+        <rect x="272" y="158" width="72" height="26" rx="2" class="node" />
+        <text x="308" y="174" font-size="6.5" text-anchor="middle" fill="var(--ink)" font-weight="600">GENERATOR</text>
+        <!-- feeds -->
+        <path d="M136 50H144V90H152" class="feed is-live" />
+        <path d="M188 114V150" class="feed is-live" />
+        <path d="M224 90H272" class="feed is-live" />
+        <path d="M272 27H248V66" class="feed" stroke-dasharray="3 3" />
+        <path d="M272 171H248V114" class="feed" stroke-dasharray="3 3" />
+      </svg>
+      <dl class="grid grid-cols-3 gap-4 m-0 mt-4 border-t border-line pt-4">
+        <div><dt class="text-[0.9375rem] text-ink-muted">Array</dt><dd class="m-0 mt-1 data text-[1.125rem]" data-out="pv">4.0 kWp</dd></div>
+        <div><dt class="text-[0.9375rem] text-ink-muted">Battery</dt><dd class="m-0 mt-1 data text-[1.125rem]" data-out="bat">8 kWh</dd></div>
+        <div><dt class="text-[0.9375rem] text-ink-muted">Inverter</dt><dd class="m-0 mt-1 data text-[1.125rem]" data-out="inv">5 kW</dd><dd class="m-0 text-[0.9375rem] text-ink-muted" data-out="invp">single-phase</dd></div>
+      </dl>
+    </div>
+  </div>
+  <figcaption class="fig-note">A first estimate for the conversation: five peak sun hours, a quarter lost in the system, the day's average load through the hours you chose, a lithium bank cycled to 80 percent. The site survey and your load list set the final design.</figcaption>
+</figure>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-sizer]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+      const inp = (k: string) => root.querySelector<HTMLInputElement>(`[data-in="${k}"]`)!;
+      const outs = (k: string) => Array.from(root.querySelectorAll<HTMLElement>(`[data-out="${k}"], [data-lbl="${k}"]`));
+      const lbl = (k: string) => root.querySelector<SVGTextElement>(`[data-lbl="${k}"]`)!;
+      const phaseBtns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-phase]'));
+      const hint = root.querySelector<HTMLElement>('[data-phase-hint]')!;
+      const batFill = root.querySelector<SVGRectElement>('[data-bat-fill]')!;
+      const panels = Array.from(root.querySelectorAll<SVGRectElement>('[data-array] .pv'));
+      let phase = 1;
+
+      const roundTo = (v: number, step: number) => Math.ceil(v / step) * step;
+
+      function render() {
+        const daily = Number(inp('daily').value), hours = Number(inp('hours').value), peak = Number(inp('peak').value);
+        const pv = roundTo(daily / (5 * 0.75), 0.5);                 // kWp
+        const bat = roundTo(((daily / 24) * hours * 1.15) / 0.8, 0.5); // kWh nominal
+        const inv = phase === 3 ? roundTo(peak * 1.25, 1) : roundTo(peak * 1.25, 0.5);
+        inp('daily').setAttribute('aria-valuetext', `${daily} kilowatt-hours a day`);
+        inp('hours').setAttribute('aria-valuetext', `${hours} hours`);
+        inp('peak').setAttribute('aria-valuetext', `${peak} kilowatts`);
+        outs('daily').forEach((e) => (e.textContent = `${daily} kWh`));
+        outs('hours').forEach((e) => (e.textContent = `${hours} h`));
+        outs('peak').forEach((e) => (e.textContent = `${peak} kW`));
+        outs('pv').forEach((e) => (e.textContent = `${pv.toFixed(1)} kWp`));
+        outs('bat').forEach((e) => (e.textContent = `${bat % 1 ? bat.toFixed(1) : bat} kWh`));
+        root.querySelector<HTMLElement>('[data-out="inv"]')!.textContent = `${inv % 1 ? inv.toFixed(1) : inv} kW`;
+        root.querySelector<HTMLElement>('[data-out="invp"]')!.textContent = phase === 3 ? 'three-phase' : 'single-phase';
+        lbl('inv').textContent = `${inv % 1 ? inv.toFixed(1) : inv} kW · ${phase}-φ`;
+        lbl('inv2').textContent = phase === 3 ? 'three-phase' : 'single-phase';
+        lbl('load').textContent = `${peak} kW peak`;
+        lbl('load2').textContent = `${daily} kWh a day`;
+        batFill.setAttribute('width', String(Math.min(60, (bat / 60) * 60)));
+        const lit = Math.max(1, Math.min(12, Math.round(pv / 1.5)));
+        panels.forEach((p, i) => p.classList.toggle('is-lit', i < lit));
+        if (phase === 1 && peak > 8) hint.textContent = 'A peak above about 8 kW, or any three-phase motor, usually calls for a three-phase inverter.';
+        else if (phase === 3 && peak <= 8) hint.textContent = 'Three-phase suits sites with three-phase motors or a three-phase supply. A peak this size can also run single-phase.';
+        else hint.textContent = phase === 3 ? 'A three-phase inverter, with the loads balanced across the phases at design.' : 'A single-phase hybrid inverter, with an essential-loads circuit where the budget asks for it.';
+      }
+
+      ['daily', 'hours', 'peak'].forEach((k) => inp(k).addEventListener('input', render));
+      phaseBtns.forEach((b) => b.addEventListener('click', () => {
+        phase = Number(b.dataset.phase);
+        phaseBtns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        render();
+      }));
+      render();
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

@@ -1,0 +1,78 @@
+---
+/**
+ * The solar offer, on the Power and energy page: how a system is sized, the
+ * three ways it can be specified, and an estimator to start the conversation.
+ * DRAFT copy — Elvisfreg's engineers to confirm the sizing assumptions and the
+ * tier descriptions before launch.
+ */
+import SolarSizer from './figures/SolarSizer.astro';
+
+const TIERS = [
+  {
+    name: 'Essential',
+    who: 'A home or a shop that needs lights, fans, refrigeration and connectivity through the night.',
+    has: ['Single-phase hybrid inverter', 'A modest battery bank, lead-acid or entry lithium', 'A dedicated essential-loads circuit', 'Inverter capacity and wiring to add panels and batteries later'],
+    line: 'Specified to a budget, with the path to expand designed in.',
+  },
+  {
+    name: 'Whole property',
+    who: 'A home, an office or a small factory that wants to run as normal when the grid drops.',
+    has: ['Single-phase or three-phase, to the loads', 'Lithium storage sized to the evening and the outage', 'Generator integration with automatic changeover', 'Monitoring on your phone'],
+    line: 'Most of the site, most of the time, without touching a switch.',
+  },
+  {
+    name: 'High specification',
+    who: 'Premium homes and facilities where nothing is allowed to notice an outage.',
+    has: ['Three-phase where the loads call for it', 'Full-property backup with larger lithium storage', 'Automatic generator start and energy management', 'Remote diagnostics and a maintenance schedule'],
+    line: 'Components chosen for the longest service life, not the lowest price.',
+  },
+];
+---
+
+<section class="border-t border-line" id="solar">
+  <div class="section wrap">
+    <div class="grid gap-8 lg:grid-cols-12 lg:gap-16" data-reveal>
+      <div class="lg:col-span-8">
+        <p class="text-[0.9375rem] text-ink-muted">Solar photovoltaic</p>
+        <h2 class="h2 mt-2">Solar, sized to the site and the budget.</h2>
+        <p class="measure mt-4 text-[1.125rem] text-ink-muted">A solar system is only as good as the sizing behind it. We start from what you run and for how long, then size the array, the battery and the inverter to that, single-phase or three-phase, at the budget you have or the specification you want.</p>
+      </div>
+    </div>
+
+    <div class="mt-12 grid gap-10 md:grid-cols-3 md:gap-8" data-reveal-group>
+      <div>
+        <h3 class="h3">From the load, not the roof</h3>
+        <p class="mt-3 text-ink-muted">The design starts with a load list: what runs, when, and for how long. From it come the two numbers that size everything else, the energy used in a day and the highest load at any moment. A single-phase system serves a home or a small business; three-phase motors, or a peak beyond what a single-phase inverter carries, call for a three-phase system.</p>
+      </div>
+      <div>
+        <h3 class="h3">For the hours you need</h3>
+        <p class="mt-3 text-ink-muted">The battery is sized to the hours you must run without grid or generator, through the evening or an outage, not to a catalogue. Lithium cycles deeper and lasts longer for the space it takes; lead-acid costs less up front. We set out both, with the years each is expected to give, and you choose.</p>
+      </div>
+      <div>
+        <h3 class="h3">With the supply you have</h3>
+        <p class="mt-3 text-ink-muted">Grid-tied where the grid is worth keeping, off-grid where it is not, hybrid where a generator stays as the last resort. The changeover is designed in, so the generator starts only when the battery cannot carry the load and runs only as long as it must.</p>
+      </div>
+    </div>
+
+    <div class="mt-14 md:mt-20" data-reveal>
+      <h3 class="h3">Three ways to specify it</h3>
+      <div class="mt-6 grid gap-5 md:grid-cols-3 md:gap-6">
+        {TIERS.map((t, i) => (
+          <article class="tier">
+            <p class="data text-ink-muted">{String(i + 1).padStart(2, '0')}</p>
+            <h4 class="h3 mt-2">{t.name}</h4>
+            <p class="mt-3 text-ink-muted">{t.who}</p>
+            <ul class="mt-4 pl-5 list-disc text-[0.9375rem] flex flex-col gap-1.5">
+              {t.has.map((h) => <li>{h}</li>)}
+            </ul>
+            <p class="mt-5 pt-4 border-t border-line font-medium">{t.line}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <div class="mt-14 md:mt-20" data-reveal>
+      <SolarSizer />
+    </div>
+  </div>
+</section>

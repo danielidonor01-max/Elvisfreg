@@ -17,7 +17,7 @@ const yTicks = [-0.1, 0, 0.1, 0.2, 0.3, 0.4];
 ---
 
 <figure class="fig m-0">
-  <div class="fig-head"><span class="fig-title">Error across the span, before and after</span><span class="fig-tag">Illustration</span></div>
+  <div class="fig-head"><span class="fig-title">Error across the span, before and after</span></div>
   <svg viewBox="0 0 360 180" class="w-full select-none" role="img" aria-label="Chart of instrument error at five points across the span, as found and as left, with the tolerance band">
     <rect x={X0} y={y(TOL)} width={X1 - X0} height={y(-TOL > YMIN ? -TOL : YMIN) - y(TOL)} fill="var(--surface-2)" />
     {yTicks.map((t) => <g><line x1={X0} y1={y(t)} x2={X1} y2={y(t)} stroke="var(--line)" /><text x={X0 - 6} y={y(t) + 2.5} font-size="7" text-anchor="end">{t > 0 ? '+' : ''}{t.toFixed(1)}</text></g>)}

@@ -10,6 +10,7 @@ import { SITE } from '../../data/site';
 
 import Button from '../../components/Button.astro';
 import Figure from '../../components/figures/Figure.astro';
+import SolarSection from '../../components/SolarSection.astro';
 export function getStaticPaths() {
   return SERVICES.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
 }
@@ -69,6 +70,8 @@ const jsonLd = [{
       </div>
     </div>
   </section>
+
+  {service.slug === 'power-energy' && <SolarSection />}
 
   <section class="border-t border-line">
     <div class="section wrap grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
