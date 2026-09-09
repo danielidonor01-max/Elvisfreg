@@ -75,7 +75,7 @@ const jsonLd = [{
     const slug = new URLSearchParams(location.search).get('service');
     if (!slug) return;
     const select = document.querySelector<HTMLSelectElement>('select[name=service]');
-    if (select && Array.from(select.options).some((o) => o.value === slug)) select.value = slug;
+    if (select && Array.from(select.options).some((o) => o.value === slug)) { select.value = slug; select.dispatchEvent(new Event('change', { bubbles: true })); }
   }
   document.addEventListener('astro:page-load', preselect);
   preselect();
