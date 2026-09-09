@@ -300,6 +300,7 @@
   /* Hero: photograph under a navy scrim, headline low-left. */
   .hero { position: relative; isolation: isolate; min-height: min(88svh, 900px); display: flex; align-items: flex-end; overflow: hidden; }
   .hero .photo { position: absolute; inset: 0; z-index: -2; }
+  html.has-motion .hero .photo.photo-fill { top: -10%; }
   .hero .photo :global(img) { transform: scale(1.06); animation: hero-settle 9s var(--ease-mech) forwards; }
   .hero::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(11,27,43,.55) 0%, rgba(11,27,43,.35) 40%, rgba(11,27,43,.88) 100%); }
   .hero .hero-text { text-shadow: 0 1px 2px rgba(11, 27, 43, 0.55); }
@@ -338,11 +339,13 @@
   .doc-glyph { color: var(--flame-text); margin-top: 0.2rem; }
   .band .doc-card, .band-dark .doc-card { background: var(--surface); }
 
-  /* Section rail: dots down the left edge of the home page, the current one a flame pill. */
-  .rail { position: fixed; left: 1.5rem; top: 50%; transform: translateY(-50%); z-index: 30; display: none; opacity: 0; transition: opacity 300ms var(--ease-mech); }
-  @media (min-width: 1320px) { .rail { display: block; } }
+  /* The left edge: section dots with the current number above, the theme button beneath,
+     the group centred. Shown only where there is room beside the page. */
+  .edge { position: fixed; left: 1.5rem; top: 50%; transform: translateY(-50%); z-index: 30; display: none; flex-direction: column; align-items: center; gap: 1.25rem; }
+  @media (min-width: 1320px) { .edge { display: flex; } }
+  .rail { display: flex; flex-direction: column; align-items: center; opacity: 0; transition: opacity 300ms var(--ease-mech); }
   .rail.is-on { opacity: 1; }
-  .rail-n { font-size: 0.75rem; color: var(--ink-muted); margin: 0 0 0.5rem 0.125rem; }
+  .rail-n { font-size: 0.75rem; color: var(--ink-muted); margin: 0 0 0.5rem; }
   .rail-dot { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 999px; }
   .rail-dot::before { content: ""; width: 6px; height: 6px; border-radius: 999px; background: var(--ink-muted); opacity: 0.5; transition: height 220ms var(--ease-mech), background-color 200ms var(--ease-mech), opacity 200ms var(--ease-mech); }
   .rail-dot:hover::before { opacity: 0.9; }
@@ -431,6 +434,11 @@
   .tier > p:last-child { margin-top: auto; }
   .fig .pv { fill: var(--surface-2); stroke: var(--ink-muted); stroke-width: 0.8; transition: fill 200ms var(--ease-mech); }
   .fig .pv.is-lit { fill: color-mix(in srgb, var(--flame) 55%, var(--surface)); stroke: var(--flame-text); }
+
+  /* Card photographs that drift: the picture is taller than the frame and moves within it. */
+  html.has-motion .photo-parallax picture { position: absolute; left: 0; right: 0; top: -8%; bottom: -8%; display: block; will-change: transform; }
+  /* Split titles: each line in its own mask while it rises. */
+  .ln { display: block; }
 
   /* Help: questions as native disclosures. The icon turns from plus to cross; the
      answer's height animates where the browser can interpolate to auto. */

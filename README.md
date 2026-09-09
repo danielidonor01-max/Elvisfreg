@@ -30,8 +30,10 @@ public/            favicon, robots
 
 `src/scripts/motion.ts` — GSAP + ScrollTrigger + Lenis, loaded from `Base.astro`. Everything is
 additive: with JavaScript off or `prefers-reduced-motion` the page is complete and static.
-Hooks: `data-reveal` / `data-reveal-group` (staggered), `data-split` (headline words), `data-count`
-(counters — do not reuse the attribute for anything else). The lifecycle
+Hooks: `data-reveal` / `data-reveal-group` (staggered), `data-split` (hero words), `data-count`
+(counters — do not reuse the attribute for anything else), `.photo-parallax` (Photo's `parallax` prop),
+plus automatic line reveals on `h1.h1` / `h2.h2`, hero parallax and the gauge's scroll sweep.
+Sections marked `.cv-auto` render on approach and get their hooks wired when they do. The lifecycle
 tabs (`StageTabs.astro`) and the services mega menu are self-contained and need no motion layer.
 `Gauge.astro` is a draggable pressure gauge reading from the calibration record.
 

@@ -12,7 +12,7 @@ const lead = PROJECT_LEAD[project.slug];
 
 <a href={`/projects/${project.slug}/`} class="group block no-underline text-ink">
   {lead
-    ? <Photo src={lead.src} alt={lead.alt} ratio="3/2" temp={lead.temp} sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw" />
+    ? <Photo src={lead.src} alt={lead.alt} ratio="3/2" temp={lead.temp} parallax sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 100vw" />
     : <Placeholder label={project.title} ratio="3/2" />}
   <Heading class="h3 mt-4"><span class="link-quiet">{project.title}</span></Heading>
   <p class="text-[0.9375rem] text-ink-muted mt-1">{project.location}</p>

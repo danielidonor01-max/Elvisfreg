@@ -15,16 +15,17 @@ interface Props {
   widths?: number[];
   priority?: boolean;       // eager + high fetch priority (the hero)
   temp?: boolean;
+  parallax?: boolean;       // the picture drifts inside the frame with the scroll (motion layer)
   class?: string;
 }
 
 const {
   src, alt, ratio, sizes = '(min-width: 1024px) 33vw, 100vw',
-  widths = [480, 800, 1200, 1600], priority = false, temp = false, class: cls = '',
+  widths = [480, 800, 1200, 1600], priority = false, temp = false, parallax = false, class: cls = '',
 } = Astro.props;
 ---
 
-<figure class:list={['photo', cls, { 'photo-fill': !ratio }]} style={ratio ? `aspect-ratio:${ratio}` : undefined}>
+<figure class:list={['photo', cls, { 'photo-fill': !ratio, 'photo-parallax': parallax }]} style={ratio ? `aspect-ratio:${ratio}` : undefined}>
   <Picture
     src={src}
     alt={alt}

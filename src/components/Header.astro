@@ -72,7 +72,7 @@ const services = [...SERVICES].sort((a, b) => a.stages[0].localeCompare(b.stages
     </nav>
 
     <div class="bar-end hidden lg:flex items-center gap-4">
-      <ThemeToggle labels />
+      <ThemeToggle class="bar-toggle" />
       <Button href="/contact/" variant="ink">Request a quote</Button>
     </div>
 
@@ -102,7 +102,7 @@ const services = [...SERVICES].sort((a, b) => a.stages[0].localeCompare(b.stages
         ))}
         <Button href="/contact/" variant="ink" class="mt-3 self-start">Request a quote</Button>
         <div class="mt-6 pt-5 border-t border-line">
-          <ThemeToggle labels />
+          <ThemeToggle showLabel />
         </div>
       </nav>
     </div>

@@ -126,7 +126,11 @@ const pt = (v: number, r: number) => {
 
       // Settle on a representative reading when first seen.
       const io = new IntersectionObserver((entries) => {
-        if (entries.some((en) => en.isIntersecting)) { range.value = '75'; render(75); io.disconnect(); }
+        if (!entries.some((en) => en.isIntersecting)) return;
+        io.disconnect();
+        // With the motion layer the needle sweeps in with the scroll instead.
+        if (document.documentElement.classList.contains('has-motion')) return;
+        range.value = '75'; render(75);
       }, { threshold: 0.4 });
       io.observe(root);
       render(0);
