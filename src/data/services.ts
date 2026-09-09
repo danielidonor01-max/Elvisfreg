@@ -6,6 +6,10 @@ export interface ServiceSection {
   items: string[];
 }
 
+export type FigureKind =
+  | 'test-sequence' | 'control-loop' | 'panel-anatomy' | 'changeover'
+  | 'calibration-curve' | 'hold-chart' | 'trend-chart';
+
 export interface Service {
   slug: string;
   title: string;
@@ -17,6 +21,8 @@ export interface Service {
   related: string[];
   seo: { title: string; description: string };
   cta: string;
+  figure: FigureKind;       // the interactive drawing on the page
+  story: { heading: string; paragraphs: string[] }; // DRAFT — engineers to confirm
 }
 
 export const SERVICES: Service[] = [
@@ -82,6 +88,14 @@ export const SERVICES: Service[] = [
         'Domestic, commercial and industrial electrical installation, LV distribution, earthing and testing across Nigeria. Warri and Lagos offices.',
     },
     cta: 'Build with certified electrical engineers',
+    figure: 'test-sequence',
+    story: {
+      heading: 'How an installation runs',
+      paragraphs: [
+        'It starts with a site survey and a load list. From those we size the supply, the protection and the cables, draw the single-line diagram and the distribution schedule, and agree the drawings with you before anything is ordered. Where the site already has drawings we work to them; where it does not, we produce them.',
+        'Installation follows the drawings, and the drawings are updated as built. Before anything is energised the installation is tested in a fixed sequence, each result recorded on a certificate you keep. Generators and changeovers are commissioned under load, and the people who will run the system are shown how it behaves before we leave.',
+      ],
+    },
   },
   {
     slug: 'automation-control',
@@ -130,6 +144,14 @@ export const SERVICES: Service[] = [
         'PLC programming, HMI development, VFD installation and SCADA integration for industrial plants in Nigeria. Selection through commissioning and documentation.',
     },
     cta: 'Automate your industrial processes',
+    figure: 'control-loop',
+    story: {
+      heading: 'From narrative to running plant',
+      paragraphs: [
+        'Good automation is written down before it is programmed. We start with the I/O schedule, the control narrative and the cause-and-effect matrix, agreed with your operators, so the program is built to a description everyone has read. Hardware is selected against the process, the platforms already on site and the availability of local support.',
+        'Programs are structured, alarms are managed rather than merely raised, and set-points are documented. The system is tested in the workshop before it goes to site, then commissioned against the narrative with your operators present. Handover includes backups, as-built drawings and the FAT and SAT record, so the plant can be maintained by whoever comes next.',
+      ],
+    },
   },
   {
     slug: 'control-panels',
@@ -165,6 +187,14 @@ export const SERVICES: Service[] = [
         'Design and fabrication of motor control, PLC, MCC, generator, pump, VFD and changeover panels for industrial and commercial sites in Nigeria.',
     },
     cta: 'Upgrade your power distribution panels',
+    figure: 'panel-anatomy',
+    story: {
+      heading: 'Engineered in, not added later',
+      paragraphs: [
+        'A panel is designed from its schedule outward. Protection is graded and rated against the calculated fault level; the heat load of what goes inside sets the ventilation; terminal rails and trunking are sized with room to hand so every core can be traced from drawing to terminal. Labelling, interlocks and earthing are drawn before the enclosure is ordered.',
+        'Panels are built and inspected in the workshop and tested before dispatch, so time on site is spent on termination and commissioning. Each leaves with its own drawing set, its test record and a parts list, and we keep a copy for the day a modification is needed.',
+      ],
+    },
   },
   {
     slug: 'power-energy',
@@ -195,6 +225,14 @@ export const SERVICES: Service[] = [
         'Solar PV, diesel generator, hybrid, battery storage and UPS systems designed and installed for commercial, industrial and residential sites in Nigeria.',
     },
     cta: "Audit your plant's power architecture",
+    figure: 'changeover',
+    story: {
+      heading: 'Continuity is designed, not assumed',
+      paragraphs: [
+        'We begin with a load and autonomy study: what has to stay on, for how long, and what can wait. Grid, generator, solar and battery are then sized together rather than bolted on one at a time, with the changeover logic and the protection between them drawn on one single-line diagram.',
+        'Transfer systems are commissioned under real load, with the delays and interlocks set and recorded. Monitoring shows you where the energy goes, and the same engineers who installed the system maintain it, so the record of what was set and why stays with the plant.',
+      ],
+    },
   },
   {
     slug: 'instrumentation-calibration',
@@ -251,6 +289,14 @@ export const SERVICES: Service[] = [
         'Calibration of pressure, temperature, electronic, survey, civil and weighing instruments with as-found and as-left records. Warri and Lagos.',
     },
     cta: 'Book field instrument calibration',
+    figure: 'calibration-curve',
+    story: {
+      heading: 'A record for every tag',
+      paragraphs: [
+        'Every calibration starts with the as-found reading, taken before anything is adjusted, so you can judge what the instrument has been reporting since the last visit. It is then checked at five points across its span against a reference standard with a known uncertainty, adjusted where it is out, and read again as left.',
+        'The certificate carries both sets of readings, the reference used, the expanded uncertainty and the result against your tolerance, one per tag. Intervals are recorded and the next due date scheduled, and loops are checked end to end after the instruments on them are done.',
+      ],
+    },
   },
   {
     slug: 'hydrotest-pressure-testing',
@@ -278,6 +324,14 @@ export const SERVICES: Service[] = [
         'Hydrotest, pressure safety testing and integrity assurance for tanks, pipelines, flow lines and valves from 4 to 12 inches, across Nigeria.',
     },
     cta: 'Book a pressure test',
+    figure: 'hold-chart',
+    story: {
+      heading: 'Held, watched, recorded',
+      paragraphs: [
+        'Lines and vessels are cleaned and flushed first where they need it, then filled and vented so no air is trapped. Pressure is raised in steps with a check at each, on gauges that have their own calibration certificates, to the test pressure set by the code the item is built to.',
+        'The hold is watched for the full period, with pressure and temperature logged and joints inspected for leaks. Release is controlled, and the record, gauge certificates and any findings are handed over with the test report. Valves from 4 to 12 inches are tested the same way.',
+      ],
+    },
   },
   {
     slug: 'maintenance',
@@ -308,6 +362,14 @@ export const SERVICES: Service[] = [
         'Preventive, corrective and predictive maintenance for electrical, PLC, HMI, VFD and generator systems. Root-cause fault finding across Nigeria.',
     },
     cta: 'Enrol in a predictive maintenance contract',
+    figure: 'trend-chart',
+    story: {
+      heading: 'Find it before it trips',
+      paragraphs: [
+        'A maintenance contract begins with a survey and an as-found record of the plant, so there is a baseline, and a schedule agreed against your production calendar. Preventive visits follow it; predictive checks, such as thermography, insulation resistance trending and vibration, are read against the visit before, not just against a limit.',
+        'When something fails, fault-finding follows a documented procedure to the root cause rather than the symptom. Every visit ends in a report the next engineer can act on, and where a panel or a drive is reaching the end of its life we propose the retrofit before the plant proposes it for us.',
+      ],
+    },
   },
 ];
 

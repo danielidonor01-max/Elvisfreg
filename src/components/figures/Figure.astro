@@ -1,0 +1,21 @@
+---
+/** Picks the service page's figure by kind. */
+import TestSequence from './TestSequence.astro';
+import ControlLoop from './ControlLoop.astro';
+import PanelAnatomy from './PanelAnatomy.astro';
+import Changeover from './Changeover.astro';
+import CalibrationCurve from './CalibrationCurve.astro';
+import HoldChart from './HoldChart.astro';
+import TrendChart from './TrendChart.astro';
+import type { FigureKind } from '../../data/services';
+
+const { kind } = Astro.props as { kind: FigureKind };
+---
+
+{kind === 'test-sequence' && <TestSequence />}
+{kind === 'control-loop' && <ControlLoop />}
+{kind === 'panel-anatomy' && <PanelAnatomy />}
+{kind === 'changeover' && <Changeover />}
+{kind === 'calibration-curve' && <CalibrationCurve />}
+{kind === 'hold-chart' && <HoldChart />}
+{kind === 'trend-chart' && <TrendChart />}

@@ -2,7 +2,7 @@
 import Arc from './Arc.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import { NAV, SITE } from '../data/site';
-import { STAGES, stageById } from '../data/stages';
+import { stageById } from '../data/stages';
 import { SERVICES } from '../data/services';
 import { MENU_CARDS } from '../data/menu';
 import Photo from './Photo.astro';
@@ -21,7 +21,7 @@ const services = [...SERVICES].sort((a, b) => a.stages[0].localeCompare(b.stages
       <svg class="wordmark h-[26px] md:h-[30px] w-auto" viewBox="0 0 137 44" aria-hidden="true" focusable="false"><use href="#ef-wordmark" width="137" height="44" /></svg>
     </a>
 
-    <nav aria-label="Primary" class="hidden md:flex items-center gap-1">
+    <nav aria-label="Primary" class="hidden lg:flex items-center gap-1">
       {NAV.map((item) =>
         item.label === 'Services' ? (
           <details class="services-menu" data-services-menu>
@@ -70,7 +70,7 @@ const services = [...SERVICES].sort((a, b) => a.stages[0].localeCompare(b.stages
 
     <button
       type="button"
-      class="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 rounded-xs border border-transparent hover:border-line transition-colors"
+      class="lg:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 rounded-xs border border-transparent hover:border-line transition-colors"
       data-menu-button
       aria-controls="mobile-menu"
       aria-expanded="false"
@@ -82,7 +82,7 @@ const services = [...SERVICES].sort((a, b) => a.stages[0].localeCompare(b.stages
     </button>
   </div>
 
-  <div id="mobile-menu" class="mobile-menu md:hidden border-t border-line bg-bg" data-mobile-menu inert>
+  <div id="mobile-menu" class="mobile-menu lg:hidden border-t border-line bg-bg" data-mobile-menu inert>
     <div>
       <nav aria-label="Primary, mobile" class="wrap py-6 flex flex-col gap-2">
         <a href="/services/" class="py-2.5 font-medium link-quiet self-start">Services</a>

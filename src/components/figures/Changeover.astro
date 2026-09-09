@@ -1,0 +1,92 @@
+---
+/**
+ * Power and energy: what happens when the mains fail. A one-line diagram of
+ * grid, generator, solar and battery feeding one bus through an automatic
+ * transfer switch, with the transfer sequence played step by step.
+ * Timings are illustrative; a real ATS runs to the delays set at commissioning.
+ */
+const SEQ_LOSS = ['Mains voltage lost', 'Generator start signal', 'Generator at speed and voltage', 'ATS transfers load to generator'];
+const SEQ_BACK = ['Mains voltage restored and stable', 'ATS retransfers load to mains', 'Generator cool-down, then stop'];
+---
+
+<figure class="fig m-0" data-ats data-loss={SEQ_LOSS.join('|')} data-back={SEQ_BACK.join('|')}>
+  <div class="fig-head"><span class="fig-title">When the mains fail</span><span class="fig-tag">Illustration</span></div>
+  <div class="grid gap-6 lg:grid-cols-12 lg:gap-8 items-center">
+    <div class="lg:col-span-7">
+      <svg viewBox="0 0 360 200" class="w-full max-w-[560px] mx-auto select-none" aria-hidden="true">
+        <!-- sources -->
+        <g data-node="grid"><rect x="16" y="26" width="72" height="34" rx="2" class="node" /><text x="52" y="41" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600">MAINS</text><text x="52" y="52" font-size="6" text-anchor="middle">Utility supply</text></g>
+        <g data-node="gen"><rect x="16" y="140" width="72" height="34" rx="2" class="node" /><text x="52" y="155" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600">GENERATOR</text><text x="52" y="166" font-size="6" text-anchor="middle" data-gen-txt>Standby</text></g>
+        <g data-node="pv"><rect x="272" y="26" width="72" height="34" rx="2" class="node" /><text x="308" y="41" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600">SOLAR · BATTERY</text><text x="308" y="52" font-size="6" text-anchor="middle">Inverter</text></g>
+        <!-- ATS -->
+        <rect x="150" y="82" width="60" height="36" rx="2" class="node" />
+        <text x="180" y="97" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600">ATS</text>
+        <text x="180" y="108" font-size="6" text-anchor="middle" data-ats-txt>On mains</text>
+        <!-- bus and load -->
+        <line x1="250" y1="70" x2="250" y2="176" stroke="var(--ink)" stroke-width="2" />
+        <text x="256" y="120" font-size="6">LOAD BUS</text>
+        <rect x="272" y="140" width="72" height="34" rx="2" class="node" /><text x="308" y="160" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600">PLANT LOAD</text>
+        <!-- feeders -->
+        <path d="M88 43H120V100H150" class="feed" data-feed="grid" />
+        <path d="M88 157H120V100" class="feed" data-feed="gen" />
+        <path d="M210 100H250" class="feed" data-feed="bus" />
+        <path d="M308 60V90H250" class="feed" data-feed="pv" />
+        <path d="M250 157H272" class="feed" data-feed="load" />
+      </svg>
+    </div>
+    <div class="lg:col-span-5">
+      <div class="flex flex-wrap gap-2">
+        <button type="button" class="chip" data-ats-btn="loss">Simulate mains failure</button>
+        <button type="button" class="chip" data-ats-btn="back" disabled>Restore mains</button>
+      </div>
+      <ol class="ats-log list-none m-0 p-0 mt-4" data-ats-log aria-live="polite"></ol>
+    </div>
+  </div>
+  <figcaption class="fig-note">Solar and battery keep feeding the bus throughout. Delays are illustrative; a real transfer runs to the settings agreed at commissioning.</figcaption>
+</figure>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-ats]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const feed = (k: string) => root.querySelector<SVGPathElement>(`[data-feed="${k}"]`)!;
+      const log = root.querySelector<HTMLOListElement>('[data-ats-log]')!;
+      const atsTxt = root.querySelector<SVGTextElement>('[data-ats-txt]')!;
+      const genTxt = root.querySelector<SVGTextElement>('[data-gen-txt]')!;
+      const btnLoss = root.querySelector<HTMLButtonElement>('[data-ats-btn="loss"]')!;
+      const btnBack = root.querySelector<HTMLButtonElement>('[data-ats-btn="back"]')!;
+      const loss = root.dataset.loss!.split('|');
+      const back = root.dataset.back!.split('|');
+      let timers: number[] = [];
+
+      const live = (keys: string[]) => ['grid', 'gen', 'bus', 'pv', 'load'].forEach((k) => feed(k).classList.toggle('is-live', keys.includes(k)));
+      const dead = (keys: string[]) => ['grid', 'gen'].forEach((k) => feed(k).classList.toggle('is-dead', keys.includes(k)));
+      const say = (t: string, s: number) => { const li = document.createElement('li'); li.innerHTML = `<span class="data">${String(s).padStart(2, '0')} s</span><span>${t}</span>`; log.appendChild(li); };
+      const clear = () => { timers.forEach(clearTimeout); timers = []; log.replaceChildren(); };
+      const at = (ms: number, fn: () => void) => { if (reduce) fn(); else timers.push(window.setTimeout(fn, ms)); };
+
+      function onMains() { live(['grid', 'bus', 'pv', 'load']); dead([]); atsTxt.textContent = 'On mains'; genTxt.textContent = 'Standby'; }
+      onMains();
+      new IntersectionObserver((entries) => root.classList.toggle('is-visible', entries.some((e) => e.isIntersecting)), { threshold: 0.1 }).observe(root);
+
+      btnLoss.addEventListener('click', () => {
+        clear(); btnLoss.disabled = true;
+        at(0, () => { live(['pv', 'load']); dead(['grid']); atsTxt.textContent = 'Mains lost'; say(loss[0], 0); });
+        at(900, () => { genTxt.textContent = 'Starting'; say(loss[1], 2); });
+        at(2600, () => { genTxt.textContent = 'Running'; say(loss[2], 10); });
+        at(3400, () => { live(['gen', 'bus', 'pv', 'load']); atsTxt.textContent = 'On generator'; say(loss[3], 12); btnBack.disabled = false; });
+      });
+      btnBack.addEventListener('click', () => {
+        clear(); btnBack.disabled = true;
+        at(0, () => { dead([]); say(back[0], 0); });
+        at(1400, () => { live(['grid', 'bus', 'pv', 'load']); atsTxt.textContent = 'On mains'; say(back[1], 30); });
+        at(2600, () => { genTxt.textContent = 'Cooling down'; say(back[2], 60); });
+        at(4200, () => { genTxt.textContent = 'Standby'; btnLoss.disabled = false; });
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

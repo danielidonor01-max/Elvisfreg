@@ -1,0 +1,40 @@
+---
+/**
+ * Instrumentation: the same five-point record as the calibration table, drawn
+ * as error across the span, with the tolerance band it has to sit inside.
+ * Figures illustrative.
+ */
+const POINTS = [0, 25, 50, 75, 100];
+const FOUND = [0.02, 0.11, 0.19, 0.24, 0.31];   // error, % of span
+const LEFT = [0.0, 0.0, 0.01, 0.02, 0.02];
+const TOL = 0.25;
+// chart box
+const X0 = 44, X1 = 340, Y0 = 20, Y1 = 150, YMIN = -0.1, YMAX = 0.4;
+const x = (v: number) => X0 + ((X1 - X0) * v) / 100;
+const y = (e: number) => Y1 - ((Y1 - Y0) * (e - YMIN)) / (YMAX - YMIN);
+const poly = (s: number[]) => s.map((e, i) => `${x(POINTS[i])},${y(e)}`).join(' ');
+const yTicks = [-0.1, 0, 0.1, 0.2, 0.3, 0.4];
+---
+
+<figure class="fig m-0">
+  <div class="fig-head"><span class="fig-title">Error across the span, before and after</span><span class="fig-tag">Illustration</span></div>
+  <svg viewBox="0 0 360 180" class="w-full select-none" role="img" aria-label="Chart of instrument error at five points across the span, as found and as left, with the tolerance band">
+    <rect x={X0} y={y(TOL)} width={X1 - X0} height={y(-TOL > YMIN ? -TOL : YMIN) - y(TOL)} fill="var(--surface-2)" />
+    {yTicks.map((t) => <g><line x1={X0} y1={y(t)} x2={X1} y2={y(t)} stroke="var(--line)" /><text x={X0 - 6} y={y(t) + 2.5} font-size="7" text-anchor="end">{t > 0 ? '+' : ''}{t.toFixed(1)}</text></g>)}
+    <line x1={X0} y1={y(0)} x2={X1} y2={y(0)} stroke="var(--ink-muted)" />
+    {POINTS.map((p) => <text x={x(p)} y={Y1 + 12} font-size="7" text-anchor="middle">{p} %</text>)}
+    <text x={X0 + 4} y={y(TOL) - 3} font-size="6.5">tolerance ±{TOL} %</text>
+    <polyline points={poly(FOUND)} fill="none" stroke="var(--ink-muted)" stroke-width="1.25" stroke-dasharray="4 3" />
+    <polyline points={poly(LEFT)} fill="none" stroke="var(--flame)" stroke-width="1.75" />
+    {FOUND.map((e, i) => <circle cx={x(POINTS[i])} cy={y(e)} r="3" fill="var(--surface)" stroke="var(--ink-muted)" stroke-width="1.25"><title>As found at {POINTS[i]} %: {e > 0 ? '+' : ''}{e.toFixed(2)} % of span</title></circle>)}
+    {LEFT.map((e, i) => <circle cx={x(POINTS[i])} cy={y(e)} r="3" fill="var(--flame)"><title>As left at {POINTS[i]} %: {e > 0 ? '+' : ''}{e.toFixed(2)} % of span</title></circle>)}
+    <text x={X0} y={Y1 + 26} font-size="7">APPLIED, % OF SPAN</text>
+    <text x={X0 - 6} y={Y0 - 8} font-size="7" text-anchor="end">ERROR %</text>
+  </svg>
+  <ul class="list-none m-0 p-0 mt-3 flex flex-wrap gap-x-6 gap-y-1 text-[0.9375rem]">
+    <li class="flex items-center gap-2"><span class="inline-block w-4 border-t-2 border-dashed border-ink-muted"></span>As found</li>
+    <li class="flex items-center gap-2"><span class="inline-block w-4 border-t-2 border-flame"></span>As left</li>
+    <li class="flex items-center gap-2"><span class="inline-block w-4 h-3 bg-surface-2 border border-line"></span>Tolerance</li>
+  </ul>
+  <figcaption class="fig-note">The as-found error grew with the applied value, a span error, and was adjusted out. Both curves go on the certificate, with the expanded uncertainty.</figcaption>
+</figure>

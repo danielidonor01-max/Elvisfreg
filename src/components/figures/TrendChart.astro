@@ -1,0 +1,87 @@
+---
+/**
+ * Maintenance: insulation resistance on one motor, visit by visit, trending
+ * toward the action level. Reveal the visits and see where the trend says it
+ * will get there — the case for predictive checks. Figures illustrative.
+ */
+const READINGS = [480, 462, 438, 401, 356, 304, 250, 188]; // MΩ, quarterly visits
+const ACTION = 100;
+---
+
+<figure class="fig m-0" data-trend data-readings={READINGS.join(',')} data-action={ACTION}>
+  <div class="fig-head"><span class="fig-title">Found before it trips</span><span class="fig-tag">Illustration</span></div>
+  <svg viewBox="0 0 360 190" class="w-full select-none" aria-hidden="true" data-chart>
+    <g data-grid></g>
+    <line data-action-line stroke="var(--flame)" stroke-dasharray="4 3" stroke-width="1.25" />
+    <text data-action-lbl font-size="7" text-anchor="end" fill="var(--flame-text)">action level</text>
+    <polyline data-line fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round" />
+    <path data-proj fill="none" stroke="var(--ink-muted)" stroke-width="1.25" stroke-dasharray="3 3" />
+    <g data-points></g>
+    <circle data-cross r="4" fill="var(--surface)" stroke="var(--flame)" stroke-width="2" />
+    <text x="44" y="182" font-size="7">QUARTERLY VISITS</text>
+    <text x="38" y="14" font-size="7" text-anchor="end">MΩ</text>
+  </svg>
+  <div class="grid gap-6 md:grid-cols-12 items-end mt-2">
+    <label class="block md:col-span-6">
+      <span class="text-[0.9375rem] text-ink-muted">Visits recorded</span>
+      <input type="range" min="3" max="8" step="1" value="5" class="slider" data-trend-range aria-valuetext="5 visits" />
+    </label>
+    <p class="md:col-span-6 m-0 text-[0.9375rem]" data-trend-msg aria-live="polite"></p>
+  </div>
+  <figcaption class="fig-note">One motor's insulation resistance, read at each preventive visit. The trend, not any single reading, is what schedules the rewind before the trip. Figures illustrative.</figcaption>
+</figure>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-trend]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+      const readings = root.dataset.readings!.split(',').map(Number);
+      const action = Number(root.dataset.action);
+      const svg = root.querySelector<SVGSVGElement>('[data-chart]')!;
+      const q = <T extends Element>(s: string) => svg.querySelector<T>(s)!;
+      const range = root.querySelector<HTMLInputElement>('[data-trend-range]')!;
+      const msg = root.querySelector<HTMLElement>('[data-trend-msg]')!;
+      const NS = 'http://www.w3.org/2000/svg';
+      const X0 = 44, X1 = 344, Y0 = 20, Y1 = 158, VMAX = 12, YMAX = 500;
+      const x = (v: number) => X0 + ((X1 - X0) * (v - 1)) / (VMAX - 1);
+      const y = (r: number) => Y1 - ((Y1 - Y0) * r) / YMAX;
+      const grid = q<SVGGElement>('[data-grid]');
+      [0, 100, 200, 300, 400, 500].forEach((r) => {
+        const l = document.createElementNS(NS, 'line'); l.setAttribute('x1', String(X0)); l.setAttribute('x2', String(X1)); l.setAttribute('y1', String(y(r))); l.setAttribute('y2', String(y(r))); l.setAttribute('stroke', 'var(--line)');
+        const t = document.createElementNS(NS, 'text'); t.setAttribute('x', String(X0 - 6)); t.setAttribute('y', String(y(r) + 2.5)); t.setAttribute('font-size', '7'); t.setAttribute('text-anchor', 'end'); t.textContent = String(r);
+        grid.append(l, t);
+      });
+      for (let v = 1; v <= VMAX; v++) { const t = document.createElementNS(NS, 'text'); t.setAttribute('x', String(x(v))); t.setAttribute('y', String(Y1 + 12)); t.setAttribute('font-size', '7'); t.setAttribute('text-anchor', 'middle'); t.textContent = String(v); grid.appendChild(t); }
+      const al = q<SVGLineElement>('[data-action-line]'); al.setAttribute('x1', String(X0)); al.setAttribute('x2', String(X1)); al.setAttribute('y1', String(y(action))); al.setAttribute('y2', String(y(action)));
+      const alb = q<SVGTextElement>('[data-action-lbl]'); alb.setAttribute('x', String(X1)); alb.setAttribute('y', String(y(action) - 4));
+      const pts = q<SVGGElement>('[data-points]');
+
+      function render(n: number) {
+        const shown = readings.slice(0, n);
+        q<SVGPolylineElement>('[data-line]').setAttribute('points', shown.map((r, i) => `${x(i + 1)},${y(r)}`).join(' '));
+        pts.replaceChildren(...shown.map((r, i) => { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', String(x(i + 1))); c.setAttribute('cy', String(y(r))); c.setAttribute('r', '3'); c.setAttribute('fill', 'var(--ink)'); return c; }));
+        // The recent trend: a least-squares line through the last three visits,
+        // projected from the latest reading to the action level.
+        const k = Math.min(3, n), xs = Array.from({ length: k }, (_, i) => n - k + 1 + i), ys = shown.slice(n - k);
+        const mx = xs.reduce((a, b) => a + b, 0) / k, my = ys.reduce((a, b) => a + b, 0) / k;
+        const slope = xs.reduce((a, xi, i) => a + (xi - mx) * (ys[i] - my), 0) / xs.reduce((a, xi) => a + (xi - mx) ** 2, 0);
+        const vAtAction = n + (action - shown[n - 1]) / slope;
+        const proj = q<SVGPathElement>('[data-proj]'), cross = q<SVGCircleElement>('[data-cross]');
+        if (slope < 0 && vAtAction > n && vAtAction <= VMAX) {
+          proj.setAttribute('d', `M${x(n)},${y(shown[n - 1])} L${x(vAtAction)},${y(action)}`);
+          cross.setAttribute('cx', String(x(vAtAction))); cross.setAttribute('cy', String(y(action))); cross.style.display = '';
+          msg.innerHTML = `On this trend the action level is reached around visit <span class="data">${Math.ceil(vAtAction)}</span>. The rewind is scheduled for the shutdown before it.`;
+        } else {
+          proj.setAttribute('d', ''); cross.style.display = 'none';
+          msg.textContent = 'On the readings so far the action level is not reached within the window shown. Keep reading it.';
+        }
+        range.setAttribute('aria-valuetext', `${n} visits`);
+      }
+      range.addEventListener('input', () => render(Number(range.value)));
+      render(Number(range.value));
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

@@ -1,0 +1,119 @@
+---
+/**
+ * Control panels: a general-arrangement drawing with the parts that are
+ * engineered in rather than added later. Pick a part to see it on the drawing.
+ */
+const ZONES = [
+  { id: 'incomer', name: 'Incomer and isolation', body: 'Main isolator and incoming terminals sized for the full connected load and the fault level at the point of supply, with the door interlocked to it.' },
+  { id: 'protection', name: 'Protection', body: 'MCCBs and MCBs graded so the device nearest a fault clears it first, with breaking capacity chosen against the calculated fault level.' },
+  { id: 'control', name: 'Control', body: 'PLC, relays and power supplies on their own segregated rail, with spare I/O and space left for what the plant will ask for next.' },
+  { id: 'drives', name: 'Drives', body: 'Variable frequency drives mounted for their cooling path, with line reactors or filters where the supply or the motor cable length needs them.' },
+  { id: 'terminals', name: 'Terminals and cable management', body: 'Numbered terminal rails and trunking with room to hand, so every core can be traced from the drawing to the terminal it lands on.' },
+  { id: 'thermal', name: 'Ventilation and thermal', body: 'Heat load calculated from what is inside; filtered fans, louvres or cooling units sized so the electronics stay inside their rated temperature.' },
+  { id: 'earth', name: 'Earthing', body: 'A continuous earth bar with the door, gland plate and every exposed metal part bonded to it and recorded on the test certificate.' },
+];
+---
+
+<figure class="fig m-0" data-panel>
+  <div class="fig-head"><span class="fig-title">What is engineered into a panel</span><span class="fig-tag">Illustration</span></div>
+  <div class="grid gap-6 lg:grid-cols-12 lg:gap-8 items-start">
+    <div class="lg:col-span-7">
+      <svg viewBox="0 0 320 250" class="w-full max-w-[520px] mx-auto select-none" aria-hidden="true">
+        <rect x="8" y="8" width="304" height="234" rx="3" fill="none" stroke="var(--ink)" stroke-width="1.25" />
+        <rect x="14" y="14" width="292" height="222" rx="2" fill="none" stroke="var(--line)" />
+        <!-- incomer -->
+        <g class="zone" data-zone="incomer">
+          <rect x="26" y="28" width="66" height="40" rx="2" />
+          <path d="M40 34v10M52 34v10M64 34v10M78 34v10" stroke-width="1.5" />
+          <text x="59" y="60" font-size="6" text-anchor="middle">ISOLATOR</text>
+        </g>
+        <!-- protection -->
+        <g class="zone" data-zone="protection">
+          <rect x="26" y="80" width="18" height="34" rx="1" /><rect x="50" y="80" width="18" height="34" rx="1" /><rect x="74" y="80" width="18" height="34" rx="1" />
+          <path d="M35 86v8M59 86v8M83 86v8" stroke-width="1.5" />
+          <text x="59" y="124" font-size="6" text-anchor="middle">MCCB · MCB</text>
+        </g>
+        <!-- control -->
+        <g class="zone" data-zone="control">
+          <rect x="112" y="28" width="94" height="52" rx="2" />
+          <path d="M120 40h78M120 50h78M120 60h78M120 70h78" stroke-width="0.8" />
+          <rect x="122" y="42" width="30" height="16" rx="1" fill="var(--surface)" />
+          <text x="137" y="53" font-size="6" text-anchor="middle">PLC</text>
+          <text x="159" y="92" font-size="6" text-anchor="middle">CONTROL RAIL</text>
+        </g>
+        <!-- drives -->
+        <g class="zone" data-zone="drives">
+          <rect x="228" y="28" width="60" height="70" rx="2" />
+          <path d="M236 82h44M236 88h44M236 94h44" stroke-width="0.8" />
+          <rect x="238" y="36" width="40" height="30" rx="1" fill="var(--surface)" />
+          <text x="258" y="53" font-size="6.5" text-anchor="middle">VFD</text>
+          <text x="258" y="110" font-size="6" text-anchor="middle">DRIVES</text>
+        </g>
+        <!-- terminals -->
+        <g class="zone" data-zone="terminals">
+          <rect x="26" y="150" width="262" height="16" rx="1" />
+          {Array.from({ length: 26 }, (_, i) => <line x1={36 + i * 10} y1="150" x2={36 + i * 10} y2="166" stroke-width="0.6" />)}
+          <rect x="26" y="176" width="262" height="14" rx="1" />
+          <path d="M40 176v14M80 176v14M120 176v14M160 176v14M200 176v14M240 176v14" stroke-width="0.6" />
+          <text x="157" y="203" font-size="6" text-anchor="middle">TERMINALS · TRUNKING</text>
+        </g>
+        <!-- thermal -->
+        <g class="zone" data-zone="thermal">
+          <rect x="112" y="104" width="94" height="34" rx="2" />
+          <path d="M120 112h78M120 120h78M120 128h78" stroke-width="0.8" />
+          <text x="159" y="147" font-size="6" text-anchor="middle">FAN · FILTER</text>
+        </g>
+        <!-- earth -->
+        <g class="zone" data-zone="earth">
+          <rect x="26" y="216" width="120" height="6" rx="1" />
+          <path d="M150 210v18M158 213v12M166 216v6" stroke-width="1.2" />
+          <text x="86" y="232" font-size="6" text-anchor="middle">EARTH BAR</text>
+        </g>
+      </svg>
+    </div>
+    <div class="lg:col-span-5 flex flex-col gap-1" role="tablist" aria-label="Panel parts">
+      {ZONES.map((z, i) => (
+          <button type="button" role="tab" class="seq-step" id={`pz-tab-${z.id}`} aria-controls={`pz-panel-${z.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-zone-btn={z.id}>
+            <span class="seq-n data" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span>{z.name}</span>
+          </button>
+      ))}
+    </div>
+  </div>
+  <div class="mt-5 border-t border-line pt-4">
+    {ZONES.map((z, i) => <p role="tabpanel" id={`pz-panel-${z.id}`} aria-labelledby={`pz-tab-${z.id}`} class="text-ink-muted m-0" hidden={i !== 0}>{z.body}</p>)}
+  </div>
+  <figcaption class="fig-note">A general arrangement, not a specific panel. Every panel we build leaves with its own drawing set.</figcaption>
+</figure>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-panel]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+      const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-zone-btn]'));
+      const panels = tabs.map((t) => root.querySelector<HTMLElement>('#' + t.getAttribute('aria-controls'))!);
+      const zones = tabs.map((t) => root.querySelector<SVGGElement>(`[data-zone="${t.dataset.zoneBtn}"]`)!);
+      const select = (i: number, focus = false) => {
+        tabs.forEach((t, j) => { const on = i === j; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; panels[j].hidden = !on; zones[j].classList.toggle('is-active', on); });
+        if (focus) tabs[i].focus();
+      };
+      tabs.forEach((t, i) => {
+        t.addEventListener('click', () => select(i));
+        t.addEventListener('mouseenter', () => zones[i].classList.add('is-hover'));
+        t.addEventListener('mouseleave', () => zones[i].classList.remove('is-hover'));
+        t.addEventListener('keydown', (e) => {
+          const n = tabs.length; let j = -1;
+          if (e.key === 'ArrowDown' || e.key === 'ArrowRight') j = (i + 1) % n;
+          else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') j = (i - 1 + n) % n;
+          else if (e.key === 'Home') j = 0; else if (e.key === 'End') j = n - 1;
+          if (j >= 0) { e.preventDefault(); select(j, true); }
+        });
+      });
+      zones.forEach((z, i) => { z.addEventListener('click', () => select(i)); z.style.cursor = 'pointer'; });
+      select(0);
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

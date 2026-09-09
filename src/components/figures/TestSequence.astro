@@ -1,0 +1,67 @@
+---
+/**
+ * Electrical: the tests that stand between installation and energisation,
+ * as a sequence you can step through. Readings are illustrative; the test
+ * voltages and acceptance values are for Elvisfreg's engineers to confirm.
+ */
+const STEPS = [
+  { name: 'Visual inspection', what: 'Enclosures, terminations, cable support, labelling and protective devices are checked against the design schedule before any instrument is connected.', record: 'Inspection schedule, signed', reading: 'Complete' },
+  { name: 'Continuity and polarity', what: 'Protective conductors and ring circuits are proved continuous, and line, neutral and earth are confirmed in the right places at every point.', record: 'R1+R2 per circuit', reading: '0.32 Ω' },
+  { name: 'Insulation resistance', what: 'Measured between live conductors and from each to earth at the test voltage for the circuit, with sensitive equipment disconnected first.', record: 'IR per circuit', reading: '> 200 MΩ at 500 V' },
+  { name: 'Earth-fault loop impedance', what: 'Measured at the furthest point of each circuit and checked against the protective device that has to clear a fault there.', record: 'Zs per circuit', reading: '0.41 Ω' },
+  { name: 'Energise and function', what: 'Energised in sequence, then RCDs, changeover and interlocks are operated under load. The certificate is issued on the day.', record: 'Installation test certificate', reading: 'Issued' },
+];
+---
+
+<figure class="fig m-0" data-seq>
+  <div class="fig-head"><span class="fig-title">Proven before energisation</span><span class="fig-tag">Illustration</span></div>
+  <div class="grid gap-6 lg:grid-cols-12 lg:gap-8">
+    <div class="lg:col-span-5 flex flex-col gap-1" role="tablist" aria-label="Test sequence">
+      {STEPS.map((s, i) => (
+          <button type="button" role="tab" class="seq-step" id={`seq-tab-${i}`} aria-controls={`seq-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+            <span class="seq-n data" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span>{s.name}</span>
+          </button>
+      ))}
+    </div>
+    <div class="lg:col-span-7 lg:border-l lg:border-line lg:pl-8">
+      {STEPS.map((s, i) => (
+        <div role="tabpanel" id={`seq-panel-${i}`} aria-labelledby={`seq-tab-${i}`} class="seq-panel" hidden={i !== 0}>
+          <p class="text-ink-muted">{s.what}</p>
+          <dl class="mt-5 grid grid-cols-2 gap-4 m-0 border-t border-line pt-4">
+            <div><dt class="text-[0.9375rem] text-ink-muted">Recorded as</dt><dd class="m-0 mt-1 font-medium">{s.record}</dd></div>
+            <div><dt class="text-[0.9375rem] text-ink-muted">Reading</dt><dd class="m-0 mt-1 data text-[1.125rem]">{s.reading}</dd></div>
+          </dl>
+        </div>
+      ))}
+    </div>
+  </div>
+  <figcaption class="fig-note">Choose a step. Readings are illustrative; the certificate lists every circuit tested.</figcaption>
+</figure>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-seq]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+      const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+      const panels = tabs.map((t) => root.querySelector<HTMLElement>('#' + t.getAttribute('aria-controls'))!);
+      const select = (i: number, focus = false) => {
+        tabs.forEach((t, j) => { const on = i === j; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; panels[j].hidden = !on; panels[j].classList.toggle('is-entering', on); });
+        if (focus) tabs[i].focus();
+      };
+      tabs.forEach((t, i) => {
+        t.addEventListener('click', () => select(i));
+        t.addEventListener('keydown', (e) => {
+          const n = tabs.length; let j = -1;
+          if (e.key === 'ArrowDown' || e.key === 'ArrowRight') j = (i + 1) % n;
+          else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') j = (i - 1 + n) % n;
+          else if (e.key === 'Home') j = 0; else if (e.key === 'End') j = n - 1;
+          if (j >= 0) { e.preventDefault(); select(j, true); }
+        });
+      });
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

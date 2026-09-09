@@ -1,0 +1,143 @@
+---
+/**
+ * Automation: a level loop you can drive. A transmitter on the tank feeds a
+ * PLC, the PLC sets the pump's drive, and the operator screen shows what the
+ * loop is doing. Move the set-point, open the inlet, watch it settle.
+ * Dynamics are a simple proportional model — an illustration, not a design.
+ */
+---
+
+<figure class="fig m-0" data-loop>
+  <div class="fig-head"><span class="fig-title">A level loop you can drive</span><span class="fig-tag">Illustration</span></div>
+  <div class="grid gap-6 lg:grid-cols-12 lg:gap-8 items-center">
+    <div class="lg:col-span-7">
+      <svg viewBox="0 0 320 210" class="w-full max-w-[520px] mx-auto select-none" aria-hidden="true">
+        <!-- tank -->
+        <rect x="24" y="28" width="96" height="160" rx="2" fill="none" stroke="var(--ink)" stroke-width="1.25" />
+        <rect x="25" y="188" width="94" height="0" fill="var(--flame)" opacity="0.85" data-liquid />
+        <line x1="24" y1="44" x2="120" y2="44" stroke="var(--line)" stroke-dasharray="2 3" />
+        <line x1="24" y1="172" x2="120" y2="172" stroke="var(--line)" stroke-dasharray="2 3" />
+        <text x="30" y="40" font-size="6">LAH-101</text>
+        <text x="30" y="181" font-size="6">LAL-101</text>
+        <line x1="24" y1="100" x2="120" y2="100" stroke="var(--ink)" stroke-width="0.75" stroke-dasharray="3 3" data-sp-line />
+        <!-- inlet -->
+        <path d="M72 6v22" stroke="var(--ink)" stroke-width="1.25" fill="none" />
+        <rect x="66" y="10" width="12" height="8" fill="var(--surface)" stroke="var(--ink)" stroke-width="1" data-valve />
+        <text x="82" y="17" font-size="6">FV-100</text>
+        <!-- transmitter -->
+        <circle cx="134" cy="84" r="9" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.25" />
+        <text x="134" y="86.5" font-size="6" text-anchor="middle" fill="var(--ink)">LT</text>
+        <line x1="120" y1="84" x2="125" y2="84" stroke="var(--ink)" stroke-width="1" />
+        <text x="134" y="102" font-size="6" text-anchor="middle">LT-101</text>
+        <!-- PLC -->
+        <rect x="200" y="24" width="96" height="44" rx="2" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.25" />
+        <text x="248" y="42" font-size="8" text-anchor="middle" fill="var(--ink)" font-weight="600">PLC</text>
+        <text x="248" y="56" font-size="6" text-anchor="middle">LIC-101 · P control</text>
+        <!-- VFD -->
+        <rect x="220" y="104" width="56" height="30" rx="2" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.25" />
+        <text x="248" y="118" font-size="7" text-anchor="middle" fill="var(--ink)" font-weight="600">VFD</text>
+        <text x="248" y="128" font-size="6" text-anchor="middle" data-vfd-txt>0 %</text>
+        <!-- pump and pipe -->
+        <path d="M120 176h150" stroke="var(--ink)" stroke-width="1.25" fill="none" />
+        <circle cx="284" cy="176" r="14" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.25" />
+        <g data-rotor style="transform-origin:284px 176px"><path d="M284 166v20M274 176h20" stroke="var(--flame)" stroke-width="1.5" stroke-linecap="round" /></g>
+        <path d="M298 176h16v22" stroke="var(--ink)" stroke-width="1.25" fill="none" />
+        <text x="284" y="202" font-size="6" text-anchor="middle">P-101</text>
+        <!-- signals -->
+        <path d="M143 84H180V46H200" fill="none" stroke="var(--ink-muted)" stroke-width="0.9" stroke-dasharray="3 3" class="sig" />
+        <path d="M248 68V104" fill="none" stroke="var(--ink-muted)" stroke-width="0.9" stroke-dasharray="3 3" class="sig" />
+        <path d="M248 134V150H284V162" fill="none" stroke="var(--ink-muted)" stroke-width="0.9" stroke-dasharray="3 3" class="sig" />
+      </svg>
+    </div>
+    <div class="lg:col-span-5">
+      <div class="hmi">
+        <div class="hmi-row"><span>Level PV</span><span class="data" data-pv>60.0 %</span></div>
+        <div class="hmi-row"><span>Set-point SP</span><span class="data" data-sp>60 %</span></div>
+        <div class="hmi-row"><span>Pump speed</span><span class="data" data-speed>0 %</span></div>
+        <div class="hmi-alarms">
+          <span class="alarm" data-alarm="lah">LAH-101 High level</span>
+          <span class="alarm" data-alarm="lal">LAL-101 Low level</span>
+        </div>
+      </div>
+      <label class="block mt-5">
+        <span class="text-[0.9375rem] text-ink-muted">Level set-point</span>
+        <input type="range" min="10" max="95" step="1" value="60" class="slider" data-sp-range aria-valuetext="60 percent" />
+      </label>
+      <button type="button" class="chip mt-2" data-valve-btn aria-pressed="false">Open inlet valve</button>
+    </div>
+  </div>
+  <figcaption class="fig-note">Move the set-point or open the inlet and watch the controller hold the level. A simple proportional model; figures illustrative.</figcaption>
+</figure>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-loop]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+      const q = <T extends Element>(s: string) => root.querySelector<T>(s)!;
+      const liquid = q<SVGRectElement>('[data-liquid]');
+      const spLine = q<SVGLineElement>('[data-sp-line]');
+      const rotor = q<SVGGElement>('[data-rotor]');
+      const valveEl = q<SVGRectElement>('[data-valve]');
+      const vfdTxt = q<SVGTextElement>('[data-vfd-txt]');
+      const range = q<HTMLInputElement>('[data-sp-range]');
+      const valveBtn = q<HTMLButtonElement>('[data-valve-btn]');
+      const out = { pv: q<HTMLElement>('[data-pv]'), sp: q<HTMLElement>('[data-sp]'), speed: q<HTMLElement>('[data-speed]') };
+      const alarms = { lah: q<HTMLElement>('[data-alarm="lah"]'), lal: q<HTMLElement>('[data-alarm="lal"]') };
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      let pv = 60, sp = 60, valve = false, speed = 0, angle = 0, last = 0, raf = 0, visible = false;
+      const inflow = () => (valve ? 0.95 : 0.5);          // % of tank per second
+      const controller = () => Math.max(0, Math.min(100, 50 + 4 * (pv - sp)));
+      const steady = () => sp + (inflow() * 100 / 1.2 - 50) / 4; // where P control settles
+
+      function render() {
+        const h = 160 * (pv / 100);
+        liquid.setAttribute('y', String(188 - h));
+        liquid.setAttribute('height', String(h));
+        const spY = 188 - 160 * (sp / 100);
+        spLine.setAttribute('y1', String(spY)); spLine.setAttribute('y2', String(spY));
+        valveEl.setAttribute('fill', valve ? 'var(--flame)' : 'var(--surface)');
+        vfdTxt.textContent = `${Math.round(speed)} %`;
+        out.pv.textContent = `${pv.toFixed(1)} %`;
+        out.sp.textContent = `${sp} %`;
+        out.speed.textContent = `${Math.round(speed)} %`;
+        alarms.lah.classList.toggle('is-on', pv >= 90);
+        alarms.lal.classList.toggle('is-on', pv <= 10);
+        rotor.style.transform = `rotate(${angle}deg)`;
+      }
+
+      function step(t: number) {
+        const dt = Math.min(0.05, (t - last) / 1000 || 0.016);
+        last = t;
+        speed += (controller() - speed) * Math.min(1, dt * 3);   // drive ramps
+        pv += (inflow() - (speed / 100) * 1.2) * dt * 6;         // tank responds
+        pv = Math.max(0, Math.min(100, pv));
+        angle = (angle + speed * dt * 4) % 360;
+        render();
+        if (visible) raf = requestAnimationFrame(step);
+      }
+
+      function settle() { pv = Math.max(0, Math.min(100, steady())); speed = controller(); render(); }
+
+      range.addEventListener('input', () => { sp = Number(range.value); range.setAttribute('aria-valuetext', `${sp} percent`); if (reduce) settle(); else render(); });
+      valveBtn.addEventListener('click', () => {
+        valve = !valve; valveBtn.setAttribute('aria-pressed', String(valve));
+        valveBtn.textContent = valve ? 'Close inlet valve' : 'Open inlet valve';
+        if (reduce) settle(); else render();
+      });
+
+      if (reduce) { settle(); root.classList.add('is-visible'); return; }
+      const io = new IntersectionObserver((entries) => {
+        visible = entries.some((e) => e.isIntersecting);
+        root.classList.toggle('is-visible', visible);
+        cancelAnimationFrame(raf);
+        if (visible) { last = performance.now(); raf = requestAnimationFrame(step); }
+      }, { threshold: 0.2 });
+      io.observe(root);
+      render();
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>

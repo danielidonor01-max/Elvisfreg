@@ -1,0 +1,88 @@
+---
+/**
+ * Hydrotest: pressure against time for a test — raise in steps, hold, watch,
+ * release — with the hold you can lengthen. Figures illustrative; test
+ * pressure and hold time come from the code the item is built to.
+ */
+---
+
+<figure class="fig m-0" data-hold>
+  <div class="fig-head"><span class="fig-title">A hold, recorded</span><span class="fig-tag">Illustration</span></div>
+  <svg viewBox="0 0 360 190" class="w-full select-none" aria-hidden="true" data-chart>
+    <g data-grid></g>
+    <rect data-band fill="var(--surface-2)" />
+    <path data-trace fill="none" stroke="var(--ink)" stroke-width="1.5" stroke-linejoin="round" />
+    <path data-holdseg fill="none" stroke="var(--flame)" stroke-width="2.25" stroke-linecap="round" />
+    <circle data-p0 r="3.5" fill="var(--flame)" /><circle data-p1 r="3.5" fill="var(--flame)" />
+    <text data-lbl-p font-size="7" text-anchor="start"></text>
+    <text data-lbl-hold font-size="7" text-anchor="middle"></text>
+    <text x="44" y="182" font-size="7">MINUTES</text>
+    <text x="38" y="14" font-size="7" text-anchor="end">BAR</text>
+  </svg>
+  <div class="grid gap-6 md:grid-cols-12 items-end mt-2">
+    <label class="block md:col-span-7">
+      <span class="text-[0.9375rem] text-ink-muted">Hold period</span>
+      <input type="range" min="30" max="120" step="10" value="60" class="slider" data-hold-range aria-valuetext="60 minutes" />
+    </label>
+    <dl class="md:col-span-5 grid grid-cols-3 gap-4 m-0">
+      <div><dt class="text-[0.9375rem] text-ink-muted">Test</dt><dd class="m-0 mt-1 data whitespace-nowrap">15.0 bar</dd></div>
+      <div><dt class="text-[0.9375rem] text-ink-muted">Hold</dt><dd class="m-0 mt-1 data whitespace-nowrap" data-out-hold>60 min</dd></div>
+      <div><dt class="text-[0.9375rem] text-ink-muted">Drop</dt><dd class="m-0 mt-1 data text-flame-text whitespace-nowrap">0.0 bar</dd></div>
+    </dl>
+  </div>
+  <figcaption class="fig-note">Pressure is raised in steps with checks at each, held with a calibrated gauge on the line, and released in a controlled way. Test pressure and hold time are set by the code the item is built to; figures illustrative.</figcaption>
+</figure>
+
+<script>
+  function init() {
+    document.querySelectorAll<HTMLElement>('[data-hold]').forEach((root) => {
+      if (root.dataset.bound) return;
+      root.dataset.bound = '1';
+      const svg = root.querySelector<SVGSVGElement>('[data-chart]')!;
+      const q = <T extends Element>(s: string) => svg.querySelector<T>(s)!;
+      const range = root.querySelector<HTMLInputElement>('[data-hold-range]')!;
+      const outHold = root.querySelector<HTMLElement>('[data-out-hold]')!;
+      const X0 = 44, X1 = 344, Y0 = 20, Y1 = 158, P = 15, PMAX = 18;
+      const y = (p: number) => Y1 - ((Y1 - Y0) * p) / PMAX;
+      const grid = q<SVGGElement>('[data-grid]');
+      // static grid
+      [0, 5, 10, 15].forEach((p) => {
+        const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        l.setAttribute('x1', String(X0)); l.setAttribute('x2', String(X1)); l.setAttribute('y1', String(y(p))); l.setAttribute('y2', String(y(p))); l.setAttribute('stroke', 'var(--line)');
+        const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        t.setAttribute('x', String(X0 - 6)); t.setAttribute('y', String(y(p) + 2.5)); t.setAttribute('font-size', '7'); t.setAttribute('text-anchor', 'end'); t.textContent = String(p);
+        grid.append(l, t);
+      });
+      const ticks: SVGTextElement[] = [];
+      for (let i = 0; i < 6; i++) { const t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('y', String(Y1 + 12)); t.setAttribute('font-size', '7'); t.setAttribute('text-anchor', 'middle'); grid.appendChild(t); ticks.push(t); }
+
+      function render(hold: number) {
+        const ramp = 12, release = 6, total = ramp + hold + release + 4;
+        const x = (m: number) => X0 + ((X1 - X0) * m) / total;
+        // stepped rise: 0 → 5 → 10 → 15 with short checks
+        const steps = [[0, 0], [3, 5], [4.5, 5], [7.5, 10], [9, 10], [12, P]];
+        let d = `M${x(0)},${y(0)}`;
+        steps.slice(1).forEach(([m, p]) => { d += ` L${x(m)},${y(p)}`; });
+        const h0 = ramp, h1 = ramp + hold;
+        d += ` L${x(h1)},${y(P)} L${x(h1 + release)},${y(0)}`;
+        q<SVGPathElement>('[data-trace]').setAttribute('d', d);
+        q<SVGPathElement>('[data-holdseg]').setAttribute('d', `M${x(h0)},${y(P)} L${x(h1)},${y(P)}`);
+        const band = q<SVGRectElement>('[data-band]');
+        band.setAttribute('x', String(x(h0))); band.setAttribute('width', String(x(h1) - x(h0)));
+        band.setAttribute('y', String(y(P * 1.02))); band.setAttribute('height', String(y(P * 0.98) - y(P * 1.02)));
+        const p0 = q<SVGCircleElement>('[data-p0]'), p1 = q<SVGCircleElement>('[data-p1]');
+        p0.setAttribute('cx', String(x(h0))); p0.setAttribute('cy', String(y(P)));
+        p1.setAttribute('cx', String(x(h1))); p1.setAttribute('cy', String(y(P)));
+        const lp = q<SVGTextElement>('[data-lbl-p]'); lp.setAttribute('x', String(x(h0) + 4)); lp.setAttribute('y', String(y(P) - 8)); lp.textContent = `${P.toFixed(1)} bar held`;
+        const lh = q<SVGTextElement>('[data-lbl-hold]'); lh.setAttribute('x', String((x(h0) + x(h1)) / 2)); lh.setAttribute('y', String(y(P) + 14)); lh.textContent = `${hold} min, drop 0.0 bar`;
+        ticks.forEach((t, i) => { const m = Math.round((total * i) / 5); t.setAttribute('x', String(x(m))); t.textContent = String(m); });
+        outHold.textContent = `${hold} min`;
+        range.setAttribute('aria-valuetext', `${hold} minutes`);
+      }
+      range.addEventListener('input', () => render(Number(range.value)));
+      render(Number(range.value));
+    });
+  }
+  document.addEventListener('astro:page-load', init);
+  init();
+</script>
