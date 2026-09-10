@@ -1,0 +1,58 @@
+---
+/**
+ * Quality and HSE on the home page: the method in three columns, recorded,
+ * proven, safe, and the way to the full page. Same sources as /quality/.
+ */
+import Button from './Button.astro';
+
+const COLUMNS = [
+  {
+    name: 'Recorded',
+    lead: 'Every job starts with the state of what is there and ends with the state we leave it in.',
+    items: ['As-found readings before any adjustment', 'As-left readings after it, on the same sheet', 'Installation test certificates and commissioning records you keep'],
+  },
+  {
+    name: 'Proven',
+    lead: 'Results follow written procedures and carry their uncertainty, so they can be relied on and checked.',
+    items: ['Multi-point procedures at 0, 25, 50, 75 and 100 percent of span', 'Expanded uncertainty stated on every certificate', 'Proficiency testing and inter-laboratory comparison'],
+  },
+  {
+    name: 'Safe',
+    lead: 'The commitment is an accident-free workplace, beyond the legal requirement. On site it is a set of habits.',
+    items: ['Hazard analysis and a toolbox talk before every task', 'Permit to work, isolation and proving dead before anyone touches equipment', 'Incidents and near-misses reported the same day and closed with an action'],
+  },
+];
+---
+
+<section class="band border-t border-line" id="quality" data-rail-section="05">
+  <div class="section wrap">
+    <div class="grid gap-8 lg:grid-cols-12 lg:gap-16 items-end" data-reveal>
+      <div class="lg:col-span-8">
+        <p class="data text-ink-muted">05</p>
+        <h2 class="h2 mt-2 max-w-[22ch]">Quality is recorded. Safety is planned.</h2>
+        <p class="measure mt-4 text-ink-muted">Nothing we do is finished until it is written down, and nothing starts until the risks have been. The same controls apply on a platform, in a factory and in a home.</p>
+      </div>
+      <div class="lg:col-span-4 lg:justify-self-end">
+        <Button href="/quality/">Quality and HSE in full</Button>
+      </div>
+    </div>
+
+    <div class="mt-12 grid gap-8 md:grid-cols-3 md:gap-6" data-reveal-group>
+      {COLUMNS.map((c, i) => (
+        <article class="tier">
+          <p class="data text-ink-muted">{String(i + 1).padStart(2, '0')}</p>
+          <h3 class="h3 mt-2">{c.name}</h3>
+          <p class="mt-3 text-ink-muted">{c.lead}</p>
+          <ul class="mt-5 pt-4 border-t border-line list-none m-0 p-0 flex flex-col gap-2.5">
+            {c.items.map((it) => (
+              <li class="flex items-start gap-3 text-[0.9375rem]">
+                <svg class="doc-glyph shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+                <span>{it}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
