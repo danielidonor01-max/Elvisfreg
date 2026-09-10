@@ -357,6 +357,7 @@
   .doc-cards { display: flex; flex-direction: column; gap: 0.5rem; }
   .doc-card { display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 0.75rem; align-items: start; padding: 0.75rem 1rem; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--bg); }
   .doc-glyph { color: var(--flame-text); margin-top: 0.2rem; }
+  .doc-dot { width: 6px; height: 6px; margin-top: 0.55em; border-radius: 999px; background: var(--flame); }
   .band .doc-card, .band-dark .doc-card { background: var(--surface); }
 
   /* The left edge: section dots with the current number above, the theme button beneath,

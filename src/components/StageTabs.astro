@@ -48,7 +48,7 @@ import Button from './Button.astro';
           <ol class="doc-cards list-none m-0 p-0 mt-4">
             {s.deliverables.map((d, j) => (
               <li class="doc-card" style={`--i:${j}`}>
-                <svg class="doc-glyph" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></svg>
+                <span class="doc-dot" aria-hidden="true"></span>
                 <span class="text-[0.9375rem]">{d}</span>
               </li>
             ))}
