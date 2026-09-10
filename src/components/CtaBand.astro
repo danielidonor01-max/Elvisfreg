@@ -1,0 +1,55 @@
+---
+/**
+ * A closing band: a flame card with a question and one action, an inked card
+ * beside it with a second way in. Same family as the home page's updates
+ * band, with its own contour set so the two are related rather than twins.
+ */
+import Button from './Button.astro';
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title: string;
+  body: string;
+  action: { label: string; href: string };
+  side: { title: string; body: string; href: string };
+  seed?: number;
+}
+const { id, eyebrow, title, body, action, side, seed = 2 } = Astro.props;
+
+// Contour lines with their own phase, so each band's field reads differently.
+const W = 600;
+const lines = Array.from({ length: 14 }, (_, i) => {
+  const base = 40 + i * 27;
+  const pts: string[] = [];
+  for (let x = 0; x <= W; x += 20) {
+    const y = base + 30 * Math.sin(x / 88 + i * 0.31 + seed) + 14 * Math.sin(x / 37 + i * 0.19 + seed * 1.7);
+    pts.push(`${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`);
+  }
+  return pts.join(' ');
+});
+---
+
+<section class="wrap pt-6 pb-20 md:pb-28" id={id}>
+  <div class="grid gap-5 lg:grid-cols-12 lg:gap-6" data-reveal-group>
+    <div class="cta-card cta-flame lg:col-span-8">
+      <svg class="cta-contours" viewBox={`0 0 ${W} 420`} preserveAspectRatio="xMaxYMax slice" aria-hidden="true" focusable="false">
+        {lines.map((d) => <path d={d} />)}
+      </svg>
+      <div class="relative">
+        {eyebrow && <p class="data">{eyebrow}</p>}
+        <h2 class:list={['cta-title', { 'mt-3': !!eyebrow }]}>{title}</h2>
+        <p class="cta-body">{body}</p>
+        <p class="mt-8"><Button href={action.href} variant="ink">{action.label}</Button></p>
+      </div>
+    </div>
+
+    <a href={side.href} class="cta-card cta-ink lg:col-span-4">
+      <span class="btn-box" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8" /></svg>
+      </span>
+      <span class="cta-title-sm">{side.title}</span>
+      <span class="cta-sub">{side.body}</span>
+    </a>
+  </div>
+</section>

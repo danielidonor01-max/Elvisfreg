@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import Button from '../../components/Button.astro';
+import CtaBand from '../../components/CtaBand.astro';
 import Photo from '../../components/Photo.astro';
 import { STAGES } from '../../data/stages';
 import { SERVICES } from '../../data/services';
@@ -73,16 +74,11 @@ const byStage = STAGES.map((stage) => ({ stage, services: SERVICES.filter((s) =>
     </section>
   ))}
 
-  <section class="border-t border-line">
-    <div class="section wrap grid gap-10 md:grid-cols-12 items-start">
-      <div class="md:col-span-6" data-reveal>
-        <h2 class="h2">Not sure which service you need?</h2>
-        <p class="mt-4 text-ink-muted measure">Describe the site and the problem. We will tell you which of these it is, or whether it is more than one, and quote for it.</p>
-      </div>
-      <div class="md:col-span-6 flex flex-wrap gap-x-4 gap-y-4 items-center md:pt-2" data-reveal>
-        <Button href="/contact/" variant="primary">Request a quote</Button>
-        <Button href="/help/">Questions by stage</Button>
-      </div>
-    </div>
-  </section>
+  <CtaBand
+    id="not-sure"
+    title="Not sure which service you need?"
+    body="Describe the site and the problem. We will tell you which of these it is, or whether it is more than one, and quote for it."
+    action={{ label: 'Request a quote', href: '/contact/' }}
+    side={{ title: 'Questions, answered by stage.', body: 'What we need before design starts, what is tested before energisation, what a calibration certificate shows.', href: '/help/' }}
+  />
 </Base>
